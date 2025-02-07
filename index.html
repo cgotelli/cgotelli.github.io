@@ -1,121 +1,252 @@
 <!DOCTYPE html>
-<html lang="es">
-  <head>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-     integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
-     crossorigin=""/>
+<html>
+<head>
+    
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    
+        <script>
+            L_NO_TOUCH = false;
+            L_DISABLE_3D = false;
+        </script>
+    
+    <style>html, body {width: 100%;height: 100%;margin: 0;padding: 0;}</style>
+    <style>#map {position:absolute;top:0;bottom:0;right:0;left:0;}</style>
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.0/css/all.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/python-visualization/folium/folium/templates/leaflet.awesome.rotate.min.css"/>
+    
+            <meta name="viewport" content="width=device-width,
+                initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+            <style>
+                #map_cf28a23885c0cfadb952bc13fbe5c05b {
+                    position: relative;
+                    width: 100.0%;
+                    height: 100.0%;
+                    left: 0.0%;
+                    top: 0.0%;
+                }
+                .leaflet-container { font-size: 1rem; }
+            </style>
+        
+    <script src="https://cdn.jsdelivr.net/npm/leaflet.fullscreen@3.0.0/Control.FullScreen.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet.fullscreen@3.0.0/Control.FullScreen.css"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.2/leaflet.draw.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.2/leaflet.draw.css"/>
+    <script src="https://cdn.jsdelivr.net/gh/ljagis/leaflet-measure@2.1.7/dist/leaflet-measure.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/ljagis/leaflet-measure@2.1.7/dist/leaflet-measure.min.css"/>
+    <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css"/>
+</head>
+<body>
+    
+    
+            <div class="folium-map" id="map_cf28a23885c0cfadb952bc13fbe5c05b" ></div>
+        
+</body>
+<script>
+    
+    
+            var map_cf28a23885c0cfadb952bc13fbe5c05b = L.map(
+                "map_cf28a23885c0cfadb952bc13fbe5c05b",
+                {
+                    center: [20.0, 0.0],
+                    crs: L.CRS.EPSG3857,
+                    ...{
+  "zoom": 2,
+  "zoomControl": true,
+  "preferCanvas": false,
+  "drawExport": false,
+  "layersControl": true,
+}
 
-      <!-- Make sure you put this AFTER Leaflet's CSS -->
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-     integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
-     crossorigin=""></script>
+                }
+            );
+            L.control.scale().addTo(map_cf28a23885c0cfadb952bc13fbe5c05b);
 
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Mapa en Leaflet - Lausanne, Suiza</title>
-    <!-- Incluir el CSS de Leaflet desde CDN -->
-    <link
-      rel="stylesheet"
-      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-      integrity="sha256-sA+4Lr9B3qEM1ZDtOysFEdURbW1q2vVxPK7Zg8a+7tw="
-      crossorigin=""
-    />
-    <style>
-      /* Asegurarse de que el mapa ocupe toda la pantalla */
-      html,
-      body {
-        margin: 0;
-        padding: 0;
-        height: 100%;
-      }
-      #map {
-        width: 100%;
-        height: 100%;
-      }
-    </style>
-  </head>
-  <body>
-    <!-- Contenedor para el mapa -->
-    <div id="map"></div>
+            
 
-    <!-- Incluir la librería Leaflet desde CDN -->
-    <script
-      src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-      integrity="sha256-o9N1j7k9W1gk27Ceb7Rz8YbQhwSkhE9l+8lw2j1r6uM="
-      crossorigin=""
-    ></script>
-    <!-- Código para inicializar el mapa -->
-    <script>
-      // Inicializar el mapa y centrarlo en Lausanne, Suiza.
-      // Las coordenadas aproximadas de Lausanne son:
-      // Latitud: 46.5197, Longitud: 6.6323
-      // var map = L.map('map').setView([46.52044493856818, 6.634683184059042], 14);
+        
+    
+            var tile_layer_7c82c643f95bef1d01151e750d5ca4fe = L.tileLayer(
+                "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+                {
+  "minZoom": 0,
+  "maxZoom": 24,
+  "maxNativeZoom": 24,
+  "noWrap": false,
+  "attribution": "\u0026copy; \u003ca href=\"https://www.openstreetmap.org/copyright\"\u003eOpenStreetMap\u003c/a\u003e contributors",
+  "subdomains": "abc",
+  "detectRetina": false,
+  "tms": false,
+  "opacity": 1,
+}
 
-      // // Añadir la capa de OpenStreetMap como fondo
-      // L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      //   attribution:
-      //     'Map data © <a href="https://openstreetmap.org">OpenStreetMap</a> contributors'
-      // }).addTo(map);
+            );
+        
+    
+            tile_layer_7c82c643f95bef1d01151e750d5ca4fe.addTo(map_cf28a23885c0cfadb952bc13fbe5c05b);
+        
+    
+            L.control.fullscreen(
+                {
+  "position": "topleft",
+  "title": "Full Screen",
+  "titleCancel": "Exit Full Screen",
+  "forceSeparateButton": false,
+}
+            ).addTo(map_cf28a23885c0cfadb952bc13fbe5c05b);
+        
+    
+            var options = {
+              position: "topleft",
+              draw: {},
+              edit: {},
+            }
+                // FeatureGroup is to store editable layers.
+                var drawnItems_draw_control_f1c691e76822051d7a2552c56f70e164 =
+                    new L.featureGroup().addTo(
+                        map_cf28a23885c0cfadb952bc13fbe5c05b
+                    );
 
-      var littleton = L.marker([39.61, -105.02]).bindPopup('This is Littleton, CO.'),
-          denver    = L.marker([39.74, -104.99]).bindPopup('This is Denver, CO.'),
-          aurora    = L.marker([39.73, -104.8]).bindPopup('This is Aurora, CO.'),
-          golden    = L.marker([39.77, -105.23]).bindPopup('This is Golden, CO.');
+            options.edit.featureGroup = drawnItems_draw_control_f1c691e76822051d7a2552c56f70e164;
+            var draw_control_f1c691e76822051d7a2552c56f70e164 = new L.Control.Draw(
+                options
+            ).addTo( map_cf28a23885c0cfadb952bc13fbe5c05b );
+            map_cf28a23885c0cfadb952bc13fbe5c05b.on(L.Draw.Event.CREATED, function(e) {
+                var layer = e.layer,
+                    type = e.layerType;
+                var coords = JSON.stringify(layer.toGeoJSON());
+                layer.on('click', function() {
+                    alert(coords);
+                    console.log(coords);
+                });
+                drawnItems_draw_control_f1c691e76822051d7a2552c56f70e164.addLayer(layer);
+            });
+            map_cf28a23885c0cfadb952bc13fbe5c05b.on('draw:created', function(e) {
+                drawnItems_draw_control_f1c691e76822051d7a2552c56f70e164.addLayer(e.layer);
+            });
 
-      var cities = L.layerGroup([littleton, denver, aurora, golden]);
+            
+        
+    
+            var measure_control_31377849802cc2e2efd1f89913dbf6f8 = new L.Control.Measure(
+                {
+  "position": "bottomleft",
+  "primaryLengthUnit": "meters",
+  "secondaryLengthUnit": "miles",
+  "primaryAreaUnit": "sqmeters",
+  "secondaryAreaUnit": "acres",
+});
+            map_cf28a23885c0cfadb952bc13fbe5c05b.addControl(measure_control_31377849802cc2e2efd1f89913dbf6f8);
 
+            // Workaround for using this plugin with Leaflet>=1.8.0
+            // https://github.com/ljagis/leaflet-measure/issues/171
+            L.Control.Measure.include({
+                _setCaptureMarkerIcon: function () {
+                    // disable autopan
+                    this._captureMarker.options.autoPanOnFocus = false;
+                    // default function
+                    this._captureMarker.setIcon(
+                        L.divIcon({
+                            iconSize: this._map.getSize().multiplyBy(2)
+                        })
+                    );
+                },
+            });
 
-      var osm = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-          maxZoom: 19,
-          attribution: '© OpenStreetMap'
-      });
+        
+    
 
-      var osmHOT = L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
-          maxZoom: 19,
-          attribution: '© OpenStreetMap contributors, Tiles style by Humanitarian OpenStreetMap Team hosted by OpenStreetMap France'});
+            var geocoderOpts_geocoder_d9e63b4b18cc96d691bb6146056a4810 = {
+  "collapsed": true,
+  "position": "topleft",
+  "defaultMarkGeocode": true,
+  "zoom": 11,
+  "provider": "nominatim",
+  "providerOptions": {
+},
+};
 
-      var map = L.map('map', {
-          center: [39.73, -104.99],
-          zoom: 10,
-          layers: [osm, cities]
-      });
+            // note: geocoder name should start with lowercase
+            var geocoderName_geocoder_d9e63b4b18cc96d691bb6146056a4810 = geocoderOpts_geocoder_d9e63b4b18cc96d691bb6146056a4810["provider"];
 
-      var baseMaps = {
-          "OpenStreetMap": osm,
-          "OpenStreetMap.HOT": osmHOT
-      };
+            var customGeocoder_geocoder_d9e63b4b18cc96d691bb6146056a4810 = L.Control.Geocoder[ geocoderName_geocoder_d9e63b4b18cc96d691bb6146056a4810 ](
+                geocoderOpts_geocoder_d9e63b4b18cc96d691bb6146056a4810['providerOptions']
+            );
+            geocoderOpts_geocoder_d9e63b4b18cc96d691bb6146056a4810["geocoder"] = customGeocoder_geocoder_d9e63b4b18cc96d691bb6146056a4810;
 
-      var overlayMaps = {
-          "Cities": cities
-      };
+            L.Control.geocoder(
+                geocoderOpts_geocoder_d9e63b4b18cc96d691bb6146056a4810
+            ).on('markgeocode', function(e) {
+                var zoom = geocoderOpts_geocoder_d9e63b4b18cc96d691bb6146056a4810['zoom'] || map_cf28a23885c0cfadb952bc13fbe5c05b.getZoom();
+                map_cf28a23885c0cfadb952bc13fbe5c05b.setView(e.geocode.center, zoom);
+            }).addTo(map_cf28a23885c0cfadb952bc13fbe5c05b);
 
-      var layerControl = L.control.layers(baseMaps, overlayMaps).addTo(map);
+        
+    
+            map_cf28a23885c0cfadb952bc13fbe5c05b.fitBounds(
+                [[20, 0], [20, 0]],
+                {"maxZoom": 2}
+            );
+        
+    
+            var tile_layer_ce4296c8cef7e1948d8e71dbe5ee91bb = L.tileLayer(
+                "https://mt1.google.com/vt/lyrs=y\u0026x={x}\u0026y={y}\u0026z={z}\u0026key=YOUR-API-KEY",
+                {
+  "minZoom": 0,
+  "maxZoom": 24,
+  "maxNativeZoom": 24,
+  "noWrap": false,
+  "attribution": "Google",
+  "subdomains": "abc",
+  "detectRetina": false,
+  "tms": false,
+  "opacity": 1,
+}
 
-      var baseMaps = {
-          "OpenStreetMap": osm,
-          "<span style='color: red'>OpenStreetMap.HOT</span>": osmHOT
-      };
-      
-      var crownHill = L.marker([39.75, -105.09]).bindPopup('This is Crown Hill Park.'),
-          rubyHill = L.marker([39.68, -105.00]).bindPopup('This is Ruby Hill Park.');
-          
-      var parks = L.layerGroup([crownHill, rubyHill]);
-      var openTopoMap = L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
-          maxZoom: 19,
-          attribution: 'Map data: © OpenStreetMap contributors, SRTM | Map style: © OpenTopoMap (CC-BY-SA)'
-      });
+            );
+        
+    
+            tile_layer_ce4296c8cef7e1948d8e71dbe5ee91bb.addTo(map_cf28a23885c0cfadb952bc13fbe5c05b);
+        
+    
+            var layer_control_96b3b108ec02112e6b80da9c55fe2f3a_layers = {
+                base_layers : {
+                    "openstreetmap" : tile_layer_7c82c643f95bef1d01151e750d5ca4fe,
+                },
+                overlays :  {
+                    "Google Hybrid" : tile_layer_ce4296c8cef7e1948d8e71dbe5ee91bb,
+                },
+            };
+            let layer_control_96b3b108ec02112e6b80da9c55fe2f3a = L.control.layers(
+                layer_control_96b3b108ec02112e6b80da9c55fe2f3a_layers.base_layers,
+                layer_control_96b3b108ec02112e6b80da9c55fe2f3a_layers.overlays,
+                {
+  "position": "topright",
+  "collapsed": true,
+  "autoZIndex": true,
+}
+            ).addTo(map_cf28a23885c0cfadb952bc13fbe5c05b);
 
-      layerControl.addBaseLayer(openTopoMap, "OpenTopoMap");
-      layerControl.addOverlay(parks, "Parks");
-  
-      // Add Popup at my place
-      var marker = L.marker([46.52044493856818, 6.634683184059042]).addTo(map);
-      marker.bindPopup("<b>This is our house!</b><br>We're fancy!");
-
-
-
-
-
-    </script>
-  </body>
+        
+    
+            tile_layer_7c82c643f95bef1d01151e750d5ca4fe.addTo(map_cf28a23885c0cfadb952bc13fbe5c05b);
+        
+    
+            tile_layer_ce4296c8cef7e1948d8e71dbe5ee91bb.addTo(map_cf28a23885c0cfadb952bc13fbe5c05b);
+        
+    
+            tile_layer_7c82c643f95bef1d01151e750d5ca4fe.addTo(map_cf28a23885c0cfadb952bc13fbe5c05b);
+        
+    
+            tile_layer_ce4296c8cef7e1948d8e71dbe5ee91bb.addTo(map_cf28a23885c0cfadb952bc13fbe5c05b);
+        
+</script>
 </html>
