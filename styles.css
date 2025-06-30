@@ -1,0 +1,104 @@
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+    font-family: Roboto, sans-serif;
+}
+
+.corner-name {
+    position: fixed;
+    top: 0;
+    left: 15px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    font-weight: bold;
+    font-size: 16px;
+    color: #333;
+    background-color: transparent;
+    z-index: 1001;
+}
+
+.message {
+    text-align: left;
+    font-size: 48px;
+    color: #444;
+    font-family: 'Roboto', sans-serif;
+    font-weight: bold;
+    margin: 0;
+}
+.submessage {
+    text-align: left;
+    font-size: 24px;
+    color: #666;
+    font-family: 'Roboto', sans-serif;
+    margin: 10px 0 0 0;
+}
+
+.top-right-nav {
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+    height: 50px;
+    background-color: #f4f4f4;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 0 20px;
+    z-index: 1000;
+}
+
+.top-right-nav a {
+    margin-left: 20px;
+    text-decoration: none;
+    color: #333;
+    font-weight: bold;
+}
+
+.top-right-nav a:hover {
+    color: #007acc;
+}
+
+section {
+    scroll-margin-top: 80px;
+    min-height: 10vh;
+    padding: 20px 24px 40px 24px;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+.section-divider {
+    border: none;
+    height: 1px;
+    background-color: #ccc;
+    margin: 40px 0;
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.hero {
+    height: calc(100vh - 60px);
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding: 0 10%;
+    gap: 10px;
+}
+
+.hero-text {
+    flex: 1;
+}
+
+.hero-image {
+    width: 350px;
+    height: auto;
+}
+
+.spacer {
+    height: 100px;
+}
