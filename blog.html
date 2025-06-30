@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Blog - Clemente Gotelli</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="top-right-nav">
+    <a href="blog.html">Blog</a>
+    <a href="aboutme.html">About Me</a>
+  </div>
+  <div class="corner-name"><a href="index.html">Clemente Gotelli</a></div>
+
+  <div class="blog-layout">
+  <div class="blog-main">
+    <h2 class="section-title latest-title">Latest Post</h2>
+    <div class="featured-post" data-category="Hydraulics">
+      <div class="post-image" style="background-image: url('images/aboutme.jpg');">
+        <div class="post-overlay">
+          <h2>Exploring sediment dynamics in braided rivers</h2>
+          <p>June 2025 · Using Markov models to understand morphological transitions in complex alpine systems.</p>
+        </div>
+      </div>
+    </div>
+
+    <h2 class="section-title">Previous Posts</h2>
+    <div class="grid-posts">
+      <div class="grid-item" data-category="Hydraulics" style="background-image: url('images/allposts.jpg');">
+        <div class="grid-overlay">
+          <h3>Numerical modeling in Alpine valleys</h3>
+          <p>May 2025 · Field simulations <span class="category">Hydraulics</span></p>
+        </div>
+      </div>
+      <div class="grid-item" data-category="CFD" style="background-image: url('images/weichao-deng-5k_RL3Zc6G0-unsplash.jpg');">
+        <div class="grid-overlay">
+          <h3>Shallow flows & turbulence</h3>
+          <p>April 2025 · Flume experiments <span class="category">CFD</span></p>
+        </div>
+      </div>
+      <div class="grid-item" data-category="ML" style="background-image: url('images/banner.jpg');">
+        <div class="grid-overlay">
+          <h3>Machine learning meets hydrology</h3>
+          <p>March 2025 · Image time series <span class="category">ML</span></p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="blog-sidebar">
+    <h3>Categories</h3>
+    <ul>
+      <li><button class="category-filter active" data-category="All">All</button></li>
+      <li><button class="category-filter" data-category="Hydraulics">Hydraulics</button></li>
+      <li><button class="category-filter" data-category="CFD">CFD</button></li>
+      <li><button class="category-filter" data-category="ML">ML</button></li>
+    </ul>
+  </div>
+</div>
+</body>
+<script>
+  document.querySelectorAll('.category-filter').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.category-filter').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const category = btn.getAttribute('data-category');
+      document.querySelectorAll('.grid-item').forEach(item => {
+        item.classList.toggle('hidden', category !== 'All' && item.getAttribute('data-category') !== category);
+      });
+      const featured = document.querySelector('.featured-post');
+      const latestTitle = document.querySelector('.latest-title');
+      featured.classList.toggle('hidden', category !== 'All' && featured.getAttribute('data-category') !== category);
+      latestTitle.classList.toggle('hidden', category !== 'All' && featured.getAttribute('data-category') !== category);
+    });
+  });
+</script>
+</html>

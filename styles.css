@@ -1,3 +1,112 @@
+/* --- Blog page layout --- */
+.blog-container {
+  margin: 120px auto 40px;
+  padding: 0 24px;
+  max-width: 1200px;
+}
+
+.featured-post .post-image {
+  position: relative;
+  height: 400px;
+  max-width: 700px;
+  margin: 100px auto 60px auto;
+  background-size: cover;
+  background-position: center;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.post-overlay {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.7), transparent);
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 20px;
+  box-sizing: border-box;
+  transition: transform 0.3s ease-in-out;
+  overflow: hidden;
+}
+
+.post-overlay h2 {
+  margin: 0;
+  transition: transform 0.3s ease-in-out;
+}
+
+.post-overlay p {
+  opacity: 0;
+  max-height: 0;
+  transition: opacity 0.3s ease-in-out, max-height 0.3s ease-in-out;
+  overflow: hidden;
+}
+
+.post-image:hover .post-overlay h2 {
+  transform: translateY(-20px);
+}
+
+.post-image:hover .post-overlay p {
+  opacity: 1;
+  max-height: 100px;
+}
+
+.grid-posts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  max-width: 700px;
+  margin: 0 auto;
+  gap: 24px;
+}
+
+.grid-item {
+  position: relative;
+  height: 250px;
+  background-size: cover;
+  background-position: center;
+  border-radius: 8px;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.grid-overlay {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.7), transparent);
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 20px;
+  box-sizing: border-box;
+  transition: transform 0.3s ease-in-out;
+  overflow: hidden;
+}
+
+.grid-overlay h3 {
+  margin: 0;
+  transition: transform 0.3s ease-in-out;
+}
+
+.grid-overlay p {
+  opacity: 0;
+  max-height: 0;
+  transition: opacity 0.3s ease-in-out, max-height 0.3s ease-in-out;
+  overflow: hidden;
+}
+
+.grid-item:hover .grid-overlay h3 {
+  transform: translateY(-20px);
+}
+
+.grid-item:hover .grid-overlay p {
+  opacity: 1;
+  max-height: 100px;
+}
 body {
     margin: 0;
     padding: 0;
@@ -17,6 +126,11 @@ body {
     color: #333;
     background-color: transparent;
     z-index: 1001;
+}
+
+.corner-name a {
+    text-decoration: none;
+    color: inherit;
 }
 
 .message {
@@ -129,4 +243,55 @@ html {
     .submessage {
         text-align: center;
     }
+}
+
+.corner-name a:hover {
+    color: #007acc;
+}
+
+.blog-layout {
+  display: flex;
+  flex-direction: row;
+  max-width: 1200px;
+  margin: 120px auto 40px;
+  gap: 40px;
+  padding: 0 24px;
+}
+
+.blog-main {
+  flex: 3;
+}
+
+.blog-sidebar {
+  flex: 1;
+  background-color: #f4f4f4;
+  margin-top: 60px;
+  padding: 20px;
+  border-radius: 8px;
+  height: fit-content;
+  align-self: flex-start;
+}
+
+.blog-sidebar h3 {
+  margin-top: 0;
+}
+
+.blog-sidebar ul {
+  list-style: none;
+  padding-left: 0;
+}
+
+.blog-sidebar li {
+  margin-bottom: 10px;
+}
+
+.category {
+  font-style: italic;
+  color: #888;
+  font-size: 14px;
+}
+.section-title {
+    max-width: 700px;
+    margin: 60px auto 100px auto;
+    text-align: left;
 }
