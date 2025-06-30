@@ -102,3 +102,24 @@ html {
 .spacer {
     height: 100px;
 }
+
+@media (max-width: 768px) {
+    .hero {
+        flex-direction: column;
+        text-align: center;
+        padding: 40px 20px;
+    }
+
+    .hero-image {
+        display: none;
+    }
+
+    .hero-text {
+        flex: none;
+    }
+
+    .message,
+    .submessage {
+        text-align: center;
+    }
+}
