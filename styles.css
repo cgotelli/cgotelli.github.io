@@ -90,10 +90,10 @@ html {
 
 .hero-columns {
     display: grid;
-    grid-template-columns: 1fr 0.7fr;
+    grid-template-columns: 1fr 1fr;
     align-items: center;
     width: 100%;
-    gap: 40px;
+    gap: 250px;
 }
 
 .hero-text {
