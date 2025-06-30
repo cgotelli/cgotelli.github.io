@@ -280,7 +280,7 @@ html {
   height: fit-content;
   align-self: flex-start;
   position: relative;
-  left: 50px;
+  left: 0px;
 }
 
 .blog-sidebar h3 {
