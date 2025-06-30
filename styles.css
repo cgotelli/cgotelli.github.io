@@ -141,7 +141,7 @@ body {
     font-weight: bold;
     margin: 0;
     position: relative;
-    left: 50px;
+    left: 0px;
 }
 .submessage {
     text-align: left;
@@ -150,7 +150,7 @@ body {
     font-family: 'Roboto', sans-serif;
     margin: 10px 0 0 0;
     position: relative;
-    left: 50px;
+    left: 0px;
 }
 
 .top-right-nav {
@@ -280,7 +280,7 @@ html {
   height: fit-content;
   align-self: flex-start;
   position: relative;
-  left: 0px;
+  left: 50px;
 }
 
 .blog-sidebar h3 {
