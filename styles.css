@@ -351,3 +351,49 @@ html {
     grid-template-columns: 1fr !important;
   }
 }
+/* --- Blog post page layout (independent of About Me) --- */
+.post-header {
+  max-width: 700px;
+  margin: 120px auto 0;
+  padding: 0 24px;
+  display: flex;
+  justify-content: center;
+}
+.post-header img {
+  width: 100%;
+  max-width: 700px;
+  object-fit: cover;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.post-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: flex-start;
+  max-width: 1000px;
+  margin: 40px auto 40px;
+  padding: 0 24px;
+  gap: 60px;
+}
+.post-text {
+  flex: 1;
+  font-size: 18px;
+  line-height: 1.6;
+  color: #333;
+  max-width: 700px;
+  margin: 0 auto;
+}
+.post-container h1 {
+  color: #444;
+  margin-top: 0;
+}
+
+@media (max-width: 768px) {
+  .post-container {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+}
