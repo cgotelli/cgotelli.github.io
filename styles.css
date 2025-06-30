@@ -2,7 +2,7 @@
 .blog-container {
   margin: 120px auto 40px;
   padding: 0 24px;
-  max-width: 1200px;
+  max-width: 1000px;
 }
 
 .featured-post .post-image {
@@ -110,7 +110,7 @@
 body {
     margin: 0;
     padding: 0;
-    background-color: #f4f4f4;
+    background-color: #ffffff;
     font-family: Roboto, sans-serif;
 }
 
@@ -140,13 +140,17 @@ body {
     font-family: 'Roboto', sans-serif;
     font-weight: bold;
     margin: 0;
+    position: relative;
+    left: 50px;
 }
 .submessage {
     text-align: left;
     font-size: 24px;
-    color: #666;
+    color: #007acc;
     font-family: 'Roboto', sans-serif;
     margin: 10px 0 0 0;
+    position: relative;
+    left: 50px;
 }
 
 .top-right-nav {
@@ -155,7 +159,7 @@ body {
     right: 0;
     left: 0;
     height: 50px;
-    background-color: #f4f4f4;
+    background-color: #ffffff;
     display: flex;
     justify-content: flex-end;
     align-items: center;
@@ -166,7 +170,7 @@ body {
 .top-right-nav a {
     margin-left: 20px;
     text-decoration: none;
-    color: #333;
+    color: #444;
     font-weight: bold;
 }
 
@@ -182,6 +186,7 @@ section {
 
 html {
     scroll-behavior: smooth;
+    overflow-y: scroll;
 }
 
 .section-divider {
@@ -256,7 +261,7 @@ html {
 .blog-layout {
   display: flex;
   flex-direction: row;
-  max-width: 1200px;
+  max-width: 1000px;
   margin: 120px auto 40px;
   gap: 40px;
   padding: 0 24px;
@@ -268,16 +273,19 @@ html {
 
 .blog-sidebar {
   flex: 1;
-  background-color: #f4f4f4;
+  background-color: #ffffff;
   margin-top: 60px;
   padding: 20px;
   border-radius: 8px;
   height: fit-content;
   align-self: flex-start;
+  position: relative;
+  left: 50px;
 }
 
 .blog-sidebar h3 {
   margin-top: 0;
+  color: #444;
 }
 
 .blog-sidebar ul {
@@ -298,6 +306,8 @@ html {
     max-width: 700px;
     margin: 60px auto 20px auto;
     text-align: left;
+    font-size: 36px;
+    color: #444;
 }
 .category-filter {
   background: none;
