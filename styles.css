@@ -212,7 +212,7 @@ html {
     grid-template-columns: 1fr 1fr;
     align-items: center;
     width: 100%;
-    gap: 250px;
+    justify-content: space-between;
 }
 
 .hero-text {
@@ -222,22 +222,36 @@ html {
 .hero-image {
     width: 320px;
     height: auto;
-    justify-self: start;
+    justify-self: end;
+}
+
+.responsive-image {
+  max-width: 100%;
+  height: auto;
 }
 
 .spacer {
     height: 100px;
 }
 
-@media (max-width: 600px) {
+@media (max-width: 768px) {
     .hero {
-        flex-direction: column;
         text-align: center;
         padding: 40px 20px;
     }
 
+    .hero-columns {
+        grid-template-columns: 1fr;
+        display: grid;
+        gap: 40px;
+        justify-items: center;
+        align-items: center;
+    }
+
     .hero-image {
-        display: none;
+        display: block;
+        width: 60%;
+        margin: 0 auto;
     }
 
     .hero-text {
@@ -247,10 +261,6 @@ html {
     .message,
     .submessage {
         text-align: center;
-    }
-
-    .hero-columns {
-        grid-template-columns: 1fr;
     }
 }
 
@@ -274,7 +284,7 @@ html {
 .blog-sidebar {
   flex: 1;
   background-color: #ffffff;
-  margin-top: 60px;
+  margin-top: 0px;
   padding: 20px;
   border-radius: 8px;
   height: fit-content;
@@ -304,7 +314,7 @@ html {
 }
 .section-title {
     max-width: 700px;
-    margin: 60px auto 20px auto;
+    margin: 0px auto 20px auto;
     text-align: left;
     font-size: 36px;
     color: #444;
@@ -327,24 +337,28 @@ html {
   display: none !important;
 }
 
-@media (max-width: 600px) {
+@media (max-width: 768px) {
   .blog-layout {
-    display: grid;
-    grid-template-columns: 1fr;
+    display: flex;
+    flex-direction: column-reverse;
     margin: 80px 16px 40px;
     padding: 0;
+    /* gap property removed */
+    overflow-x: hidden; /* safety: prevent horizontal scroll */
   }
 
-  .blog-main,
-  .blog-sidebar {
+  .blog-main {
     width: 100%;
     padding: 0;
     margin: 0;
   }
 
   .blog-sidebar {
-    margin-top: 2rem;
+    width: 100%;
     padding: 20px;
+    margin: 0;
+    position: static; /* reset from relative */
+    left: 0;          /* ensure no horizontal offset */
   }
 
   .grid-posts {
