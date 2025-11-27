@@ -17,7 +17,18 @@
   <div class="blog-layout">
     <div class="blog-main">
       <h2 class="section-title latest-title">Latest Post</h2>
-      <div class="featured-post" data-category="Hydraulics">
+      <div class="grid-posts">
+        <a href="posts/14-weeks-to-a-shallow-water-solver.html" class="grid-item-link">
+          <div class="grid-item" data-category="Hydraulics,CFD" style="background-image: url('images/banner.jpg');">
+            <div class="grid-overlay">
+              <h3>14 weeks to a Shallow Water solver</h3>
+              <p>Roadmap, prerequisites, and weekly milestones <span class="category">Hydraulics • CFD</span></p>
+            </div>
+          </div>
+        </a>
+      </div>
+      <!-- <h2 class="section-title">Previous Posts</h2> -->
+      <!-- <div class="featured-post" data-category="Hydraulics">
         <a href="posts/post20250630.html">
           <div class="post-image" style="background-image: url('images/aboutme.jpg');">
             <div class="post-overlay">
@@ -25,30 +36,28 @@
               <p>June 2025 · Using Markov models to understand morphological transitions in complex alpine systems.</p>
             </div>
           </div>
-        </a>
-      </div>
-
-      <h2 class="section-title">Previous Posts</h2>
-      <div class="grid-posts">
-        <div class="grid-item" data-category="Hydrology" style="background-image: url('images/allposts.jpg');">
+        </a> -->
+      
+      
+        <!-- <div class="grid-item" data-category="Hydrology" style="background-image: url('images/allposts.jpg');">
           <div class="grid-overlay">
             <h3>Numerical modeling in Alpine valleys</h3>
             <p>May 2025 · Field simulations <span class="category">Hydraulics</span></p>
           </div>
-        </div>
-        <div class="grid-item" data-category="CFD" style="background-image: url('images/weichao-deng-5k_RL3Zc6G0-unsplash.jpg');">
+        </div> -->
+        <!-- <div class="grid-item" data-category="CFD" style="background-image: url('images/weichao-deng-5k_RL3Zc6G0-unsplash.jpg');">
           <div class="grid-overlay">
             <h3>Shallow flows &amp; turbulence</h3>
             <p>April 2025 · Flume experiments <span class="category">CFD</span></p>
           </div>
-        </div>
-        <div class="grid-item" data-category="ML" style="background-image: url('images/banner.jpg');">
+        </div> -->
+        <!-- <div class="grid-item" data-category="ML" style="background-image: url('images/banner.jpg');">
           <div class="grid-overlay">
             <h3>Machine learning meets hydrology</h3>
             <p>March 2025 · Image time series <span class="category">ML</span></p>
           </div>
-        </div>
-      </div>
+        </div> -->
+      <!-- </div> -->
     </div>
     <div class="blog-sidebar">
       <h3>Categories</h3>
@@ -63,18 +72,29 @@
   </div>
 
   <script>
+    const matchesCategory = (elem, selected) => {
+      const cats = (elem.getAttribute('data-category') || '')
+        .split(',')
+        .map(c => c.trim())
+        .filter(Boolean);
+      return selected === 'All' || cats.includes(selected);
+    };
+
     document.querySelectorAll('.category-filter').forEach(btn => {
       btn.addEventListener('click', () => {
         document.querySelectorAll('.category-filter').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
         const category = btn.getAttribute('data-category');
         document.querySelectorAll('.grid-item').forEach(item => {
-          item.classList.toggle('hidden', category !== 'All' && item.getAttribute('data-category') !== category);
+          item.classList.toggle('hidden', !matchesCategory(item, category));
         });
         const featured = document.querySelector('.featured-post');
         const latestTitle = document.querySelector('.latest-title');
-        featured.classList.toggle('hidden', category !== 'All' && featured.getAttribute('data-category') !== category);
-        latestTitle.classList.toggle('hidden', category !== 'All' && featured.getAttribute('data-category') !== category);
+        if (featured && latestTitle) {
+          const hide = !matchesCategory(featured, category);
+          featured.classList.toggle('hidden', hide);
+          latestTitle.classList.toggle('hidden', hide);
+        }
       });
     });
   </script>

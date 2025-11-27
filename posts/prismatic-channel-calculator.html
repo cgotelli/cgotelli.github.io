@@ -364,6 +364,15 @@
       const solveForSelect = document.getElementById('solve-for');
       const channelInputsDiv = document.getElementById('channel-inputs');
       const channelImage = document.getElementById('channel-image');
+      const renderMath = (el) => {
+        if (window.MathJax) {
+          if (typeof MathJax.typesetPromise === 'function') {
+            MathJax.typesetPromise([el]).catch((e) => console.log(e.message));
+          } else if (MathJax.Hub && typeof MathJax.Hub.Queue === 'function') {
+            MathJax.Hub.Queue(['Typeset', MathJax.Hub, el]);
+          }
+        }
+      };
 
       const out = id => document.getElementById(id);
       const fmt = (value, decimals = 4) => (
@@ -487,9 +496,7 @@
         channelImage.alt = `${channelType.charAt(0).toUpperCase() + channelType.slice(1)} channel cross-section`;
         
         // Trigger MathJax to re-render
-        if (window.MathJax) {
-          MathJax.typesetPromise([channelInputsDiv]).catch((e) => console.log(e.message));
-        }
+        renderMath(channelInputsDiv);
       }
       
       // Update solve-for options based on channel type
