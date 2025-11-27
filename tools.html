@@ -1,0 +1,62 @@
+<html lang="en" lx-checker-enabled="true"><head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tools - Clemente Gotelli</title>
+  <link rel="icon" type="image/x-icon" href="images/favicon.png">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="top-right-nav">
+    <a href="news.html">News</a>
+    <a href="blog.html">Blog</a>
+    <a href="tools.html">Tools</a>
+    <a href="aboutme.html">About Me</a>
+  </div>
+  <div class="corner-name"><a href="index.html">Clemente Gotelli</a></div>
+
+  <div class="blog-layout">
+    <div class="blog-main">
+      <h2 class="section-title latest-title">Latest Tool</h2>
+      <div class="featured-post" data-category="Hydraulics">
+        <a href="posts/prismatic-channel-calculator.html">
+          <div class="post-image" style="background-image: url('images/openchannel.jpg');">
+            <div class="post-overlay">
+              <h2>Prismatic Channel Hydraulics Solver</h2>
+              <p>Solve normal/critical depth and inverse problems (Q, V, S, n, width/diameter, side slopes) across trapezoidal, rectangular, triangular, and circular sections.</p>
+            </div>
+          </div>
+        </a>
+      </div>
+
+      <h2 class="section-title">Previous Tools</h2>
+      <div class="grid-posts">
+        
+      </div>
+    </div>
+    <div class="blog-sidebar">
+      <h3>Categories</h3>
+      <ul>
+        <li><button class="category-filter active" data-category="All">All</button></li>
+        <li><button class="category-filter" data-category="Hydraulics">🌊 Hydraulics</button></li>
+      </ul>
+    </div>
+  </div>
+
+  <script>
+    document.querySelectorAll('.category-filter').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.category-filter').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const category = btn.getAttribute('data-category');
+        document.querySelectorAll('.grid-item').forEach(item => {
+          item.classList.toggle('hidden', category !== 'All' && item.getAttribute('data-category') !== category);
+        });
+        const featured = document.querySelector('.featured-post');
+        const latestTitle = document.querySelector('.latest-title');
+        featured.classList.toggle('hidden', category !== 'All' && featured.getAttribute('data-category') !== category);
+        latestTitle.classList.toggle('hidden', category !== 'All' && featured.getAttribute('data-category') !== category);
+      });
+    });
+  </script>
+
+</body></html>

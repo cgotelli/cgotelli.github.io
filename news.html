@@ -1,18 +1,68 @@
 <html lang="en" lx-checker-enabled="true"><head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Blog - Clemente Gotelli</title>
+  <title>News - Clemente Gotelli</title>
   <link rel="icon" type="image/x-icon" href="images/favicon.png">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <div class="top-right-nav">
-    <a href="#news.html">News</a>
-    <a href="#blog.html">Blog</a>
-    <a href="#aboutme.html">About Me</a>
+    <a href="news.html">News</a>
+    <a href="blog.html">Blog</a>
+    <a href="tools.html">Tools</a>
+    <a href="aboutme.html">About Me</a>
   </div>
   <div class="corner-name"><a href="index.html">Clemente Gotelli</a></div>
 
-  
+  <div class="blog-container">
+    <h1 class="section-title">News</h1>
+    <article class="post-text">
+      <p><strong>October 24</strong></p>
+      <h2>PhD public defense completed</h2>
+      
+      <p>Following the private defense held last September, I am pleased to share that I have now successfully completed my PhD after the public defense. I extend my sincere thanks to my advisor, Professor Christophe Ancey, for his guidance and support throughout this work. The past five years at the LHE have been an exceptional research experience and a valuable period of personal growth. Thank you also to everyone who attended the presentation.</p>
+      <p>You can download the thesis here: <a class="cv-button cv-button--small" href="resources/thesis/Gotelli,%20Clemente%20-%20Thesis%20document.pdf" download>Download the thesis (PDF)</a></p>
+      <p><em>Thank you to the Jury members: François Gallaire, Marco Redolfi, François Mettra, and Mirko Musa.</em></p>
+      <div class="carousel" id="defense-carousel">
+        <button class="carousel-control prev" aria-label="Previous photo">&#10094;</button>
+        <div class="carousel-track">
+          <img src="images/publicDefense/photo.jpeg" alt="Public defense presentation" class="carousel-slide active">
+          <img src="images/publicDefense/CA.jpeg" alt="Public defense photo with Advisor" class="carousel-slide">
+        </div>
+        <button class="carousel-control next" aria-label="Next photo">&#10095;</button>
+      </div>
+    </article>
+    <hr class="section-divider">
+    <article class="post-text">
+      <p><strong>October 1</strong></p>
+      <h2>Started postdoc at STREEM Lab</h2>
+      <figure>
+        <img src="images/streem.jpg" alt="STREEM lab water engineering research" class="responsive-image">
+        <figcaption><small>Image credit: Mirko Musa</small></figcaption>
+      </figure>
+      <p>I have begun a postdoctoral position at the <a href="https://www.epfl.ch/labs/streem/">Laboratory of Sustainable River Engineering, Energy, and Morphodynamics (STREEM)</a> at EPFL under the supervision of Professor Mirko Musa.</p>
+      <p>The STREEM lab aims to advance the technological development of water-based energy production, understand its co-evolution with a changing climate, and protect riverine ecosystems by combining laboratory experiments, data analysis, and analytical methods.</p>
+      <p>I will be running OpenFOAM-based numerical simulations to study how bedforms in natural rivers interact with hydrokinetic turbines, supporting designs that boost performance while safeguarding the river environment.</p>
+    </article>
+  </div>
 
+  <script>
+    (function() {
+      const carousel = document.getElementById('defense-carousel');
+      if (!carousel) return;
+      const slides = carousel.querySelectorAll('.carousel-slide');
+      const prevBtn = carousel.querySelector('.prev');
+      const nextBtn = carousel.querySelector('.next');
+      let index = 0;
+
+      function show(newIndex) {
+        slides[index].classList.remove('active');
+        index = (newIndex + slides.length) % slides.length;
+        slides[index].classList.add('active');
+      }
+
+      prevBtn.addEventListener('click', () => show(index - 1));
+      nextBtn.addEventListener('click', () => show(index + 1));
+    })();
+  </script>
 </body></html>
