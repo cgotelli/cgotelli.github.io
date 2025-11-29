@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Estimating extreme floods in an alpine catchment - Clemente Gotelli</title>
+  <link rel="icon" type="image/x-icon" href="../images/favicon.png">
+  <link rel="stylesheet" href="../styles.css">
+  <style>
+    .tag-badges { display: flex; gap: 8px; flex-wrap: wrap; margin: 8px 0 16px; }
+    .tag-badge { display: inline-block; padding: 6px 10px; border-radius: 12px; background: #e5e7eb; color: #2a2f45; font-weight: 600; font-size: 13px; }
+    .lead { font-size: 18px; line-height: 1.6; color: #333; }
+    .section-block { margin-top: 24px; }
+  </style>
+</head>
+<body>
+  <div class="top-right-nav">
+    <a href="../news.html">News</a>
+    <a href="../blog.html">Blog</a>
+    <a href="../tools.html">Tools</a>
+    <a href="../aboutme.html">About Me</a>
+  </div>
+  <div class="corner-name"><a href="../index.html">Clemente Gotelli</a></div>
+
+  <div class="post-header">
+    <img src="../images/Blatten/blatten-destruction.jpeg" alt="Alpine river valley and floodplain">
+  </div>
+
+  <div class="post-container">
+    <div class="post-text">
+      <h1>Estimating extreme floods in an alpine catchment</h1>
+
+      <div class="tag-badges">
+        <span class="tag-badge">Hydrology</span>
+        <span class="tag-badge">Hydraulics</span>
+        <span class="tag-badge">Risk Analysis</span>
+      </div>
+
+      <p class="lead">
+        How can we estimate a 100‑year flood in a steep alpine valley when data are sparse, the catchment is small, and recent events have changed the geometry of the river? In this post, I walk through a practical workflow to combine discharge records, rainfall data, and extreme value theory to obtain robust design values for peak flow and flood volume.
+      </p>
+
+      <div class="section-block">
+        <h3>Context: a lake behind a rock–ice dam</h3>
+        <p>
+          In May 2025, a large rock–ice avalanche from the Kleines Nesthorn collapsed onto the Birch glacier and down into the Lonza valley. The deposit, on the order of several million cubic metres, partially blocked the river and created a temporary lake upstream of Blatten (Valais, Switzerland). The key management question was simple and urgent: how much water could enter this lake during an extreme flood, and what peak discharge should we expect if a breach developed?
+        </p>
+        <p>
+          This is a classic alpine hydrology problem: a small, steep catchment, strong orographic precipitation, snow and glacier influence, and very limited time to assess hazards. It is also a good benchmark to show what a hydraulic engineer can do with open data and a few well‑chosen models.
+        </p>
+      </div>
+
+      <div class="section-block">
+        <h3>Available data and practical constraints</h3>
+        <p>
+          For this catchment, we can access two main families of data:
+        </p>
+        <ul>
+          <li><strong>Discharge records</strong> from the Lonza gauge at Blatten (daily mean flows), covering several decades up to the destruction of the station in 2025.</li>
+          <li><strong>Precipitation records</strong> from nearby MeteoSwiss stations (e.g. Ried, Blatten), providing daily rainfall and snowfall over the basin.</li>
+        </ul>
+        <p>
+          In a professional setting, there is rarely a perfect dataset. Some years are incomplete, the measurement period is short compared to a 100‑year return period, and the spatial representation of rainfall is imperfect. The workflow below is designed to make the most of such imperfect but realistic data.
+        </p>
+      </div>
+
+      <div class="section-block">
+        <h3>Project roadmap</h3>
+        <p>This project is split into focused steps, each documented on its own page with theory, implementation notes, and results:</p>
+        <ul>
+          <li><a href="lonza-extreme-floods-step1-discharge.html">Step 1 – Exploring and cleaning the discharge series</a></li>
+          <li><a href="lonza-extreme-floods-step2-extremes.html">Step 2 – Extreme value analysis of flows</a></li>
+          <li><a href="lonza-extreme-floods-step3-rainfall-runoff.html">Step 3 – Building a simple rainfall–runoff model</a></li>
+          <li><a href="lonza-extreme-floods-step4-combining.html">Step 4 – Combining rainfall and flow perspectives</a></li>
+          <li><a href="lonza-extreme-floods-step5-risk-management.html">Step 5 – Interpreting results for risk management</a></li>
+        </ul>
+        <p class="muted">As with my other project posts, these pages will be updated as I refine the analyses and add code examples.</p>
+      </div>
+
+      <div class="section-block">
+        <h3>Why this type of workflow is broadly useful</h3>
+        <p>
+          Although this example is tied to a specific alpine basin, the workflow is generic. Any hydraulic engineer working on mountain rivers, debris‑flow prone catchments, or small headwater basins will face similar constraints: short records, strong seasonality, and high stakes for rare events. Being able to assemble a consistent picture from discharge data, precipitation records, and simple models is a core skill.</p>
+        <p>
+          In future posts, I plan to share code snippets and plots from the Python implementation (data handling, extreme value fits, and rainfall–runoff simulations) to make this approach fully reproducible.</p>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Lonza floods – Step 2: extreme value analysis - Clemente Gotelli</title>
+  <link rel="icon" type="image/x-icon" href="../images/favicon.png">
+  <link rel="stylesheet" href="../styles.css">
+  <style>
+    .section-block { margin-top: 24px; }
+  </style>
+</head>
+<body>
+  <div class="top-right-nav">
+    <a href="../news.html">News</a>
+    <a href="../blog.html">Blog</a>
+    <a href="../tools.html">Tools</a>
+    <a href="../aboutme.html">About Me</a>
+  </div>
+  <div class="corner-name"><a href="../index.html">Clemente Gotelli</a></div>
+
+  <div class="post-container">
+    <div class="post-text">
+      <h1>Lonza floods – Step 2: extreme value analysis of flows</h1>
+      <p class="muted">Project hub: <a href="lonza-extreme-floods.html">Estimating extreme floods in an alpine catchment</a></p>
+
+      <div class="section-block">
+        <h3>Choosing an extreme value framework</h3>
+        <p>
+          To estimate a 100‑year flood from observed flows, I apply tools from extreme value theory. There are two classical approaches:
+        </p>
+        <ul>
+          <li><strong>Annual maxima series (AMS):</strong> select one maximum per year, then fit a Generalized Extreme Value (GEV) distribution (or, in simpler cases, a Gumbel distribution).</li>
+          <li><strong>Peaks‑over‑threshold (POT):</strong> select all independent peaks above a high threshold, and fit a Generalized Pareto distribution (GPD) to the excesses.</li>
+        </ul>
+        <p>
+          For a small alpine basin like the Lonza, the POT approach often extracts more information from a relatively short record, provided we carefully decluster events.
+        </p>
+      </div>
+
+      <div class="section-block">
+        <h3>Selecting peaks and fitting the model</h3>
+        <p>
+          In practice, I:
+        </p>
+        <ul>
+          <li>Choose a threshold so that we retain enough peaks (for example, 5–10 per year) without violating independence.</li>
+          <li>Apply a minimum time separation between peaks to avoid counting the same event multiple times.</li>
+          <li>Fit the GEV or GPD model using maximum likelihood and inspect diagnostic plots (QQ‑plots, return level plots, stability of estimates versus threshold).</li>
+        </ul>
+        <p>
+          This process leads to an estimate of the 100‑year return level \(Q_{100}\), together with an uncertainty band (e.g. a 95% confidence interval).
+        </p>
+      </div>
+
+      <div class="section-block">
+        <h3>First estimate of \(Q_{100}\)</h3>
+        <p>
+          The outcome of this step is a first, data‑driven estimate of the design peak flow, rooted directly in the gauged behaviour of the river. In the next step, I will confront this flow‑based estimate with a rainfall‑driven perspective using a conceptual rainfall–runoff model, and check their consistency.
+        </p>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
+

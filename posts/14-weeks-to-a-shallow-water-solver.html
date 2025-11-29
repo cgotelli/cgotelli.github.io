@@ -44,19 +44,19 @@
         <span class="tag-badge">Hydraulics</span>
         <span class="tag-badge">CFD</span>
       </div>
-      <p class="lead">A structured 14-week roadmap to build a simple 2D shallow water solver from scratch. Each week introduces one focused step—numerics, stability, boundary conditions, friction, and visualization—so we reach a working prototype by the end.</p>
+      <p class="lead">This is a personal 14-week project where I document, step by step, how to build a simple 2D shallow water solver from scratch. The idea is to grow it into a basic CFD course for hydraulic engineers: each week adds one concept—numerics, stability, boundary conditions, friction, visualization—until we have a working, readable solver.</p>
+      <p>My motivation is simple: if we want to truly understand the software we use for flood simulations and related problems, we should be able to write a minimal solver ourselves. Even if you never use this code in production, the mental model it builds is valuable for any hydraulic engineer.</p>
 
       <div class="section-block">
-        <h3>Before we start</h3>
-        <ul>
-          <li><strong>Install:</strong> Python 3.11+, NumPy, Matplotlib; optional: Jupyter, git, VS Code (or your preferred IDE).</li>
-          <li><strong>Prereqs:</strong> basics of shallow water equations, calculus and linear algebra, finite differences, and comfort with Python scripting.</li>
-          <li><strong>Goal:</strong> a clean, minimal solver you can extend (sediment transport, source terms, parallelization, GPU later if you like).</li>
-        </ul>
+        <h3>A living project</h3>
+        <p>This page will evolve as I move forward: I will publish each week only after I have written and tested the corresponding code. The outline below is a roadmap, not a finished syllabus.</p>
+        <p>The code for this project lives openly on GitHub at <a href="https://github.com/cgotelli/14-Weeks-to-SWE">the project repo</a>. You can follow along, fork it, or use it as a starting point for your own experiments.</p>
+        <p>I am taking inspiration from the famous <a href="https://lorenabarba.com/blog/cfd-python-12-steps-to-navier-stokes/">CFD Python: 12 Steps to Navier–Stokes</a> course by Lorena Barba, adapting that spirit of hands-on numerical learning to the shallow water equations and hydraulics applications.</p>
       </div>
 
       <div class="section-block">
         <h3>Weekly roadmap</h3>
+        
         <ul class="module-list">
           <li><a href="14-weeks-week01.html">Week 1: project setup &amp; governing equations</a></li>
           <!-- <li><a href="14-weeks-week02.html">Week 2: grid, indexing, and basic I/O</a></li>
@@ -73,6 +73,7 @@
           <li><a href="14-weeks-week13.html">Week 13: validation vs. benchmarks</a></li>
           <li><a href="14-weeks-week14.html">Week 14: packaging and next steps</a></li> -->
         </ul>
+        <p class="muted">Weeks will be added, refined, or reshuffled as the project progresses. Expect rough edges at the beginning and more polished material later on.</p>
       </div>
       <p class="muted" style="margin-top: 72px;"><small><strong>Header image:</strong> Noah’s Ark series for Prince-Archbishop Wolf Dietrich von Raitenau: <em>The Flood</em>, Kaspar Memberger the Elder, 1588, oil on canvas. © Residenzgalerie Salzburg, Illustration Fotostudio Ulrich Ghezzi, Oberalm.</small></p>
     </div>

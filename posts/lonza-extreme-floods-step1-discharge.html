@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Lonza floods – Step 1: exploring the discharge series - Clemente Gotelli</title>
+  <link rel="icon" type="image/x-icon" href="../images/favicon.png">
+  <link rel="stylesheet" href="../styles.css">
+  <style>
+    .section-block { margin-top: 24px; }
+  </style>
+</head>
+<body>
+  <div class="top-right-nav">
+    <a href="../news.html">News</a>
+    <a href="../blog.html">Blog</a>
+    <a href="../tools.html">Tools</a>
+    <a href="../aboutme.html">About Me</a>
+  </div>
+  <div class="corner-name"><a href="../index.html">Clemente Gotelli</a></div>
+
+  <div class="post-container">
+    <div class="post-text">
+      <h1>Lonza floods – Step 1: exploring the discharge series</h1>
+      <p class="muted">Project hub: <a href="lonza-extreme-floods.html">Estimating extreme floods in an alpine catchment</a></p>
+
+      <div class="section-block">
+        <h3>Inspecting the raw hydrograph</h3>
+        <p>
+          The first step is a careful inspection of the discharge record from the Lonza gauge at Blatten. I start by loading the daily flows into a notebook, plotting the full time series, and flagging obvious gaps or spikes. This immediately reveals periods with missing data, years with suspicious plateaus, and the broad seasonality of the river.
+        </p>
+      </div>
+
+      <div class="section-block">
+        <h3>Separating regimes</h3>
+        <p>
+          In an alpine basin, not all high flows are driven by the same processes. I separate the record into <em>snowmelt‑dominated</em> and <em>rainfall‑dominated</em> seasons using temperature and precipitation phase from nearby MeteoSwiss stations. This helps to understand whether the largest peaks are linked to intense rainfall, warm spells, or mixed events.
+        </p>
+      </div>
+
+      <div class="section-block">
+        <h3>Identifying candidate extreme events</h3>
+        <p>
+          Before fitting any statistical model, it is useful to tag major flood episodes in the time series and visually cross‑check them with rainfall patterns. I look for:
+        </p>
+        <ul>
+          <li>Clusters of high flows over a few days,</li>
+          <li>Events coinciding with high daily rainfall at Ried or Blatten, and</li>
+          <li>Episodes that might be influenced by snowmelt or glacier melt.</li>
+        </ul>
+        <p>
+          The goal is not just to “clean” the data, but to build intuition: Which months drive the extremes? Are there regime changes over time? Are there years that should be treated with caution (for example, due to major gauge changes or partial ice blockage)? This understanding will guide the extreme value analysis in Step 2.
+        </p>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
+

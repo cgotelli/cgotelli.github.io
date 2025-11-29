@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Lonza floods – Step 3: rainfall–runoff modelling - Clemente Gotelli</title>
+  <link rel="icon" type="image/x-icon" href="../images/favicon.png">
+  <link rel="stylesheet" href="../styles.css">
+  <style>
+    .section-block { margin-top: 24px; }
+  </style>
+</head>
+<body>
+  <div class="top-right-nav">
+    <a href="../news.html">News</a>
+    <a href="../blog.html">Blog</a>
+    <a href="../tools.html">Tools</a>
+    <a href="../aboutme.html">About Me</a>
+  </div>
+  <div class="corner-name"><a href="../index.html">Clemente Gotelli</a></div>
+
+  <div class="post-container">
+    <div class="post-text">
+      <h1>Lonza floods – Step 3: building a simple rainfall–runoff model</h1>
+      <p class="muted">Project hub: <a href="lonza-extreme-floods.html">Estimating extreme floods in an alpine catchment</a></p>
+
+      <div class="section-block">
+        <h3>Why bring rainfall into the picture?</h3>
+        <p>
+          Relying only on discharge extremes can be risky when the series is short or when we anticipate climate‑driven changes. A complementary view is to start from extreme rainfall and transform it into runoff using a conceptual rainfall–runoff model. This gives an independent estimate of flood peaks and volumes based on precipitation statistics.
+        </p>
+      </div>
+
+      <div class="section-block">
+        <h3>From MeteoSwiss data to design storms</h3>
+        <p>
+          I use daily precipitation from nearby MeteoSwiss stations (for example, Ried and Blatten) as a proxy for basin rainfall. The steps are:
+        </p>
+        <ul>
+          <li>Assemble a daily rainfall series for the catchment, including quality checks and basic gap filling.</li>
+          <li>Derive extreme rainfall statistics (annual or seasonal maxima, or a peaks‑over‑threshold analysis of daily totals).</li>
+          <li>Construct design storms of various durations (1‑day, multi‑day) representing, for instance, a 100‑year rainfall depth.</li>
+        </ul>
+      </div>
+
+      <div class="section-block">
+        <h3>A simple conceptual model</h3>
+        <p>
+          At this scale, a lumped model is often sufficient. I use:
+        </p>
+        <ul>
+          <li>A <strong>loss model</strong> to represent infiltration and initial soil moisture (for example, an initial loss rate followed by proportional losses).</li>
+          <li>A <strong>linear reservoir or unit hydrograph</strong> to convert effective rainfall into discharge at the outlet.</li>
+        </ul>
+        <p>
+          Parameters are calibrated on observed flood events by matching peak flow, timing, and event volume. Once calibrated, the model can be driven by design storms to simulate synthetic hydrographs compatible with extreme rainfall statistics.
+        </p>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
+
