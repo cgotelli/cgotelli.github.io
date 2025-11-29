@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Braided rivers as changing states: from images to probabilistic forecasts - Clemente Gotelli</title>
+  <link rel="icon" type="image/x-icon" href="../images/favicon.png">
+  <link rel="stylesheet" href="../styles.css">
+  <style>
+    .tag-badges { display: flex; gap: 8px; flex-wrap: wrap; margin: 8px 0 16px; }
+    .tag-badge { display: inline-block; padding: 6px 10px; border-radius: 12px; background: #e5e7eb; color: #2a2f45; font-weight: 600; font-size: 13px; }
+    .lead { font-size: 18px; line-height: 1.6; color: #333; }
+    .section-block { margin-top: 24px; }
+    .figure-placeholder {
+      border: 1px dashed #bbb;
+      border-radius: 8px;
+      padding: 14px;
+      text-align: center;
+      color: #555;
+      background: #f8f9fb;
+      margin: 16px 0 8px;
+      font-style: italic;
+    }
+    .figure-placeholder img {
+      max-width: 720px;
+      width: 100%;
+      height: auto;
+      display: block;
+      margin: 0 auto 8px;
+    }
+  </style>
+</head>
+<body>
+  <div class="top-right-nav">
+    <a href="../news.html">News</a>
+    <a href="../blog.html">Blog</a>
+    <a href="../tools.html">Tools</a>
+    <a href="../aboutme.html">About Me</a>
+  </div>
+  <div class="corner-name"><a href="../index.html">Clemente Gotelli</a></div>
+  <div class="post-header">
+    <img src="../images/navisence.jpg" alt="Navisence River above Zinal">
+    <p class="header-caption muted">The braided Navisence River above Zinal, Switzerland. Photo credit: Bob de Graffenried, LHE-EPFL.</p>
+  </div>
+
+  <div class="post-container">
+    <div class="post-text">
+      <h1>Braided rivers as changing states: from images to probabilistic forecasts</h1>
+
+      <div class="tag-badges">
+        <span class="tag-badge">Hydraulics</span>
+        <span class="tag-badge">Geomorphology</span>
+        <span class="tag-badge">Stochastic Modeling</span>
+      </div>
+
+      <p class="lead">
+      Braided rivers appear chaotic at first sight, but their complexity hides repeating patterns. In my doctoral thesis, I developed a method that discovers these patterns from images and uses them to build probabilistic forecasts of sediment transport. The goal is to show that river form can be translated into a language of states, and that this language can be used to generate reliable, data driven predictions.
+      </p>
+
+      <p><strong>By Clemente Gotelli</strong></p>
+
+      <p>
+      Braided rivers change continuously. Even with constant water and sediment supply, they reorganize their channels as bars migrate, bifurcations open or close, and new flow paths form. This reworking produces intense variability in sediment transport and makes these rivers difficult to predict with standard deterministic models.
+      </p>
+
+      <p>
+      My thesis introduces a new approach based on two ideas. First, the river does not explore an infinite range of shapes. Instead, it cycles through a limited set of recurrent morphological states. Second, the transitions among these states can be described with a continuous time Markov chain. Once the states are known, and once their transition probabilities are estimated, the Markov model becomes a generator capable of simulating many possible futures for the river. From these synthetic futures, we can derive probabilistic forecasts of sediment flux that incorporate uncertainty directly.
+      </p>
+
+      <div class="section-block">
+        <h3>A laboratory river observed minute by minute</h3>
+        <p>
+        The dataset comes from a long duration experiment in a 3.3 meter by 1 meter flume filled with uniform sand. Steady discharge and sediment supply created a self sustaining braided pattern that evolved freely for nearly 1,200 hours. A camera captured one image every minute, and a load cell recorded the downstream sediment flux in real time.
+        </p>
+        <div class="figure-placeholder"><img src="../images/thesis/flume.jpeg"><br>The experimental flume used in the study.</div>
+        <p>
+        The resulting time series shows the type of intermittency that motivates a probabilistic view. Long periods of low activity alternate with sharp spikes in transport. Even over hundreds of hours, the cumulative flux does not settle to a simple trend.
+        </p>        
+        <div class="figure-placeholder"><img src="../images/thesis/bedload.png"><br>Intermittent sediment transport measured during the experiment.</div>
+      </div>
+
+      <div class="section-block">
+        <h3>Converting images into a set of morphological states</h3>
+        <p>
+        Each photograph is processed to highlight the wetted area of the channel. A color filter isolates the dyed water and produces a clean binary mask that separates water from dry bed. A one pixel water outline is then extracted to represent the planform shape in a consistent and stable way.
+        </p>
+
+        <div class="figure-placeholder"><img src="../images/thesis/img_process.png"><br>Image processing steps from raw photograph to water outline.</div>
+
+        <p>
+        To compare two river configurations, the method uses a combination of the Modified Hausdorff Distance and the Dice index. These two distances are combined into a single matrix and projected into a low dimensional morpho space through dimensionality reduction. Clustering in this space reveals that the river cycles through exactly sixteen recurrent morphological states. These include narrow channels, transitional structures, and wide multi thread patterns rich in bars.
+        </p>
+
+        <div class="figure-placeholder"><img src="../images/thesis/process.png"><br>Workflow from images to a Markov chain model.</div>
+      </div>
+
+      <div class="section-block">
+        <h3>What these states reveal about sediment transport</h3>
+        <p>
+        Because each image has a corresponding measurement of bedload, we can estimate the typical transport rate within each state. The result is consistent across the entire dataset. Narrow states export sediment more efficiently and with higher variability. Wide braided states tend to store sediment and produce lower and steadier fluxes. This confirms that morphology contains predictive information about transport.
+        </p>
+
+        <div class="figure-placeholder"><img src="../images/thesis/violin.png"><br>Transport distributions for the sixteen morphological states.</div>
+      </div>
+
+      <div class="section-block">
+        <h3>A Markov chain for state transitions</h3>
+        <p>
+        Once every minute of the experiment has a state label, the river can be viewed as a sequence of state visits. Some states persist for long periods while others act as brief intermediates during reorganizations. This behavior can be represented by a continuous time Markov chain in which each state has a characteristic dwell time and a distribution of possible next states.
+        </p>
+        <p>
+        The transition matrix shows that bar rich states are stable and long lived. In contrast, simple narrow states are short lived but crucial for routing sediment out of the system. The same pattern appears in two shorter independent runs, which validates the robustness of the state definitions and transition structure.
+        </p>
+
+        <div class="figure-placeholder"><img src="../images/thesis/colored.png"><br>Time series of sediment transport colored by morphological state.</div>
+      </div>
+
+      <div class="section-block">
+        <h3>Monte Carlo as the engine of probabilistic forecasting</h3>
+        <p>
+        The most important part of the framework is the Monte Carlo generator. Once the Markov chain is calibrated, we simulate a very large number of synthetic futures. Each simulation is a possible trajectory of state transitions that respects the observed transition probabilities and dwell time distributions.
+        </p>
+        <p>
+        These synthetic trajectories form the backbone of the forecast. For every simulated sequence of states, we reconstruct a sediment transport time series by sampling from the empirical distribution of each state. This two layer Monte Carlo process produces a large ensemble of transport signals. From this ensemble, we can compute confidence intervals, return levels, and the distribution of possible future bursts.
+        </p>
+        <p>
+        The synthetic series reproduce the real experiment remarkably well. They capture the mean, the variance, the timing structure of bursts, and the scaling of variability across time scales. They also highlight a small mismatch at very low frequencies, which identifies a clear direction for future improvement using semi Markov models.
+        </p>
+
+        <div class="figure-placeholder"><img src="../images/thesis/histograms.png"><br>Experimental vs synthetic transport series showing close agreement.</div>
+      </div>
+
+      <div class="section-block">
+        <h3>Why this method represents a new direction</h3>
+        <p>
+        The thesis presents the first complete pipeline that begins with planview images, identifies recurrent morphological states, models their temporal evolution with a continuous time Markov chain, generates synthetic futures with a Monte Carlo engine, and reconstructs probabilistic forecasts of sediment transport.
+        </p>
+        <p>
+        This approach fills a gap between descriptive metrics that cannot predict future behavior and detailed physics based models that are difficult to use for uncertainty quantification. The method is transparent and computationally light. It can be applied to any imagery based dataset, including satellite and drone observations, making it useful for regions where transport measurements are unavailable.
+        </p>
+        <p>
+        Most importantly, the results suggest that braided rivers do not behave randomly. They follow a structure defined by a small number of morphological states and by the probabilities of transitioning among them. This discovery opens new possibilities for understanding how form relates to function and for developing probabilistic theories of river dynamics.
+        </p>
+      </div>
+
+      <div class="section-block">
+        <p>If you want to see more details, you may download the full thesis:</p>
+        <p><a class="cv-button cv-button--small" href="../resources/thesis/Gotelli,%20Clemente%20-%20Thesis%20document.pdf" download>Download the thesis (PDF)</a></p>
+      </div>
+
+    </div>
+  </div>
+</body>
+</html>
