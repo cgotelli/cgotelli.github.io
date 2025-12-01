@@ -390,7 +390,7 @@ html {
 
 @media (max-width: 768px) {
     .hero {
-        text-align: center;
+        text-align: left;
         padding: 40px 20px;
     }
 
@@ -414,7 +414,7 @@ html {
 
     .message,
     .submessage {
-        text-align: center;
+        text-align: left;
     }
 }
 
@@ -570,7 +570,7 @@ html {
   .post-container {
     flex-direction: column;
     align-items: center;
-    text-align: center;
+    text-align: left;
   }
 }
 body {
@@ -639,7 +639,7 @@ body {
   .about-container {
     flex-direction: column;
     align-items: center;
-    text-align: center;
+    text-align: left;
   }
   .about-photo {
     margin-top: 20px;
