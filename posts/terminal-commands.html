@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>11 Terminal Commands You Should Know - Clemente Gotelli</title>
+  <link rel="icon" type="image/x-icon" href="../images/favicon.png">
+  <link rel="stylesheet" href="../styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js" defer></script>
+  <style>
+    .tag-badges { display: flex; gap: 8px; flex-wrap: wrap; margin: 8px 0 16px; }
+    .tag-badge {
+      display: inline-block;
+      padding: 6px 10px;
+      border-radius: 12px;
+      background: #e5e7eb;
+      color: #2a2f45;
+      font-weight: 600;
+      font-size: 13px;
+    }
+    .lead { font-size: 18px; line-height: 1.6; color: #333; }
+    .section-block { margin-top: 24px; }
+
+    pre.code-block {
+      position: relative;
+      border-radius: 8px;
+      overflow: auto;
+      padding-top: 1.7em;
+    }
+
+    pre.code-block > code {
+      border-radius: 8px;
+    }
+
+    .copy-button {
+      position: absolute;
+      top: 8px;
+      right: 10px;
+      padding: 4px 10px;
+      font-size: 12px;
+      border: none;
+      border-radius: 999px;
+      background: rgba(0, 0, 0, 0.6);
+      color: #ffffff;
+      cursor: pointer;
+      opacity: 0.85;
+      transition: opacity 0.15s ease, transform 0.1s ease;
+    }
+
+    .copy-button:hover {
+      opacity: 1;
+      transform: translateY(-1px);
+    }
+  </style>
+</head>
+<body>
+  <div class="top-right-nav">
+    <a href="../news.html">News</a>
+    <a href="../blog.html">Blog</a>
+    <a href="../tools.html">Tools</a>
+    <a href="../aboutme.html">About Me</a>
+  </div>
+  <div class="corner-name"><a href="../index.html">Clemente Gotelli</a></div>
+
+  <div class="post-header">
+    <img src="../images/commands.png" alt="A 3D rendering of a terminal command line.">
+    <!-- <p class="header-caption muted"><small>Image: Shutterstock / Built In – from “11 Terminal Commands You Should Know”.</small></p> -->
+  </div>
+
+  <div class="post-container">
+    <div class="post-text">
+      <h1>11 Terminal Commands You Should Know</h1>
+
+      <div class="tag-badges">
+        <span class="tag-badge">ML</span>
+      </div>
+
+      <p class="lead">
+        The terminal is a powerful tool that allows users to interact with their computers and perform tasks directly by typing in text commands. Using the terminal can significantly improve productivity for many tasks, especially those that involve repetitive actions or the manipulation of large numbers of files.
+      </p>
+
+      <p>
+        In this article, we will introduce some of the most important and commonly used commands, discuss the benefits of using terminal commands and look at examples of how these commands can streamline various tasks and improve efficiency.
+      </p>
+
+      <div class="section-block">
+        <h3>11 important terminal commands</h3>
+        <ol>
+          <li>The <code>cd</code> command.</li>
+          <li>The <code>ls</code> command.</li>
+          <li>The <code>pwd</code> command.</li>
+          <li>The <code>mkdir</code> command.</li>
+          <li>The <code>rmdir</code> command.</li>
+          <li>The <code>rm</code> command.</li>
+          <li>The <code>mv</code> command.</li>
+          <li>The <code>cp</code> command.</li>
+          <li>The <code>cat</code> command.</li>
+          <li>The <code>less</code> command.</li>
+          <li>The <code>find</code> command.</li>
+        </ol>
+      </div>
+
+      <div class="section-block">
+        <h2>1. The <code>cd</code> command</h2>
+        <p>
+          The <code>cd</code> command is used to <strong>c</strong>hange the current working <strong>d</strong>irectory (which is why it’s called <code>cd</code>) and navigate across the file directory of the host machine.
+        </p>
+        <pre class="code-block"><code class="language-bash">$ cd &lt;path-to-dir&gt;</code></pre>
+        <p>
+          When <code>cd</code> is executed without a directory, it puts the user in their home directory. In other words, <code>cd</code> is equivalent to <code>cd ~</code>.
+        </p>
+        <p>
+          Likewise, <code>cd ..</code> will move the user up one directory. So, if the current working directory is <code>/home/username/dir_a/subdir_a</code>, a <code>cd ..</code> will get us to <code>/home/username/dir_a</code>.
+        </p>
+      </div>
+
+      <div class="section-block">
+        <h2>2. The <code>ls</code> command</h2>
+        <p>
+          The <code>ls</code> command is used to list files and directories under a specific path, or the current working directory whenever a path is not provided.
+        </p>
+        <pre class="code-block"><code class="language-bash">$ ls
+
+Desktop&nbsp;&nbsp;Downloads&nbsp;&nbsp;Templates&nbsp;&nbsp;index.html&nbsp;&nbsp;Videos</code></pre>
+        <p>
+          The <code>-l</code> option can be used to show the size, last modified date-time as well as directory/file ownership and permissions.
+        </p>
+        <pre class="code-block"><code class="language-bash">$ ls -l
+
+total 12
+-rw-r--r--. 1 root root   789 Feb 19 09:59 Desktop
+-rw-r--r--. 1 root root  6797 Aug 31 11:17 Downloads
+drwxr-xr-x. 2 root root  2354 Sep 31 12:48 Templates
+-rw-r--r--. 2 root root   123 Jun 31 23:48 index.html
+drwxr-xr-x. 4 root root  7896 Jul 16 22:55 Videos</code></pre>
+        <p>
+          Apart from normal files or directories, the <code>ls</code> command can be used to show hidden files too. Hidden files start with a dot (<code>.</code>) prefix. To include such files in the output of <code>ls</code>, you’ll have to provide the <code>-a</code> flag:
+        </p>
+        <pre class="code-block"><code class="language-bash">$ ls -la
+
+total 12
+-rw-r--r--. 1 root root   789 Feb 19 08:49 .gitignore
+-rw-r--r--. 1 root root   789 Feb 19 09:59 Desktop
+-rw-r--r--. 1 root root  6797 Aug 31 11:17 Downloads
+drwxr-xr-x. 2 root root  2354 Sep 31 12:48 Templates
+-rw-r--r--. 2 root root   123 Jun 31 23:48 index.html
+drwxr-xr-x. 4 root root  7896 Jul 16 22:55 Videos</code></pre>
+      </div>
+
+      <div class="section-block">
+        <h2>3. The <code>pwd</code> command</h2>
+        <p>
+          The <code>pwd</code> command stands for <strong>p</strong>rint <strong>w</strong>orking <strong>d</strong>irectory, and as the name suggests, it is used to print out the absolute path to the current directory.
+        </p>
+        <pre class="code-block"><code class="language-bash">$ cd ~/Documents
+$ pwd
+/Users/username/Documents</code></pre>
+      </div>
+
+      <div class="section-block">
+        <h2>4. The <code>mkdir</code> command</h2>
+        <p>
+          The <code>mkdir</code> command can be used to create new directories on the file system. When a relative path is provided, the newly created directory will be created under the current working directory.
+        </p>
+        <pre class="code-block"><code class="language-bash">$ mkdir projects</code></pre>
+        <p>
+          In order to create a directory with one or more sub-directories, you’ll have to provide the <code>-p</code> option:
+        </p>
+        <pre class="code-block"><code class="language-bash">$ mkdir -p projects/first_project</code></pre>
+        <p>
+          Furthermore, when running the <code>mkdir</code> command, you may also wish to specify a set of permissions for the newly created directory. For example, the following command will create a new directory called <code>projects</code> under the current working directory with full read, write and execute permissions for all users:
+        </p>
+        <pre class="code-block"><code class="language-bash">$ mkdir -m777 projects</code></pre>
+      </div>
+
+      <div class="section-block">
+        <h2>5. The <code>rmdir</code> command</h2>
+        <p>
+          In contrast to <code>mkdir</code>, the <code>rmdir</code> command is used to remove empty directories from the file system:
+        </p>
+        <pre class="code-block"><code class="language-bash">$ rmdir projects</code></pre>
+        <p>
+          If the <code>projects</code> directory is non-empty, however, the above command will fail with an error such as:
+        </p>
+        <pre class="code-block"><code class="language-bash">rmdir: failed to remove 'projects': Directory not empty</code></pre>
+      </div>
+
+      <div class="section-block">
+        <h2>6. The <code>rm</code> command</h2>
+        <p>
+          To remove non-empty directories along with their sub-directories and files, you’ll have to run the <code>rm</code> command with the <code>-r</code> and <code>-f</code> flags:
+        </p>
+        <pre class="code-block"><code class="language-bash">$ rm -rf projects</code></pre>
+      </div>
+
+      <div class="section-block">
+        <h2>7. The <code>mv</code> command</h2>
+        <p>
+          The <code>mv</code> command is used to move directories or files from one place in the file system to another.
+        </p>
+        <p>
+          The following command will move the file <code>picture.png</code> that currently resides in the <code>~/Downloads</code> directory into the <code>~/Documents/Photography/</code> directory:
+        </p>
+        <pre class="code-block"><code class="language-bash">$ mv ~/Downloads/picture.png ~/Documents/Photography/picture.png</code></pre>
+      </div>
+
+      <div class="section-block">
+        <h2>8. The <code>cp</code> command</h2>
+        <p>
+          If, instead of moving directories or files, you would like to create a copy of them, the <code>cp</code> command is your friend.
+        </p>
+        <pre class="code-block"><code class="language-bash">$ cp ~/Downloads/picture.png ~/Documents/Photography</code></pre>
+        <p>
+          If you’d like to copy a whole directory and its content instead, make sure to include the <code>-R</code> flag:
+        </p>
+        <pre class="code-block"><code class="language-bash">$ cp -R ~/Projects ~/Documents/Projects</code></pre>
+        <p>
+          Note that the folder name does not end with a slash, which would change how <code>cp</code> copies the folder.
+        </p>
+      </div>
+
+      <div class="section-block">
+        <h2>9. The <code>cat</code> command</h2>
+        <p>
+          The <code>cat</code> (concatenate) command is used to read data from a specified file and print the output.
+        </p>
+        <p>
+          Assume we have a Python script called <code>hello_world.py</code> with the following content:
+        </p>
+        <pre class="code-block"><code class="language-python">print('Hello World')</code></pre>
+        <p>
+          The <code>cat</code> command will print its content to the standard output:
+        </p>
+        <pre class="code-block"><code class="language-bash">$ cat hello_world.py
+print('Hello World')</code></pre>
+        <p>
+          You can even print the line numbers for every row observed in the file by providing the <code>-n</code> argument:
+        </p>
+        <pre class="code-block"><code class="language-bash">$ cat -n hello_world.py
+1 print('Hello World')
+2</code></pre>
+        <p>
+          Note, however, that the <code>cat</code> command usually concatenates the content of multiple files. You can provide several files as input to the command, as shown below:
+        </p>
+        <pre class="code-block"><code class="language-bash">$ cat file1.txt file2.txt</code></pre>
+      </div>
+
+      <div class="section-block">
+        <h2>10. The <code>less</code> command</h2>
+        <p>
+          The <code>less</code> command is a terminal pager that outputs the content of the specified file one screen at a time. Therefore, this command is useful when it comes to inspecting the content of large files, such as logs.
+        </p>
+        <pre class="code-block"><code class="language-bash">$ less run-2022-12-12.log</code></pre>
+      </div>
+
+      <div class="section-block">
+        <h2>11. The <code>find</code> command</h2>
+        <p>
+          Finally, the <code>find</code> command can be used to search for files on the file system. Let’s suppose that we want to find where exactly a file called <code>my_file.txt</code> resides on the file system. To do so, we can specify the <code>/</code> path (that corresponds to the home directory, meaning that we would like <code>find</code> to start searching for that file from the top directory), and then specify the filename in the <code>-name</code> argument:
+        </p>
+        <pre class="code-block"><code class="language-bash">$ find / -name 'my_file.txt'</code></pre>
+        <p>
+          We can even specify wildcards in order to find, for example, all CSV files on the file system:
+        </p>
+        <pre class="code-block"><code class="language-bash">$ find / -name '*.csv'</code></pre>
+      </div>
+
+      <div class="section-block">
+        <h2>How to access the terminal</h2>
+        <p>
+          To use the above commands, it’s important to know how to first access the terminal. The terminal exists as an application on many different operating systems, and accessing it will depend on the operating system being used. Here’s how to access the terminal on Windows and Mac operating systems.
+        </p>
+
+        <h3>How to open terminal on Windows</h3>
+        <p>To open terminal on Windows 11, do one of the following:</p>
+        <ul>
+          <li>Right-click the Start icon in the taskbar and select “Terminal” from the menu that appears.</li>
+          <li>Click the Start icon, click the “All apps” button then select Terminal from the list of applications.</li>
+        </ul>
+
+        <h3>How to open terminal on Mac</h3>
+        <p>To open terminal on Mac, do one of the following:</p>
+        <ul>
+          <li>Click the Launchpad icon in the Dock, type “terminal” in the search bar then select Terminal.</li>
+          <li>Click the Finder icon in the Dock, click on Applications, then open the Utilities folder and select Terminal.</li>
+        </ul>
+
+        <p>
+          Once you’re familiar with accessing the terminal, you can try out the commands from this article for yourself.
+        </p>
+      </div>
+
+      <div class="section-block">
+        <h2>Final thoughts</h2>
+        <p>
+          In conclusion, the terminal is a powerful tool that allows users to interact with their computer in an efficient and automated way. The commands above can be used to streamline various tasks and improve efficiency. Understanding how to take advantage of these commands can help users to perform their tasks more efficiently and much quicker than performing the same action through a graphical interface.
+        </p>
+        <p>
+          These are just a few examples of the many terminal commands that are available. It is always a good idea to consult the documentation for more information on specific commands and their options.
+        </p>
+      </div>
+
+      <p class="muted" style="margin-top: 48px;"><small>Text and figure adapted from the Built In article “11 Terminal Commands You Should Know”.</small></p>
+    </div>
+  </div>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      document.querySelectorAll('pre.code-block').forEach(function (pre) {
+        var button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'copy-button';
+        button.textContent = 'Copy';
+        pre.appendChild(button);
+
+        button.addEventListener('click', function () {
+          var code = pre.querySelector('code');
+          if (!code) {
+            return;
+          }
+          var text = code.innerText || code.textContent || '';
+
+          function showCopied() {
+            var original = button.textContent;
+            button.textContent = 'Copied!';
+            setTimeout(function () {
+              button.textContent = original;
+            }, 1500);
+          }
+
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(text).then(showCopied).catch(function () {
+              var range = document.createRange();
+              range.selectNodeContents(code);
+              var selection = window.getSelection();
+              selection.removeAllRanges();
+              selection.addRange(range);
+              try {
+                document.execCommand('copy');
+              } catch (e) {}
+              selection.removeAllRanges();
+              showCopied();
+            });
+          } else {
+            var range = document.createRange();
+            range.selectNodeContents(code);
+            var selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+              document.execCommand('copy');
+            } catch (e) {}
+            selection.removeAllRanges();
+            showCopied();
+          }
+        });
+      });
+    });
+  </script>
+</body>
+</html>
