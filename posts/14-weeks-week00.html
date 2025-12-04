@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Week 0 – Installation & Prerequisites - Clemente Gotelli</title>
+  <link rel="icon" type="image/x-icon" href="../images/favicon.png">
+  <link rel="stylesheet" href="../styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js" defer></script>
+  <style>
+    pre.code-block {
+      position: relative;
+      border-radius: 8px;
+      overflow: auto;
+      padding-top: 1.7em;
+    }
+
+    pre.code-block > code {
+      border-radius: 8px;
+    }
+
+    .copy-button {
+      position: absolute;
+      top: 8px;
+      right: 10px;
+      padding: 4px 10px;
+      font-size: 12px;
+      border: none;
+      border-radius: 999px;
+      background: rgba(0, 0, 0, 0.6);
+      color: #ffffff;
+      cursor: pointer;
+      opacity: 0.85;
+      transition: opacity 0.15s ease, transform 0.1s ease;
+    }
+
+    .copy-button:hover {
+      opacity: 1;
+      transform: translateY(-1px);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="top-right-nav">
+    <a href="../news.html">News</a>
+    <a href="../blog.html">Blog</a>
+    <a href="../tools.html">Tools</a>
+    <a href="../aboutme.html">About Me</a>
+  </div>
+
+  <div class="corner-name"><a href="../index.html">Clemente Gotelli</a></div>
+
+  <div class="post-container">
+    <div class="post-text">
+
+      <h1>Week 0: Installation & Prerequisites</h1>
+      <p class="muted">Preparation steps for the <a href="14-weeks-to-a-shallow-water-solver.html">2D Shallow Water Solver course</a>.</p>
+
+      <div class="section-block">
+        <h3>Before you begin</h3>
+        <p>This course uses Python and JupyterLab to develop a 2D finite-volume shallow water solver from scratch. Week 0 ensures all participants have a fully functional environment before moving into the equations and numerical methods in Week 1.</p>
+      </div>
+
+      <div class="section-block">
+        <h3>1. Prerequisites</h3>
+        <ul>
+          <li>Basic calculus and linear algebra.</li>
+          <li>Fundamentals of open-channel hydraulics.</li>
+          <li>A minimal understanding of partial differential equations.</li>
+          <li>No prior CFD experience required.</li>
+        </ul>
+      </div>
+
+      <div class="section-block">
+        <h3>2. Install Anaconda</h3>
+        <p>Download and install the Anaconda distribution (Windows, macOS, Linux):</p>
+        <p><a href="https://www.anaconda.com/products/distribution">https://www.anaconda.com/products/distribution</a></p>
+      </div>
+
+      <div class="section-block">
+        <h3>3. Create the course environment</h3>
+        <p>Open a terminal (or Anaconda Prompt on Windows) and run:</p>
+<pre class="code-block"><code class="language-bash">conda create -n swsolver python=3.11
+conda activate swsolver
+pip install numpy scipy matplotlib jupyterlab
+</code></pre>
+      </div>
+
+      <div class="section-block">
+        <h3>4. Launch JupyterLab</h3>
+<pre class="code-block"><code class="language-bash">jupyter lab
+</code></pre>
+        <p>JupyterLab will open in your browser. You are ready to start creating notebooks.</p>
+      </div>
+
+      <div class="section-block">
+        <h3>5. Organize your working folder</h3>
+        <ul>
+          <li>Create a main directory: <code>2D_SWE_Solver/</code></li>
+          <li>Inside it, create the following subfolders:</li>
+          <ul>
+            <li><code>notebooks/</code></li>
+            <li><code>figures/</code></li>
+            <li><code>data/</code></li>
+          </ul>
+        </ul>
+      </div>
+
+      <div class="section-block">
+        <h3>6. Test your installation</h3>
+        <p>Create a new notebook (<code>.ipynb</code>) and run this cell:</p>
+<pre class="code-block"><code class="language-python">import numpy as np
+import matplotlib.pyplot as plt
+
+x = np.linspace(0, 10, 200)
+plt.plot(x, np.sin(x))
+plt.title("Installation Successful")
+plt.show()
+</code></pre>
+        <p>If the plot appears, your environment is ready for Week 1.</p>
+      </div>
+
+    </div>
+  </div>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      document.querySelectorAll('pre.code-block').forEach(function (pre) {
+        var button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'copy-button';
+        button.textContent = 'Copy';
+        pre.appendChild(button);
+
+        button.addEventListener('click', function () {
+          var code = pre.querySelector('code');
+          if (!code) {
+            return;
+          }
+          var text = code.innerText || code.textContent || '';
+
+          function showCopied() {
+            var original = button.textContent;
+            button.textContent = 'Copied!';
+            setTimeout(function () {
+              button.textContent = original;
+            }, 1500);
+          }
+
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(text).then(showCopied).catch(function () {
+              // fallback below
+              var range = document.createRange();
+              range.selectNodeContents(code);
+              var selection = window.getSelection();
+              selection.removeAllRanges();
+              selection.addRange(range);
+              try {
+                document.execCommand('copy');
+              } catch (e) {}
+              selection.removeAllRanges();
+              showCopied();
+            });
+          } else {
+            var range = document.createRange();
+            range.selectNodeContents(code);
+            var selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+              document.execCommand('copy');
+            } catch (e) {}
+            selection.removeAllRanges();
+            showCopied();
+          }
+        });
+      });
+    });
+  </script>
+</body>
+</html>

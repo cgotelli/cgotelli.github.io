@@ -115,13 +115,20 @@
 }
 
 /* --- Generic post link styling --- */
-.post-text a {
+.post-text a,
+.about-text a {
   color: #0f6fff;
   text-decoration: none;
   font-weight: 600;
 }
 
-.post-text a:hover {
+.post-text a:visited,
+.about-text a:visited {
+  color: #0f6fff;
+}
+
+.post-text a:hover,
+.about-text a:hover {
   text-decoration: underline;
 }
 
@@ -135,7 +142,8 @@
   text-decoration: underline;
 }
 
-.post-text a.cv-button {
+.post-text a.cv-button,
+.about-text a.cv-button {
   color: #ffffff;
 }
 /* --- Carousel for news photos --- */
