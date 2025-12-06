@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hydraulic Jump Calculator - Clemente Gotelli</title>
+    <link rel="icon" type="image/x-icon" href="../images/favicon.png">
+    <link rel="stylesheet" href="../styles.css">
+
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            },
+            svg: {
+                fontCache: 'global'
+            }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
+
+    <style>
+        /* --- CSS Grid System for Inputs --- */
+        .formula-grid,
+        .result-grid,
+        .inputs-grid {
+            display: grid;
+            gap: 16px;
+        }
+
+        /* Responsive Inputs: Columns min-width 220px, fit as many as possible */
+        .inputs-grid {
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            margin-top: 12px;
+            /* Aligns inputs to the bottom so they line up even if labels are different heights */
+            align-items: end;
+        }
+
+        /* Ensures the div containing the label and input takes full width of its grid cell */
+        .inputs-grid>div {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+        }
+
+        .formula-grid {
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            margin-top: 16px;
+        }
+
+        .result-grid {
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            margin-top: 12px;
+        }
+
+        /* --- Card & Panel Styling --- */
+        .formula-card,
+        .panel {
+            background: #ffffff;
+            border: 1px solid #e3e7ed;
+            border-radius: 10px;
+            padding: 16px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+        }
+
+        .calc-shell {
+            background: #f7f9fb;
+            border: 1px solid #e3e7ed;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .formula-card h3,
+        .panel h3 {
+            margin-top: 0;
+            margin-bottom: 8px;
+            color: #2a2f45;
+            font-size: 18px;
+        }
+
+        .formula-card ul {
+            padding-left: 18px;
+            margin: 0;
+        }
+
+        .formula-card li {
+            margin-bottom: 4px;
+            font-family: "Roboto Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+            font-size: 14px;
+        }
+
+        /* --- Form Elements --- */
+        .calc-form label {
+            display: block;
+            font-weight: 600;
+            color: #2a2f45;
+            margin-bottom: 6px;
+        }
+
+        .calc-form input,
+        .calc-form select,
+        select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #cfd7e3;
+            border-radius: 8px;
+            font-size: 16px;
+            box-sizing: border-box;
+            background-color: #fff;
+        }
+
+        .calc-form small {
+            display: block;
+            margin-top: 4px;
+            color: #666;
+            font-weight: 400;
+            font-size: 0.85em;
+        }
+
+        /* --- Buttons --- */
+        .button-row {
+            display: flex;
+            justify-content: flex-start;
+            margin-top: 24px;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .primary-btn {
+            background: #0f6fff;
+            color: #ffffff;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 16px;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(15, 111, 255, 0.2);
+            transition: transform 0.1s ease, box-shadow 0.1s ease;
+        }
+
+        .secondary-btn {
+            background: #ffffff;
+            color: #0f6fff;
+            border: 1px solid #0f6fff;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.1s ease;
+        }
+
+        .primary-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 14px rgba(15, 111, 255, 0.24);
+        }
+
+        .secondary-btn:hover {
+            background: #f0f7ff;
+        }
+
+        /* --- Results --- */
+        .result-card dl {
+            margin: 0;
+        }
+
+        .result-card dt {
+            font-weight: 600;
+            color: #2a2f45;
+            font-size: 0.95em;
+        }
+
+        .result-card dd {
+            margin: 0 0 8px 0;
+            color: #1d3557;
+            font-family: "Roboto Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+            font-weight: 500;
+            font-size: 1.1em;
+        }
+
+        .muted {
+            color: #555;
+            margin: 8px 0;
+        }
+
+        .status {
+            margin-top: 12px;
+            color: #0b6b3c;
+            font-weight: 600;
+            min-height: 24px;
+        }
+
+        /* --- Color coded Froude status --- */
+        .fr-subcritical {
+            color: #aaaaaa;
+        }
+
+        .fr-critical {
+            color: #6666ee;
+        }
+
+        .fr-super-undular {
+            color: #d68f8f;
+        }
+
+        /* Darker "ffcccc" for readability */
+        .fr-super-weak {
+            color: #ff9999;
+        }
+
+        .fr-super-oscillating {
+            color: #ff6666;
+        }
+
+        .fr-super-steady {
+            color: #ff3333;
+        }
+
+        .fr-super-strong {
+            color: #ff0000;
+        }
+
+        /* --- Typography & Math --- */
+        .math {
+            font-family: "Cambria Math", "STIX Two Math", "Times New Roman", serif;
+            font-size: 16px;
+            line-height: 1.5;
+        }
+
+        .theory-section {
+            margin-top: 24px;
+            padding: 0;
+            text-align: left;
+        }
+
+        .math-block {
+            margin: 8px 0;
+            font-family: "Cambria Math", "STIX Two Math", "Times New Roman", serif;
+            font-size: 16px;
+            line-height: 1.5;
+            overflow-x: auto;
+            /* Handles long equations on mobile */
+        }
+
+        .theory-section mjx-container[display="true"] {
+            text-align: left !important;
+        }
+
+        @media (max-width: 768px) {
+            .post-container {
+                padding: 0 16px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="top-right-nav">
+        <a href="../news.html">News</a>
+        <a href="../blog.html">Blog</a>
+        <a href="../tools.html">Tools</a>
+        <a href="../aboutme.html">About Me</a>
+    </div>
+    <div class="corner-name"><a href="../index.html">Clemente Gotelli</a></div>
+
+    <div class="post-header">
+        <!-- Reusing a generic hydraulic image or placeholder -->
+        <img src="../images/hj-calculator/hj.png" alt="Hydraulic Jump">
+        <!-- <p class="header-caption muted"><small>Hydraulic Jump Schematic</small></p> -->
+    </div>
+
+    <div class="post-container">
+        <div class="post-text">
+            <h1>Hydraulic Jump Calculator</h1>
+            <p>Calculate the conjugate depth ($h_2$) and other flow properties for a hydraulic jump in a horizontal
+                rectangular channel, given the discharge ($Q$), channel width ($B$), and upstream depth ($h_1$).</p>
+
+            <div class="calc-shell">
+
+                <form id="hj-form" class="calc-form">
+                    <div class="inputs-grid">
+                        <div style="grid-column: 1 / -1; margin-bottom: 12px;">
+                            <label for="solve-for">Solve For:</label>
+                            <select id="solve-for" name="solve-for">
+                                <option value="h2">Downstream Depth $h_2$ (Given $h_1$)</option>
+                                <option value="h1">Upstream Depth $h_1$ (Given $h_2$)</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label for="flow-rate">Flow Rate $Q$ (m³/s)</label>
+                            <input id="flow-rate" name="flow-rate" type="number" step="any" value="0.100" required>
+                        </div>
+                        <div>
+                            <label for="channel-width">Channel Width $B$ (m)</label>
+                            <input id="channel-width" name="channel-width" type="number" step="any" value="0.400"
+                                required>
+                        </div>
+                        <div>
+                            <label id="known-depth-label" for="known-depth">Upstream Depth $h_1$ (m)</label>
+                            <input id="known-depth" name="known-depth" type="number" step="any" value="0.050" required>
+                        </div>
+                    </div>
+
+                    <div class="button-row">
+                        <button type="submit" class="primary-btn">Calculate</button>
+                        <button type="button" id="reset-btn" class="secondary-btn">Reset</button>
+                    </div>
+                    <div id="status" class="status" aria-live="polite"></div>
+                </form>
+
+                <div class="result-grid">
+                    <div class="panel result-card">
+                        <h3>Depths</h3>
+                        <dl>
+                            <dt>Upstream Depth $h_1$ (m)</dt>
+                            <dd id="h1">--</dd>
+                            <dt>Downstream Depth $h_2$ (m)</dt>
+                            <dd id="h2">--</dd>
+                            <dt>Depth Ratio $h_2/h_1$</dt>
+                            <dd id="h2h1">--</dd>
+                        </dl>
+                    </div>
+                    <div class="panel result-card">
+                        <h3>Velocities</h3>
+                        <dl>
+                            <dt>Upstream Velocity $v_1$ (m/s)</dt>
+                            <dd id="v1">--</dd>
+                            <dt>Downstream Velocity $v_2$ (m/s)</dt>
+                            <dd id="v2">--</dd>
+                            <dt>Velocity Ratio $v_1/v_2$</dt>
+                            <dd id="v1v2">--</dd>
+                        </dl>
+                    </div>
+                    <div class="panel result-card">
+                        <h3>Froude Numbers</h3>
+                        <dl>
+                            <dt>Upstream $Fr_1$</dt>
+                            <dd id="fr1">--</dd>
+                            <dt>Downstream $Fr_2$</dt>
+                            <dd id="fr2">--</dd>
+                            <dt>Ratio $Fr_1/Fr_2$</dt>
+                            <dd id="fr1fr2">--</dd>
+                        </dl>
+                    </div>
+                    <div class="panel result-card">
+                        <h3>Flow Classification</h3>
+                        <dl>
+                            <dt>Jump Type ($Fr_1$)</dt>
+                            <dd id="jump-type">--</dd>
+                        </dl>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-container">
+        <div class="post-text">
+            <div class="theory-section">
+                <h3>Formulas</h3>
+                <p>This calculator uses the momentum equation for a hydraulic jump in a horizontal rectangular channel:
+                </p>
+                <p>$$ \frac{h_2}{h_1} = \frac{1}{2} \left( \sqrt{1 + 8 Fr_1^2} - 1 \right) $$</p>
+                <p>Where the upstream Froude number $Fr_1$ is:</p>
+                <p>$$ Fr_1 = \frac{v_1}{\sqrt{g h_1}} = \frac{Q}{B h_1 \sqrt{g h_1}} $$</p>
+
+                <h4>Jump Types based on $Fr_1$:</h4>
+                <ul style="list-style-type: none; padding-left: 0;">
+                    <li>$Fr_1 < 1.0$: <span class="fr-subcritical">Subcritical Flow (Impossible jump)</span></li>
+                    <li>$Fr_1 = 1.0$: <span class="fr-critical">Critical Flow</span></li>
+                    <li>$1.0 < Fr_1 < 1.7$: <span class="fr-super-undular">Undular Jump</span></li>
+                    <li>$1.7 < Fr_1 < 2.5$: <span class="fr-super-weak">Weak Jump</span></li>
+                    <li>$2.5 < Fr_1 < 4.5$: <span class="fr-super-oscillating">Oscillating Jump</span></li>
+                    <li>$4.5 < Fr_1 < 9.0$: <span class="fr-super-steady">Steady Jump</span></li>
+                    <li>$Fr_1 > 9.0$: <span class="fr-super-strong">Strong Jump</span></li>
+                </ul>
+            </div>
+            <p class="muted" style="margin-top: 72px;"><small><strong>Header image:</strong> Viti, N., Valero, D., &
+                    Gualtieri, C. (2019). Numerical Simulation of Hydraulic Jumps. Part 2: Recent Results and Future
+                    Outlook. <em>Water</em>, 11(1), 28. <a
+                        href="https://doi.org/10.3390/w11010028">https://doi.org/10.3390/w11010028</a></small></p>
+        </div>
+    </div>
+
+    <script>
+        (function () {
+            const g = 9.806; // Using standard gravity from original tool for consistency
+            const form = document.getElementById('hj-form');
+            const resetBtn = document.getElementById('reset-btn');
+            const solveForSelect = document.getElementById('solve-for');
+            const knownDepthLabel = document.getElementById('known-depth-label');
+
+            const inputs = {
+                Q: document.getElementById('flow-rate'),
+                B: document.getElementById('channel-width'),
+                knownDepth: document.getElementById('known-depth')
+            };
+
+            const outputs = {
+                h1: document.getElementById('h1'),
+                h2: document.getElementById('h2'),
+                h2h1: document.getElementById('h2h1'),
+                v1: document.getElementById('v1'),
+                v2: document.getElementById('v2'),
+                v1v2: document.getElementById('v1v2'),
+                fr1: document.getElementById('fr1'),
+                fr2: document.getElementById('fr2'),
+                fr1fr2: document.getElementById('fr1fr2'),
+                jumpType: document.getElementById('jump-type')
+            };
+
+            const fmt = (val, decimals = 3) => Number.isFinite(val) ? val.toFixed(decimals) : '--';
+
+            function getJumpType(fr1) {
+                if (fr1 < 1.0) return ["Subcritical Flow", "fr-subcritical"];
+                if (fr1 === 1.0) return ["Critical Flow", "fr-critical"];
+                if (fr1 < 1.7) return ["Undular Jump", "fr-super-undular"];
+                if (fr1 < 2.5) return ["Weak Jump", "fr-super-weak"];
+                if (fr1 < 4.5) return ["Oscillating Jump", "fr-super-oscillating"];
+                if (fr1 < 9.0) return ["Steady Jump", "fr-super-steady"];
+                return ["Strong Jump", "fr-super-strong"];
+            }
+
+            function updateInputs() {
+                const mode = solveForSelect.value;
+                if (mode === 'h2') {
+                    knownDepthLabel.textContent = 'Upstream Depth $h_1$ (m)';
+                    // Optional: Trigger re-render of MathJax if dynamic label needs it,
+                    // but textContent replaces the node, so MathJax needs to re-run.
+                    // For simplicity, just text is fine or use "Upstream Depth h1 (m)"
+                } else {
+                    knownDepthLabel.textContent = 'Downstream Depth $h_2$ (m)';
+                }
+                if (window.MathJax && MathJax.typesetPromise) {
+                    MathJax.typesetPromise([knownDepthLabel]).catch(err => console.log(err));
+                }
+            }
+
+            function calculate(event) {
+                if (event) event.preventDefault();
+
+                const Q = parseFloat(inputs.Q.value);
+                const B = parseFloat(inputs.B.value);
+                const knownDepth = parseFloat(inputs.knownDepth.value);
+                const mode = solveForSelect.value;
+
+                // Basic validation
+                if (isNaN(Q) || isNaN(B) || isNaN(knownDepth) || B <= 0 || knownDepth <= 0) {
+                    return;
+                }
+
+                let h1, h2, v1, v2, fr1, fr2;
+
+                if (mode === 'h2') {
+                    // Solve for h2 (classic)
+                    h1 = knownDepth;
+                    v1 = Q / (B * h1);
+                    fr1 = v1 / Math.sqrt(g * h1);
+                    h2 = 0.5 * h1 * (Math.sqrt(1 + 8 * fr1 * fr1) - 1);
+                    v2 = Q / (B * h2);
+                    fr2 = v2 / Math.sqrt(g * h2);
+                } else {
+                    // Solve for h1 (inverse)
+                    // Logic is symmetric: h1/h2 = 0.5 * (sqrt(1+8Fr2^2) - 1)
+                    h2 = knownDepth;
+                    v2 = Q / (B * h2);
+                    fr2 = v2 / Math.sqrt(g * h2);
+
+                    // Equation: h1 = h2/2 * (sqrt(1 + 8*Fr2^2) - 1)
+                    // Wait - Check the formula direction.
+                    // Momentum equation: h2/h1 = 0.5 * (sqrt(1 + 8*Fr1^2) - 1)
+                    // Is it symmetric? 
+                    // Hydraulic jump connects supercritical (1) to subcritical (2).
+                    // Formula for Fr2 in terms of h1/h2?
+                    // Actually, the relation is: h2/h1 = 0.5 * (sqrt(1+8Fr1^2) -1)
+                    // AND h1/h2 = 0.5 * (sqrt(1+8Fr2^2) - 1)
+                    // Yes, it is symmetric.
+
+                    h1 = 0.5 * h2 * (Math.sqrt(1 + 8 * fr2 * fr2) - 1);
+                    v1 = Q / (B * h1);
+                    fr1 = v1 / Math.sqrt(g * h1);
+                }
+
+                const h2h1 = h2 / h1;
+                const v1v2 = v1 / v2;
+                const fr1fr2 = Math.pow(h2h1, 1.5);
+
+                // Update UI
+                outputs.h1.textContent = fmt(h1);
+                outputs.h2.textContent = fmt(h2);
+                outputs.h2h1.textContent = fmt(h2h1);
+                outputs.v1.textContent = fmt(v1);
+                outputs.v2.textContent = fmt(v2);
+                outputs.v1v2.textContent = fmt(v1v2);
+                outputs.fr1.textContent = fmt(fr1);
+                outputs.fr2.textContent = fmt(fr2);
+                outputs.fr1fr2.textContent = fmt(fr1fr2);
+
+                const [typeText, typeClass] = getJumpType(fr1);
+
+                outputs.jumpType.className = '';
+                outputs.jumpType.textContent = typeText;
+                outputs.jumpType.classList.add(typeClass);
+
+                // Highlight calculated value? (Optional, skipping for simplicity)
+            }
+
+            function reset() {
+                inputs.Q.value = "0.100";
+                inputs.B.value = "0.400";
+                inputs.knownDepth.value = "0.050";
+                solveForSelect.value = "h2";
+                updateInputs();
+
+                Object.values(outputs).forEach(el => {
+                    el.textContent = "--";
+                    el.className = "";
+                });
+            }
+
+            form.addEventListener('submit', calculate);
+            resetBtn.addEventListener('click', reset);
+            solveForSelect.addEventListener('change', updateInputs);
+        })();
+    </script>
+</body>
+
+</html>

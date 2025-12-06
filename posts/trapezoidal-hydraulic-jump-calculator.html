@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hydraulic Jump Calculator - Clemente Gotelli</title>
+    <link rel="icon" type="image/x-icon" href="../images/favicon.png">
+    <link rel="stylesheet" href="../styles.css">
+
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            },
+            svg: {
+                fontCache: 'global'
+            }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
+
+    <style>
+        /* --- CSS Grid System for Inputs --- */
+        .formula-grid,
+        .result-grid,
+        .inputs-grid {
+            display: grid;
+            gap: 16px;
+        }
+
+        /* Responsive Inputs: Columns min-width 220px, fit as many as possible */
+        .inputs-grid {
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            margin-top: 12px;
+            /* Aligns inputs to the bottom so they line up even if labels are different heights */
+            align-items: end;
+        }
+
+        /* Ensures the div containing the label and input takes full width of its grid cell */
+        .inputs-grid>div {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+        }
+
+        .formula-grid {
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            margin-top: 16px;
+        }
+
+        .result-grid {
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            margin-top: 12px;
+        }
+
+        /* --- Card & Panel Styling --- */
+        .formula-card,
+        .panel {
+            background: #ffffff;
+            border: 1px solid #e3e7ed;
+            border-radius: 10px;
+            padding: 16px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+        }
+
+        .calc-shell {
+            background: #f7f9fb;
+            border: 1px solid #e3e7ed;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .formula-card h3,
+        .panel h3 {
+            margin-top: 0;
+            margin-bottom: 8px;
+            color: #2a2f45;
+            font-size: 18px;
+        }
+
+        .formula-card ul {
+            padding-left: 18px;
+            margin: 0;
+        }
+
+        .formula-card li {
+            margin-bottom: 4px;
+            font-family: "Roboto Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+            font-size: 14px;
+        }
+
+        /* --- Form Elements --- */
+        .calc-form label {
+            display: block;
+            font-weight: 600;
+            color: #2a2f45;
+            margin-bottom: 6px;
+        }
+
+        .calc-form input,
+        .calc-form select,
+        select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #cfd7e3;
+            border-radius: 8px;
+            font-size: 16px;
+            box-sizing: border-box;
+            background-color: #fff;
+        }
+
+        .calc-form small {
+            display: block;
+            margin-top: 4px;
+            color: #666;
+            font-weight: 400;
+            font-size: 0.85em;
+        }
+
+        /* --- Buttons --- */
+        .button-row {
+            display: flex;
+            justify-content: flex-start;
+            margin-top: 24px;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .primary-btn {
+            background: #0f6fff;
+            color: #ffffff;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 16px;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(15, 111, 255, 0.2);
+            transition: transform 0.1s ease, box-shadow 0.1s ease;
+        }
+
+        .secondary-btn {
+            background: #ffffff;
+            color: #0f6fff;
+            border: 1px solid #0f6fff;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.1s ease;
+        }
+
+        .primary-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 14px rgba(15, 111, 255, 0.24);
+        }
+
+        .secondary-btn:hover {
+            background: #f0f7ff;
+        }
+
+        /* --- Results --- */
+        .result-card dl {
+            margin: 0;
+        }
+
+        .result-card dt {
+            font-weight: 600;
+            color: #2a2f45;
+            font-size: 0.95em;
+        }
+
+        .result-card dd {
+            margin: 0 0 8px 0;
+            color: #1d3557;
+            font-family: "Roboto Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+            font-weight: 500;
+            font-size: 1.1em;
+        }
+
+        .muted {
+            color: #555;
+            margin: 8px 0;
+        }
+
+        .status {
+            margin-top: 12px;
+            color: #0b6b3c;
+            font-weight: 600;
+            min-height: 24px;
+        }
+
+        /* --- Typography & Math --- */
+        .math {
+            font-family: "Cambria Math", "STIX Two Math", "Times New Roman", serif;
+            font-size: 16px;
+            line-height: 1.5;
+        }
+
+        .theory-section {
+            margin-top: 24px;
+            padding: 0;
+            text-align: left;
+        }
+
+        .math-block {
+            margin: 8px 0;
+            font-family: "Cambria Math", "STIX Two Math", "Times New Roman", serif;
+            font-size: 16px;
+            line-height: 1.5;
+            overflow-x: auto;
+            /* Handles long equations on mobile */
+        }
+
+        .theory-section mjx-container[display="true"] {
+            text-align: left !important;
+        }
+
+        @media (max-width: 768px) {
+            .post-container {
+                padding: 0 16px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="top-right-nav">
+        <a href="../news.html">News</a>
+        <a href="../blog.html">Blog</a>
+        <a href="../tools.html">Tools</a>
+        <a href="../aboutme.html">About Me</a>
+    </div>
+    <div class="corner-name"><a href="../index.html">Clemente Gotelli</a></div>
+
+    <div class="post-header">
+        <!-- Reusing a generic hydraulic image or placeholder -->
+        <img src="../images/hj-calculator/hj.png" alt="Hydraulic Jump">
+        <!-- <p class="header-caption muted"><small>Hydraulic Jump Schematic</small></p> -->
+    </div>
+
+    <div class="post-container">
+        <div class="post-text">
+            <h1>Hydraulic Jump Calculator</h1>
+            <p>Compute the sequent depth ($y_2$) for a hydraulic jump in a rectangular or trapezoidal channel using the
+                momentum principle.</p>
+
+            <figure style="margin: 24px 0;">
+                <img src="../images/hj-calculator/trapezoidal_schematic.png" alt="Trapezoidal Channel Schematic"
+                    style="display: block; margin: 0 auto; max-width: 40%; border-radius: 8px; border: 1px solid #e3e7ed;">
+                <figcaption class="muted" style="margin-top: 8px; text-align: center;"><small>Schematic of a trapezoidal
+                        channel showing
+                        channel width $b$, side slope $z$, upstream depth $y_1$, and discharge $Q$.</small></figcaption>
+            </figure>
+
+            <div class="calc-shell">
+
+                <form id="trap-hj-form" class="calc-form">
+                    <div class="inputs-grid">
+                        <div>
+                            <label for="flow-rate">Flow Rate $Q$ (m³/s)</label>
+                            <input id="flow-rate" name="flow-rate" type="number" step="any" value="10.00" required>
+                        </div>
+                        <div>
+                            <label for="channel-width">Bottom Width $b$ (m)</label>
+                            <input id="channel-width" name="channel-width" type="number" step="any" value="4.00"
+                                required>
+                        </div>
+                        <div>
+                            <label for="side-slope">Side Slope $z$ (H:V)</label>
+                            <input id="side-slope" name="side-slope" type="number" step="any" value="0.00" required
+                                title="Enter 0 for rectangular channel">
+                        </div>
+                        <div>
+                            <label for="upstream-depth">Upstream Depth $y_1$ (m)</label>
+                            <input id="upstream-depth" name="upstream-depth" type="number" step="any" value="0.60"
+                                required>
+                        </div>
+                    </div>
+
+                    <div class="button-row">
+                        <button type="submit" class="primary-btn">Calculate</button>
+                        <button type="button" id="reset-btn" class="secondary-btn">Reset</button>
+                    </div>
+                    <div id="status" class="status" aria-live="polite"></div>
+                </form>
+
+                <div class="result-grid">
+                    <div class="panel result-card">
+                        <h3>Depths</h3>
+                        <dl>
+                            <dt>Upstream Depth $y_1$ (m)</dt>
+                            <dd id="y1">--</dd>
+                            <dt>Sequent Depth $y_2$ (m)</dt>
+                            <dd id="y2">--</dd>
+                            <dt>Depth Ratio $y_2/y_1$</dt>
+                            <dd id="y2y1">--</dd>
+                        </dl>
+                    </div>
+                    <div class="panel result-card">
+                        <h3>Velocities</h3>
+                        <dl>
+                            <dt>Upstream Velocity $v_1$ (m/s)</dt>
+                            <dd id="v1">--</dd>
+                            <dt>Downstream Velocity $v_2$ (m/s)</dt>
+                            <dd id="v2">--</dd>
+                        </dl>
+                    </div>
+                    <div class="panel result-card">
+                        <h3>Froude Numbers</h3>
+                        <dl>
+                            <dt>Upstream $Fr_1$ (Hydraulic)</dt>
+                            <dd id="fr-hyd">--</dd>
+                            <dt>Upstream $Fr_1$ (Depth)</dt>
+                            <dd id="fr-depth">--</dd>
+                        </dl>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-container">
+        <div class="post-text">
+            <div class="theory-section">
+                <h3>Methodology</h3>
+                <p>
+                    This tool solves the general momentum equation for the sequent depth ratio $r = y_2 / y_1$ in a
+                    trapezoidal channel.
+                    The solution corresponds to the roots of the fourth-order polynomial derived by Sadiq Salman (2012):
+                </p>
+                <p>$$ r^4 + B r^3 + C r^2 + D r + E = 0 $$</p>
+                <p>
+                    Coefficients $B, C, D, E$ are functions of the upstream section factor $k_1 = b / (z y_1)$ and the
+                    upstream Froude number $Fr_{D1} = v_1 / \sqrt{g D_1}$, where $D_1$ is the hydraulic depth.
+                </p>
+            </div>
+            <p class="muted" style="margin-top: 72px;">
+                <small><strong>Reference:</strong> Salman, S. M. (2012). Characteristics of the Hydraulic Jump in
+                    Trapezoidal Channel Section. <em>Journal of Environmental Studies</em>, 9(1), 53-63.</small>
+            </p>
+            <p class="muted" style="margin-top: 12px;"><small><strong>Header image:</strong> Viti, N., Valero, D., &
+                    Gualtieri, C. (2019). Numerical Simulation of Hydraulic Jumps. Part 2: Recent Results and Future
+                    Outlook. <em>Water</em>, 11(1), 28. <a
+                        href="https://doi.org/10.3390/w11010028">https://doi.org/10.3390/w11010028</a></small></p>
+        </div>
+    </div>
+
+    <script>
+        (function () {
+            const g = 9.806;
+            const form = document.getElementById('trap-hj-form');
+            const resetBtn = document.getElementById('reset-btn');
+            const statusEl = document.getElementById('status');
+
+            const inputs = {
+                Q: document.getElementById('flow-rate'),
+                b: document.getElementById('channel-width'),
+                z: document.getElementById('side-slope'),
+                y1: document.getElementById('upstream-depth')
+            };
+
+            const outputs = {
+                y1: document.getElementById('y1'),
+                y2: document.getElementById('y2'),
+                y2y1: document.getElementById('y2y1'),
+                v1: document.getElementById('v1'),
+                v2: document.getElementById('v2'),
+                frHyd: document.getElementById('fr-hyd'),
+                frDepth: document.getElementById('fr-depth')
+            };
+
+            const fmt = (val, decimals = 3) => Number.isFinite(val) ? val.toFixed(decimals) : '--';
+
+            function calculate(event) {
+                if (event) event.preventDefault();
+                statusEl.textContent = '';
+
+                const Q = parseFloat(inputs.Q.value);
+                const b = parseFloat(inputs.b.value);
+                const z = parseFloat(inputs.z.value);
+                const y1 = parseFloat(inputs.y1.value);
+
+                if (isNaN(Q) || isNaN(b) || isNaN(z) || isNaN(y1) || b < 0 || y1 <= 0 || Q <= 0) {
+                    statusEl.textContent = "Please enter valid positive values.";
+                    return;
+                }
+
+                // Upstream Properties
+                const A1 = b * y1 + z * y1 * y1;
+                const T1 = b + 2 * z * y1;
+                const D1 = A1 / T1;
+                const v1 = Q / A1;
+                const FD = v1 / Math.sqrt(g * D1); // Hydraulic Fr
+                const Fr = v1 / Math.sqrt(g * y1); // Depth Fr (for display/reference)
+
+                if (FD <= 1.0) {
+                    statusEl.textContent = `Flow is subcritical (Fr = ${FD.toFixed(2)}). Jump impossible.`;
+                    // Clear outputs but show inputs?
+                }
+
+                // Section Ratio
+                let k;
+                if (Math.abs(z) < 1e-12) {
+                    k = 1.0e8; // Rectangular limit
+                } else {
+                    k = b / (z * y1);
+                }
+
+                // Coefficients (Verified)
+                const B = (5.0 * k + 2.0) / 2.0;
+                const C = (3.0 * k * k + 5.0 * k + 2.0) / 2.0;
+                const termF = 3.0 * FD * FD * Math.pow(k + 1.0, 2) / (k + 2.0);
+                const D = (3.0 * k * k + 2.0 * k) / 2.0 - termF;
+                const E = -termF * (k + 1.0);
+
+                // Newton-Raphson
+                let r = 2.0;
+                let converged = false;
+                for (let i = 0; i < 100; i++) {
+                    const f = (((r + B) * r + C) * r + D) * r + E;
+                    const df = (4.0 * r * r * r) + (3.0 * B * r * r) + (2.0 * C * r) + D;
+
+                    if (Math.abs(df) < 1e-18) break;
+
+                    const rNext = r - f / df;
+                    if (Math.abs(rNext - r) < 1e-10) {
+                        r = rNext;
+                        converged = true;
+                        break;
+                    }
+                    r = rNext;
+                    // Prevent divergence to negative
+                    if (r < 0) r = 0.1;
+                }
+
+                if (!converged || r <= 0) {
+                    statusEl.textContent = "Solver failed to converge.";
+                    return;
+                }
+
+                const y2 = r * y1;
+                const A2 = b * y2 + z * y2 * y2;
+                const v2 = Q / A2;
+
+                // Update UI
+                outputs.y1.textContent = fmt(y1);
+                outputs.y2.textContent = fmt(y2);
+                outputs.y2y1.textContent = fmt(r);
+                outputs.v1.textContent = fmt(v1);
+                outputs.v2.textContent = fmt(v2);
+                outputs.frHyd.textContent = fmt(FD);
+                outputs.frDepth.textContent = fmt(Fr);
+            }
+
+            function reset() {
+                inputs.Q.value = "10.00";
+                inputs.b.value = "4.00";
+                inputs.z.value = "0.00";
+                inputs.y1.value = "0.60";
+                statusEl.textContent = "";
+                Object.values(outputs).forEach(el => el.textContent = "--");
+            }
+
+            form.addEventListener('submit', calculate);
+            resetBtn.addEventListener('click', reset);
+        })();
+    </script>
+</body>
+
+</html>

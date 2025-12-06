@@ -1,12 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Prismatic Channel Hydraulics Solver - Clemente Gotelli</title>
   <link rel="icon" type="image/x-icon" href="../images/favicon.png">
   <link rel="stylesheet" href="../styles.css">
-  
+
   <script>
     window.MathJax = {
       tex: {
@@ -19,10 +20,12 @@
     };
   </script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
-  
+
   <style>
     /* --- CSS Grid System for Inputs --- */
-    .formula-grid, .result-grid, .inputs-grid {
+    .formula-grid,
+    .result-grid,
+    .inputs-grid {
       display: grid;
       gap: 16px;
     }
@@ -32,11 +35,11 @@
       grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
       margin-top: 12px;
       /* Aligns inputs to the bottom so they line up even if labels are different heights */
-      align-items: end; 
+      align-items: end;
     }
 
     /* Ensures the div containing the label and input takes full width of its grid cell */
-    .inputs-grid > div {
+    .inputs-grid>div {
       display: flex;
       flex-direction: column;
       width: 100%;
@@ -46,19 +49,22 @@
       grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
       margin-top: 16px;
     }
+
     .result-grid {
       grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
       margin-top: 12px;
     }
-    
+
     /* --- Card & Panel Styling --- */
-    .formula-card, .panel {
+    .formula-card,
+    .panel {
       background: #ffffff;
       border: 1px solid #e3e7ed;
       border-radius: 10px;
       padding: 16px;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
     }
+
     .calc-shell {
       background: #f7f9fb;
       border: 1px solid #e3e7ed;
@@ -66,22 +72,26 @@
       padding: 20px;
       margin-top: 20px;
     }
-    .formula-card h3, .panel h3 {
+
+    .formula-card h3,
+    .panel h3 {
       margin-top: 0;
       margin-bottom: 8px;
       color: #2a2f45;
       font-size: 18px;
     }
+
     .formula-card ul {
       padding-left: 18px;
       margin: 0;
     }
+
     .formula-card li {
       margin-bottom: 4px;
       font-family: "Roboto Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
       font-size: 14px;
     }
-    
+
     /* --- Form Elements --- */
     .calc-form label {
       display: block;
@@ -89,7 +99,10 @@
       color: #2a2f45;
       margin-bottom: 6px;
     }
-    .calc-form input, .calc-form select, select {
+
+    .calc-form input,
+    .calc-form select,
+    select {
       width: 100%;
       padding: 10px 12px;
       border: 1px solid #cfd7e3;
@@ -98,6 +111,7 @@
       box-sizing: border-box;
       background-color: #fff;
     }
+
     .calc-form small {
       display: block;
       margin-top: 4px;
@@ -105,7 +119,7 @@
       font-weight: 400;
       font-size: 0.85em;
     }
-    
+
     /* --- Buttons --- */
     .button-row {
       display: flex;
@@ -114,6 +128,7 @@
       gap: 10px;
       flex-wrap: wrap;
     }
+
     .primary-btn {
       background: #0f6fff;
       color: #ffffff;
@@ -126,37 +141,58 @@
       box-shadow: 0 4px 10px rgba(15, 111, 255, 0.2);
       transition: transform 0.1s ease, box-shadow 0.1s ease;
     }
+
+    .secondary-btn {
+      background: #ffffff;
+      color: #0f6fff;
+      border: 1px solid #0f6fff;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background 0.1s ease;
+    }
+
     .primary-btn:hover {
       transform: translateY(-1px);
       box-shadow: 0 6px 14px rgba(15, 111, 255, 0.24);
     }
-    
+
+    .secondary-btn:hover {
+      background: #f0f7ff;
+    }
+
     /* --- Results --- */
     .result-card dl {
       margin: 0;
     }
+
     .result-card dt {
       font-weight: 600;
       color: #2a2f45;
       font-size: 0.95em;
     }
+
     .result-card dd {
       margin: 0 0 8px 0;
       color: #1d3557;
       font-family: "Roboto Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
       font-weight: 500;
     }
+
     .muted {
       color: #555;
       margin: 8px 0;
     }
+
     .status {
       margin-top: 12px;
       color: #0b6b3c;
       font-weight: 600;
       min-height: 24px;
     }
-    
+
     /* --- Images --- */
     .calc-figure {
       width: 100%;
@@ -171,29 +207,33 @@
       box-shadow: 0 6px 14px rgba(0, 0, 0, 0.08);
       background: #fff;
     }
-    
+
     /* --- Typography & Math --- */
     .math {
       font-family: "Cambria Math", "STIX Two Math", "Times New Roman", serif;
       font-size: 16px;
       line-height: 1.5;
     }
+
     .theory-section {
       margin-top: 24px;
       padding: 0;
       text-align: left;
     }
+
     .math-block {
       margin: 8px 0;
       font-family: "Cambria Math", "STIX Two Math", "Times New Roman", serif;
       font-size: 16px;
       line-height: 1.5;
-      overflow-x: auto; /* Handles long equations on mobile */
+      overflow-x: auto;
+      /* Handles long equations on mobile */
     }
+
     .theory-section mjx-container[display="true"] {
       text-align: left !important;
     }
-    
+
     @media (max-width: 768px) {
       .post-container {
         padding: 0 16px;
@@ -201,6 +241,7 @@
     }
   </style>
 </head>
+
 <body>
   <div class="top-right-nav">
     <a href="../news.html">News</a>
@@ -211,18 +252,21 @@
   <div class="corner-name"><a href="../index.html">Clemente Gotelli</a></div>
   <div class="post-header">
     <img src="../images/openchannel.jpg" alt="Bundaleer open channel carrying water toward the aqueduct">
-    <p class="header-caption muted"><small>Bundaleer concrete channel. Photo credit: <a href="https://www.flickr.com/people/82134796@N03/">denisbin</a>.</small></p>
+    <p class="header-caption muted"><small>Bundaleer concrete channel. Photo credit: <a
+          href="https://www.flickr.com/people/82134796@N03/">denisbin</a>.</small></p>
   </div>
 
-  
-  
+
+
   <div class="post-container">
     <div class="post-text">
       <h1>Prismatic channel hydraulics solver</h1>
-      <p>Compute open-channel hydraulics for trapezoidal, rectangular, triangular, and circular sections: normal and critical depth, discharge, velocity, slope, Manning’s <em>n</em>, width/diameter, or side slopes. Uses Manning for gradually varied flow plus the Froude condition for critical depth.</p>
+      <p>Compute open-channel hydraulics for trapezoidal, rectangular, triangular, and circular sections: normal and
+        critical depth, discharge, velocity, slope, Manning’s <em>n</em>, width/diameter, or side slopes. Uses Manning
+        for gradually varied flow plus the Froude condition for critical depth.</p>
 
       <div class="calc-shell">
-        
+
         <div class="inputs-grid" style="margin-top: 0; margin-bottom: 20px;">
           <div>
             <label for="channel-type">Select Channel Type:</label>
@@ -246,15 +290,17 @@
             </select>
           </div>
         </div>
-        
-        <img id="channel-image" class="calc-figure" src="../images/channel_profile_trapezoidal.webp" alt="Channel cross-section diagram">
-        
+
+        <img id="channel-image" class="calc-figure" src="../images/channel_profile_trapezoidal.webp"
+          alt="Channel cross-section diagram">
+
         <form id="channel-form" class="calc-form">
           <div id="channel-inputs" class="inputs-grid">
-            </div>
-          
+          </div>
+
           <div class="button-row">
             <button type="submit" class="primary-btn">Calculate</button>
+            <button type="button" id="reset-btn" class="secondary-btn">Reset</button>
           </div>
           <div id="status" class="status" aria-live="polite"></div>
         </form>
@@ -321,55 +367,57 @@
     <div class="post-text">
       <div class="theory-section">
         <left>
-        <h3>Formulas</h3>
-        
-        <div style="margin-bottom: 20px;">
-          <h4 style="color: #2a2f45; margin-top: 12px;">Trapezoidal Channel (asymmetric slopes $z_1$, $z_2$):</h4>
-          <p >$$A = b y + \tfrac{1}{2}(z_{1}+z_{2}) y^{2}, $$</p>
-          <p > $$P = b + y\sqrt{1+z_{1}^{2}} + y\sqrt{1+z_{2}^{2}},$$</p>
-          <p >$$T = b + (z_{1}+z_{2}) y$$</p>
-        </div>
+          <h3>Formulas</h3>
 
-        <div style="margin-bottom: 20px;">
-          <h4 style="color: #2a2f45;">Rectangular Channel:</h4>
-          <p>$$A = b y, \quad P = b + 2 y, \quad T = b$$</p>
-        </div>
+          <div style="margin-bottom: 20px;">
+            <h4 style="color: #2a2f45; margin-top: 12px;">Trapezoidal Channel (asymmetric slopes $z_1$, $z_2$):</h4>
+            <p>$$A = b y + \tfrac{1}{2}(z_{1}+z_{2}) y^{2}, $$</p>
+            <p> $$P = b + y\sqrt{1+z_{1}^{2}} + y\sqrt{1+z_{2}^{2}},$$</p>
+            <p>$$T = b + (z_{1}+z_{2}) y$$</p>
+          </div>
 
-        <div style="margin-bottom: 20px;">
-          <h4 style="color: #2a2f45;">Triangular Channel (asymmetric slopes $z_1$, $z_2$):</h4>
-          <p>$$A = \tfrac{1}{2}(z_{1}+z_{2}) y^{2},$$</p>
-          <p>$$P = y\sqrt{1+z_{1}^{2}} + y\sqrt{1+z_{2}^{2}},$$</p>
-          <p>$$T = (z_{1}+z_{2}) y$$</p>
-        </div>
-        
-        <div style="margin-bottom: 20px;">
-          <h4 style="color: #2a2f45;">Circular Channel:</h4>
-          <p>$$\theta = 2 \cos^{-1}\left(\frac{D - 2y}{D}\right), \quad A = \frac{D^{2}}{8}(\theta - \sin\theta), $$</p>
-          <p>$$P = \frac{D\theta}{2}, \quad T = D\sin\left(\frac{\theta}{2}\right)$$</p>
-        </div>
-        
-        <div style="margin-bottom: 20px;">
-          <h4 style="color: #2a2f45;">Common Equations (all channels):</h4>
-          <p>$$R = \frac{A}{P}, \quad D = \frac{A}{T}, \quad Q = \frac{k}{n} \, A \, R^{2/3} \, S^{1/2},$$</p>
-          <p>$$V = \frac{Q}{A}, \quad F = \frac{V}{\sqrt{g D}}$$</p>
-        </div>
-        <div style="margin-bottom: 20px;">
-          <h4 style="color: #2a2f45;">Critical depth condition:</h4>
-          <p>$$F = 1 \Rightarrow \frac{Q^{2} T}{g A^{3}} = 1$$</p>
+          <div style="margin-bottom: 20px;">
+            <h4 style="color: #2a2f45;">Rectangular Channel:</h4>
+            <p>$$A = b y, \quad P = b + 2 y, \quad T = b$$</p>
+          </div>
 
-        </div>
-      </left>
+          <div style="margin-bottom: 20px;">
+            <h4 style="color: #2a2f45;">Triangular Channel (asymmetric slopes $z_1$, $z_2$):</h4>
+            <p>$$A = \tfrac{1}{2}(z_{1}+z_{2}) y^{2},$$</p>
+            <p>$$P = y\sqrt{1+z_{1}^{2}} + y\sqrt{1+z_{2}^{2}},$$</p>
+            <p>$$T = (z_{1}+z_{2}) y$$</p>
+          </div>
+
+          <div style="margin-bottom: 20px;">
+            <h4 style="color: #2a2f45;">Circular Channel:</h4>
+            <p>$$\theta = 2 \cos^{-1}\left(\frac{D - 2y}{D}\right), \quad A = \frac{D^{2}}{8}(\theta - \sin\theta), $$
+            </p>
+            <p>$$P = \frac{D\theta}{2}, \quad T = D\sin\left(\frac{\theta}{2}\right)$$</p>
+          </div>
+
+          <div style="margin-bottom: 20px;">
+            <h4 style="color: #2a2f45;">Common Equations (all channels):</h4>
+            <p>$$R = \frac{A}{P}, \quad D = \frac{A}{T}, \quad Q = \frac{k}{n} \, A \, R^{2/3} \, S^{1/2},$$</p>
+            <p>$$V = \frac{Q}{A}, \quad F = \frac{V}{\sqrt{g D}}$$</p>
+          </div>
+          <div style="margin-bottom: 20px;">
+            <h4 style="color: #2a2f45;">Critical depth condition:</h4>
+            <p>$$F = 1 \Rightarrow \frac{Q^{2} T}{g A^{3}} = 1$$</p>
+
+          </div>
+        </left>
       </div>
     </div>
   </div>
 
-  
+
 
   <script>
     (function () {
       const g = 9.81;
       const k = 1;
       const form = document.getElementById('channel-form');
+      const resetBtn = document.getElementById('reset-btn');
       const statusEl = document.getElementById('status');
       const channelTypeSelect = document.getElementById('channel-type');
       const solveForSelect = document.getElementById('solve-for');
@@ -418,7 +466,7 @@
         },
         circular: (y, D) => {
           if (y <= 0 || y > D) return { area: 0, perimeter: 0, topWidth: 0, hydraulicRadius: 0, hydraulicDepth: 0 };
-          
+
           const theta = 2 * Math.acos((D - 2 * y) / D);
           const area = (D * D / 8) * (theta - Math.sin(theta));
           const perimeter = (D * theta) / 2;
@@ -436,7 +484,7 @@
         const channelType = channelTypeSelect.value;
         const solveFor = solveForSelect.value;
         let inputsHTML = '';
-        
+
         // Determine which inputs to show based on what we're solving for
         const showQ = solveFor !== 'discharge' && solveFor !== 'velocity';
         const showV = solveFor === 'velocity';
@@ -446,7 +494,7 @@
         const showWidth = solveFor !== 'width' && channelType !== 'triangular';
         const showSideslopes = (channelType === 'trapezoidal' || channelType === 'triangular') && solveFor !== 'sideslope';
         const showDiameter = channelType === 'circular' && solveFor !== 'width';
-        
+
         // --- 1. GEOMETRY INPUTS ---
         if (channelType === 'trapezoidal') {
           if (showWidth) {
@@ -472,7 +520,7 @@
             inputsHTML += '<div><label for="diameter">Pipe diameter $D$ (m)</label><input id="diameter" name="diameter" type="number" step="any" min="0" required></div>';
           }
         }
-        
+
         // --- 2. HYDRAULIC INPUTS (Merged into the same list) ---
         if (showDepth) {
           inputsHTML += '<div><label for="depth">Water depth $y$ (m)</label><input id="depth" name="depth" type="number" step="any" min="0" required></div>';
@@ -489,35 +537,35 @@
         if (showManning) {
           inputsHTML += '<div><label for="manningsn">Manning\'s $n$</label><input id="manningsn" name="manningsn" type="number" step="any" min="0" required></div>';
         }
-        
+
         // Inject EVERYTHING into the main container
         channelInputsDiv.innerHTML = inputsHTML;
-        
+
         // Clean up: Remove the old secondary container if it exists
         const oldHydraulicDiv = document.getElementById('hydraulic-inputs');
         if (oldHydraulicDiv) {
-            oldHydraulicDiv.remove();
+          oldHydraulicDiv.remove();
         }
-        
+
         // Update solve-for options based on channel type
         updateSolveForOptions();
-        
+
         // Update image source
         channelImage.src = `../images/calculator/channel_profile_${channelType}.webp`;
         channelImage.alt = `${channelType.charAt(0).toUpperCase() + channelType.slice(1)} channel cross-section`;
-        
+
         // Trigger MathJax to re-render
         renderMath(channelInputsDiv);
       }
-      
+
       // Update solve-for options based on channel type
       function updateSolveForOptions() {
         const channelType = channelTypeSelect.value;
         const currentValue = solveForSelect.value;
-        
+
         // Clear and rebuild options
         solveForSelect.innerHTML = '';
-        
+
         // Common options for all channel types
         const commonOptions = [
           { value: 'normal-critical', text: 'Normal & Critical Depth' },
@@ -526,14 +574,14 @@
           { value: 'slope', text: 'Channel Slope (S)' },
           { value: 'manning', text: 'Manning\'s n' }
         ];
-        
+
         commonOptions.forEach(opt => {
           const option = document.createElement('option');
           option.value = opt.value;
           option.text = opt.text;
           solveForSelect.appendChild(option);
         });
-        
+
         // Channel-specific options
         if (channelType === 'rectangular') {
           const option = document.createElement('option');
@@ -545,7 +593,7 @@
           option.value = 'width';
           option.text = 'Bottom Width (b)';
           solveForSelect.appendChild(option);
-          
+
           option = document.createElement('option');
           option.value = 'sideslope';
           option.text = 'Side Slopes (z, symmetric)';
@@ -561,7 +609,7 @@
           option.text = 'Pipe Diameter (D)';
           solveForSelect.appendChild(option);
         }
-        
+
         // Restore previous selection if still valid
         if ([...solveForSelect.options].some(opt => opt.value === currentValue)) {
           solveForSelect.value = currentValue;
@@ -675,20 +723,20 @@
         }
         return (yLow + yHigh) / 2;
       };
-      
+
       // Solve for other parameters using bisection method
       const solveBisection = (targetFunc, xLow, xHigh, target = 0, maxIter = 100) => {
         let fLow = targetFunc(xLow) - target;
         let fHigh = targetFunc(xHigh) - target;
-        
+
         if (fLow * fHigh > 0) return null;
-        
+
         for (let i = 0; i < maxIter; i++) {
           const xMid = (xLow + xHigh) / 2;
           const fMid = targetFunc(xMid) - target;
-          
+
           if (Math.abs(fMid) < 1e-6) return xMid;
-          
+
           if (fLow * fMid < 0) {
             xHigh = xMid;
             fHigh = fMid;
@@ -700,6 +748,26 @@
         return (xLow + xHigh) / 2;
       };
 
+      // Reset function
+      function reset() {
+        // Reset all inputs in the dynamic container
+        const inputs = channelInputsDiv.querySelectorAll('input');
+        inputs.forEach(input => input.value = '');
+
+        // Clear status
+        statusEl.textContent = '';
+
+        // Clear results
+        ['an', 'pn', 'tn', 'rn', 'dn', 'yn', 'vn', 'fn',
+          'ac', 'pc', 'tc', 'rc', 'dc', 'yc', 'vc', 'fc'].forEach(id => {
+            out(id).textContent = '--';
+          });
+      }
+
+      if (resetBtn) {
+        resetBtn.addEventListener('click', reset);
+      }
+
       // Handle form submission
       form.addEventListener('submit', event => {
         event.preventDefault();
@@ -707,16 +775,16 @@
 
         const channelType = channelTypeSelect.value;
         const solveFor = solveForSelect.value;
-        
+
         // Clear previous results
         ['an', 'pn', 'tn', 'rn', 'dn', 'yn', 'vn', 'fn',
-         'ac', 'pc', 'tc', 'rc', 'dc', 'yc', 'vc', 'fc'].forEach(id => {
-          out(id).textContent = '--';
-        });
-        
+          'ac', 'pc', 'tc', 'rc', 'dc', 'yc', 'vc', 'fc'].forEach(id => {
+            out(id).textContent = '--';
+          });
+
         try {
           let Q, S, n, y, V, params = {}, geometryFunc;
-          
+
           // Gather inputs based on what we're solving for
           if (solveFor !== 'slope' && form.bottomslope) {
             S = parseFloat(form.bottomslope.value);
@@ -733,7 +801,7 @@
           if (solveFor !== 'normal-critical' && form.depth) {
             y = parseFloat(form.depth.value);
           }
-          
+
           // Get channel-specific parameters
           switch (channelType) {
             case 'trapezoidal':
@@ -760,7 +828,7 @@
               geometryFunc = (y) => channelGeometry.circular(y, params.D);
               break;
           }
-          
+
           // Solve based on selected parameter
           let result;
           switch (solveFor) {
@@ -768,22 +836,22 @@
               // Original functionality - solve for both normal and critical depth
               const yNormal = solveNormalDepth(Q, S, n, channelType, params);
               const yCritical = solveCriticalDepth(Q, channelType, params);
-              
+
               if (yNormal === null || yCritical === null) {
                 statusEl.textContent = 'Unable to converge. Please try different values.';
                 statusEl.style.color = '#bb0000';
                 return;
               }
-              
+
               const normalProps = geometryFunc(yNormal);
               const criticalProps = geometryFunc(yCritical);
-              
+
               const vNormal = Q / normalProps.area;
               const froudeNormal = vNormal / Math.sqrt(g * normalProps.hydraulicDepth);
-              
+
               const vCritical = Q / criticalProps.area;
               const froudeCritical = vCritical / Math.sqrt(g * criticalProps.hydraulicDepth);
-              
+
               // Display results
               out('an').textContent = fmt(normalProps.area);
               out('pn').textContent = fmt(normalProps.perimeter);
@@ -793,7 +861,7 @@
               out('yn').textContent = fmt(yNormal);
               out('vn').textContent = fmt(vNormal);
               out('fn').textContent = fmt(froudeNormal);
-              
+
               out('ac').textContent = fmt(criticalProps.area);
               out('pc').textContent = fmt(criticalProps.perimeter);
               out('tc').textContent = fmt(criticalProps.topWidth);
@@ -802,17 +870,17 @@
               out('yc').textContent = fmt(yCritical);
               out('vc').textContent = fmt(vCritical);
               out('fc').textContent = fmt(froudeCritical);
-              
+
               statusEl.textContent = 'Calculated.';
               statusEl.style.color = '#0b6b3c';
               break;
-              
+
             case 'discharge':
               // Solve for Q given depth, slope, n, and geometry
               const props = geometryFunc(y);
               Q = (k / n) * props.area * Math.pow(props.hydraulicRadius, 2 / 3) * Math.sqrt(S);
               V = Q / props.area;
-              
+
               out('an').textContent = fmt(props.area);
               out('pn').textContent = fmt(props.perimeter);
               out('tn').textContent = fmt(props.topWidth);
@@ -821,16 +889,16 @@
               out('yn').textContent = fmt(y);
               out('vn').textContent = fmt(V);
               out('fn').textContent = fmt(V / Math.sqrt(g * props.hydraulicDepth));
-              
+
               statusEl.textContent = `Calculated Q = ${fmt(Q)} m³/s`;
               statusEl.style.color = '#0b6b3c';
               break;
-              
+
             case 'velocity':
               // Solve for V given depth and geometry, then calculate Q
               const propsV = geometryFunc(y);
               Q = V * propsV.area;
-              
+
               out('an').textContent = fmt(propsV.area);
               out('pn').textContent = fmt(propsV.perimeter);
               out('tn').textContent = fmt(propsV.topWidth);
@@ -839,18 +907,18 @@
               out('yn').textContent = fmt(y);
               out('vn').textContent = fmt(V);
               out('fn').textContent = fmt(V / Math.sqrt(g * propsV.hydraulicDepth));
-              
+
               statusEl.textContent = `Calculated Q = ${fmt(Q)} m³/s`;
               statusEl.style.color = '#0b6b3c';
               break;
-              
+
             case 'slope':
               // Solve for S given Q, depth, n, and geometry
               const propsS = geometryFunc(y);
               const QCalc = propsS.area * Math.pow(propsS.hydraulicRadius, 2 / 3);
               S = Math.pow((Q * n) / (k * QCalc), 2);
               V = Q / propsS.area;
-              
+
               out('an').textContent = fmt(propsS.area);
               out('pn').textContent = fmt(propsS.perimeter);
               out('tn').textContent = fmt(propsS.topWidth);
@@ -859,17 +927,17 @@
               out('yn').textContent = fmt(y);
               out('vn').textContent = fmt(V);
               out('fn').textContent = fmt(V / Math.sqrt(g * propsS.hydraulicDepth));
-              
+
               statusEl.textContent = `Calculated S = ${fmt(S, 6)}`;
               statusEl.style.color = '#0b6b3c';
               break;
-              
+
             case 'manning':
               // Solve for n given Q, S, depth, and geometry
               const propsN = geometryFunc(y);
               n = (k / Q) * propsN.area * Math.pow(propsN.hydraulicRadius, 2 / 3) * Math.sqrt(S);
               V = Q / propsN.area;
-              
+
               out('an').textContent = fmt(propsN.area);
               out('pn').textContent = fmt(propsN.perimeter);
               out('tn').textContent = fmt(propsN.topWidth);
@@ -878,11 +946,11 @@
               out('yn').textContent = fmt(y);
               out('vn').textContent = fmt(V);
               out('fn').textContent = fmt(V / Math.sqrt(g * propsN.hydraulicDepth));
-              
+
               statusEl.textContent = `Calculated n = ${fmt(n, 4)}`;
               statusEl.style.color = '#0b6b3c';
               break;
-              
+
             case 'width':
               // Solve for width/diameter using bisection
               if (channelType === 'rectangular') {
@@ -925,11 +993,11 @@
                 params.b = bCalc;
                 statusEl.textContent = `Calculated b = ${fmt(bCalc)} m`;
               }
-              
+
               // Calculate and display results
               const propsW = geometryFunc(y);
               V = Q / propsW.area;
-              
+
               out('an').textContent = fmt(propsW.area);
               out('pn').textContent = fmt(propsW.perimeter);
               out('tn').textContent = fmt(propsW.topWidth);
@@ -938,10 +1006,10 @@
               out('yn').textContent = fmt(y);
               out('vn').textContent = fmt(V);
               out('fn').textContent = fmt(V / Math.sqrt(g * propsW.hydraulicDepth));
-              
+
               statusEl.style.color = '#0b6b3c';
               break;
-              
+
             case 'sideslope':
               // Solve for side slope assuming symmetry (z1 = z2 = z)
               if (channelType === 'triangular') {
@@ -973,11 +1041,11 @@
                 params.z2 = zCalc;
                 statusEl.textContent = `Calculated symmetric z = ${fmt(zCalc)}`;
               }
-              
+
               // Calculate and display results
               const propsZ = geometryFunc(y);
               V = Q / propsZ.area;
-              
+
               out('an').textContent = fmt(propsZ.area);
               out('pn').textContent = fmt(propsZ.perimeter);
               out('tn').textContent = fmt(propsZ.topWidth);
@@ -986,7 +1054,7 @@
               out('yn').textContent = fmt(y);
               out('vn').textContent = fmt(V);
               out('fn').textContent = fmt(V / Math.sqrt(g * propsZ.hydraulicDepth));
-              
+
               statusEl.style.color = '#0b6b3c';
               break;
           }
@@ -1004,4 +1072,5 @@
     })();
   </script>
 </body>
+
 </html>

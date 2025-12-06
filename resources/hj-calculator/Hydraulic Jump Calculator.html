@@ -1,0 +1,174 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<!-- saved from url=(0051)https://bmcnoldy.earth.miami.edu/HydraulicJump.html -->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lx-checker-enabled="true"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Hydraulic Jump Calculator</title>
+    <meta http-equiv="content-language" name="language" content="en">
+    <!--<base href="/">--><base href=".">
+    <link href="./Hydraulic Jump Calculator_files/mystyles.css" rel="stylesheet" type="text/css">
+    <link href="https://bmcnoldy.earth.miami.edu/favicon.png?v=2" rel="icon" type="image/png">
+    <script type="text/javascript" src="./Hydraulic Jump Calculator_files/HydraulicJump.js"></script>
+    <style type="text/css">
+      .header {text-align:center; font-family:arial,sans-serif; color:#ffffaa; font-size:20pt;}
+      .vari {color:#006b83; font-weight:bold;}
+      input {color:#000000;}
+      sup {vertical-align:sup; font-size:75%;}
+      sub {vertical-align:sub; font-size:75%;}
+    </style>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async="" src="./Hydraulic Jump Calculator_files/js"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'UA-32863636-1');
+</script>
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async="" src="./Hydraulic Jump Calculator_files/js(1)"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-3C1J4NRHL7');
+</script>
+ 
+  </head>
+  <body>
+
+    <div class="center col-12" style="background-color:#01321e; height:20px; border-bottom:1px solid white;">
+  <a href="http://www.miami.edu/" style="font-weight:bold; font-size:9pt; letter-spacing: 0.5em; font-family:Georgia; color:#1f7c47;">
+  UNIVERSITY OF MIAMI
+  </a>
+</div>
+
+
+    <div class="div_page_header">
+      <br><br>
+      <span class="page_header">Flow Properties of Horizontal Rectangular Channel Hydraulic Jumps</span>
+      <br><br>
+    </div>
+
+    <div style="margin-top:20px; margin-left:20px;">
+
+
+    <div style="position:relative;">
+    <form id="calc" action="https://bmcnoldy.earth.miami.edu/"> 
+
+      <div style="position:absolute; left:350px;">
+        <input type="button" value="Calculate!" onclick="compute(this.form)">
+	&nbsp;&nbsp;&nbsp;&nbsp;
+        <input type="button" value="Reset" onclick="erase(this.form)">
+      </div>
+      <div style="position:absolute; left:350px; top:60px;">
+        <a href="https://bmcnoldy.earth.miami.edu/HydraulicJumpSchematic.png"><img src="./Hydraulic Jump Calculator_files/HydraulicJumpSchematic_sm.png" style="border:0px;" alt=""></a>
+      </div>
+      <div style="position:absolute; left:10px;">
+        Flow Rate <span class="vari">Q</span> (m<sup>3</sup> s<sup>-1</sup>) 
+          <input type="text" size="5" id="Q" value="0.100"><br><br>
+        Channel Width <span class="vari">B</span> (m) 
+          <input type="text" size="5" id="B" value="0.400"><br><br>
+        Upstream Depth <span class="vari">h<sub class="vari">1</sub></span> (m)
+          <input type="text" size="5" id="h1" value="0.050"><br><br>
+        Downstream Depth <span class="vari">h<sub class="vari">2</sub></span> (m) 
+          <input type="text" size="5" id="h2" value=" "><br><br>
+        Depth Ratio <span class="vari">h<sub class="vari">2</sub>/h<sub class="vari">1</sub></span> 
+          <input type="text" size="5" id="h2h1" value=" "><br><br>
+        Upstream Velocity <span class="vari">v<sub class="vari">1</sub></span> (m s<sup>-1</sup>)
+          <input type="text" size="5" id="v1" value=" "><br><br>    
+	Downstream Velocity <span class="vari">v<sub class="vari">2</sub></span> (m s<sup>-1</sup>)
+          <input type="text" size="5" id="v2" value=" "><br><br>        
+	Velocity Ratio <span class="vari">v<sub class="vari">1</sub>/v<sub class="vari">2</sub></span> 
+          <input type="text" size="5" id="v1v2" value=" "><br><br>
+	<br><br>        
+	Upstream Froude Number <span class="vari">Fr<sub class="vari">1</sub></span> 
+          <input type="text" size="5" id="froude1" value=" "><br><br>
+	Downstream Froude Number <span class="vari">Fr<sub class="vari">2</sub></span> 
+          <input type="text" size="5" id="froude2" value=" "><br><br>
+	Froude Number Ratio <span class="vari">Fr<sub class="vari">1</sub>/Fr<sub class="vari">2</sub></span> 
+          <input type="text" size="5" id="f1f2" value=" "><br><br> 
+	   
+      </div>
+      <div style="position:absolute; left:340px; top:300px; font-size:10px;">
+        <input type="radio" name="type1"><span style="color:#aaaaaa;"> <b>Fr<sub>1</sub></b> &lt; 1.0 : Subcritical Flow</span><br>
+        <input type="radio" name="type1"><span style="color:#6666ee;"> <b>Fr<sub>1</sub></b> = 1.0 : Critical Flow</span><br>
+        <input type="radio" name="type1"><span style="color:#ffcccc;"> 1.0 &lt; <b>Fr<sub>1</sub></b> &lt; 1.7 : Supercritical Flow, Undular Jump</span><br>
+        <input type="radio" name="type1"><span style="color:#ff9999;"> 1.7 &lt; <b>Fr<sub>1</sub></b> &lt; 2.5 : Supercritical Flow, Weak Jump</span><br>
+        <input type="radio" name="type1"><span style="color:#ff6666;"> 2.5 &lt; <b>Fr<sub>1</sub></b> &lt; 4.5 : Supercritical Flow, Oscillating Jump</span><br>
+        <input type="radio" name="type1"><span style="color:#ff3333;"> 4.5 &lt; <b>Fr<sub>1</sub></b> &lt; 9.0 : Supercritical Flow, Steady Jump</span><br>
+        <input type="radio" name="type1"><span style="color:#ff0000;"> <b>Fr<sub>1</sub></b> &gt; 9.0 : Supercritical Flow, Strong Jump</span>
+        <br>===================================================<br>
+        <input type="radio" name="type2"><span style="color:#aaaaaa;"> <b>Fr<sub>2</sub></b> &lt; 1.0 : Subcritical Flow</span><br>
+        <input type="radio" name="type2"><span style="color:#3333ee;"> <b>Fr<sub>2</sub></b> = 1.0 : Critical Flow</span><br>
+        <input type="radio" name="type2"><span style="color:#ffcccc;"> 1.0 &lt; <b>Fr<sub>2</sub></b> &lt; 1.7 : Supercritical Flow, Undular Jump</span><br>
+        <input type="radio" name="type2"><span style="color:#ff9999;"> 1.7 &lt; <b>Fr<sub>2</sub></b> &lt; 2.5 : Supercritical Flow, Weak Jump</span><br>
+        <input type="radio" name="type2"><span style="color:#ff6666;"> 2.5 &lt; <b>Fr<sub>2</sub></b> &lt; 4.5 : Supercritical Flow, Oscillating Jump</span><br>
+        <input type="radio" name="type2"><span style="color:#ff3333;"> 4.5 &lt; <b>Fr<sub>2</sub></b> &lt; 9.0 : Supercritical Flow, Steady Jump</span><br>
+        <input type="radio" name="type2"><span style="color:#ff0000;"> <b>Fr<sub>2</sub></b> &gt; 9.0 : Supercritical Flow, Strong Jump</span>
+      </div>
+
+    </form>
+    <br><br><br><br><br><br><br><br><br><br><br>
+    <br><br><br><br><br><br><br><br><br><br><br>
+    <br><br><br><br><br><br><br><br><br><br><br>
+    </div>
+    
+    <div style="font-size:11pt;">
+      Some recommended references:<br>
+      <ul>
+        <li>LMNO Engineering (2004).  <a href="http://www.lmnoeng.com/Channels/HydraulicJump.htm">Hydraulic Jump Calculation</a>.</li>
+        <li>Chanson, H. (2004). Hydraulics of Open Channel Flow.</li>
+        <li>King, R.P. (2001). Introduction to Practical Fluid Flow.</li>
+	<li>Cramer, M.S. (1998). <a href="http://www.galleryoffluidmechanics.com/waves/hjump.htm">Hydraulic Jumps and Bores</a></li>
+        <li>Chaudhry, M.H. (1993). Open Channel Flow.</li>
+        <li>Chow, V.T. (1959). Open Channel Hydraulics.</li>
+      </ul>
+      <br>
+    </div>
+    </div>    
+
+      <div class="center col-12" style="background-color:#63707b;">
+
+  <div style="width:100%; white-space:nowrap;">
+    <div style="display:inline-block; vertical-align:middle; margin-right:60px;">
+      <a href="http://www.miami.edu/"><img src="./Hydraulic Jump Calculator_files/umiami_logo.png" alt="umiami"></a>
+    </div>
+
+    <div style="display:inline-block; vertical-align:middle;">
+      <br>
+      <a href="https://bmcnoldy.earth.miami.edu/index.html" style="font-weight:bold; font-size:12pt; font-variant:small-caps; font-family:sans-serif; color:#f1f2f3;">Created &amp; Maintained by Brian McNoldy</a>
+      <br><br>
+      <a href="mailto:bmcnoldy@miami.edu"><img src="./Hydraulic Jump Calculator_files/email.png" alt="email"></a>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      <a href="http://www.linkedin.com/in/bmcnoldy"><img src="./Hydraulic Jump Calculator_files/linkedin.png" alt="In"></a>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      <a href="https://scholar.google.com/citations?user=CsAY3vUAAAAJ&amp;hl=en&amp;oi=ao"><img src="./Hydraulic Jump Calculator_files/scholar.png" alt="GS"></a>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      <a href="http://bmcnoldy.blogspot.com/"><img src="./Hydraulic Jump Calculator_files/blogger.png" alt="B"></a>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      <a href="https://bsky.app/profile/bmcnoldy.bsky.social"><img src="./Hydraulic Jump Calculator_files/bluesky.png" alt="B"></a>
+      <!--
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      <a href="https://twitter.com/BMcNoldy"><img src="x.png" alt="x" /></a>
+      &nbsp;&nbsp;&nbsp;&nbsp;
+      <a href="https://www.facebook.com/bmcnoldy"><img src="facebook.png" alt="F" /></a>
+      -->
+      <br><br>
+    </div>
+  </div>
+
+  <div style="width:100%; white-space:nowrap;">
+    <span style="font-weight:normal; font-size:8pt; font-family:sans-serif; color:#f1f2f3;">
+      Copyright: 1995-2025 Brian McNoldy. All Rights Reserved.
+      &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
+    </span>
+    <a href="https://welcome.miami.edu/privacy-and-legal/" style="font-weight:normal; font-size:8pt; font-family:sans-serif; color:#f1f2f3;">
+      Privacy Statement &amp; Legal Notices
+    </a>
+  </div>
+
+</div>
+
+    
+  
+
+</body></html>
