@@ -306,7 +306,7 @@
         </form>
 
         <div class="result-grid">
-          <div class="panel result-card">
+          <div id="card-normal-inter" class="panel result-card">
             <h3>Intermediate calcs (normal depth)</h3>
             <dl>
               <dt>Flow area $A_n$ (m²)</dt>
@@ -321,7 +321,7 @@
               <dd id="dn">--</dd>
             </dl>
           </div>
-          <div class="panel result-card">
+          <div id="card-normal-out" class="panel result-card">
             <h3>Output (normal depth)</h3>
             <dl>
               <dt>Depth $y_n$ (m)</dt>
@@ -332,7 +332,7 @@
               <dd id="fn">--</dd>
             </dl>
           </div>
-          <div class="panel result-card">
+          <div id="card-critical-inter" class="panel result-card">
             <h3>Intermediate calcs (critical depth)</h3>
             <dl>
               <dt>Flow area $A_c$ (m²)</dt>
@@ -347,7 +347,7 @@
               <dd id="dc">--</dd>
             </dl>
           </div>
-          <div class="panel result-card">
+          <div id="card-critical-out" class="panel result-card">
             <h3>Output (critical depth)</h3>
             <dl>
               <dt>Depth $y_c$ (m)</dt>
@@ -488,9 +488,9 @@
         // Determine which inputs to show based on what we're solving for
         const showQ = solveFor !== 'discharge' && solveFor !== 'velocity';
         const showV = solveFor === 'velocity';
-        const showDepth = solveFor !== 'normal-critical';
-        const showSlope = solveFor !== 'slope';
-        const showManning = solveFor !== 'manning';
+        const showDepth = solveFor !== 'normal-critical' && solveFor !== 'critical-only';
+        const showSlope = solveFor !== 'slope' && solveFor !== 'critical-only';
+        const showManning = solveFor !== 'manning' && solveFor !== 'critical-only';
         const showWidth = solveFor !== 'width' && channelType !== 'triangular';
         const showSideslopes = (channelType === 'trapezoidal' || channelType === 'triangular') && solveFor !== 'sideslope';
         const showDiameter = channelType === 'circular' && solveFor !== 'width';
@@ -556,6 +556,40 @@
 
         // Trigger MathJax to re-render
         renderMath(channelInputsDiv);
+
+        updateResultVisibility();
+      }
+
+      function updateResultVisibility() {
+        const solveFor = solveForSelect.value;
+        const cardNormalInter = document.getElementById('card-normal-inter');
+        const cardNormalOut = document.getElementById('card-normal-out');
+        const cardCriticalInter = document.getElementById('card-critical-inter');
+        const cardCriticalOut = document.getElementById('card-critical-out');
+
+        if (solveFor === 'critical-only') {
+          // Hide Normal Depth cards
+          cardNormalInter.style.display = 'none';
+          cardNormalOut.style.display = 'none';
+          // Show Critical Depth cards
+          cardCriticalInter.style.display = 'block';
+          cardCriticalOut.style.display = 'block';
+        } else if (solveFor === 'normal-critical') {
+          // Show All
+          cardNormalInter.style.display = 'block';
+          cardNormalOut.style.display = 'block';
+          cardCriticalInter.style.display = 'block';
+          cardCriticalOut.style.display = 'block';
+        } else {
+          // Other modes (discharge, velocity, slope, manning, width, sideslope)
+          // These usually compute "normal" properties based on input depth.
+          // So show Normal cards, hide Critical cards (unless we want to calc critical there too? 
+          // Current logic doesn't seemingly calc critical in those modes).
+          cardNormalInter.style.display = 'block';
+          cardNormalOut.style.display = 'block';
+          cardCriticalInter.style.display = 'none';
+          cardCriticalOut.style.display = 'none';
+        }
       }
 
       // Update solve-for options based on channel type
@@ -569,6 +603,7 @@
         // Common options for all channel types
         const commonOptions = [
           { value: 'normal-critical', text: 'Normal & Critical Depth' },
+          { value: 'critical-only', text: 'Critical Depth Only' },
           { value: 'discharge', text: 'Discharge (Q)' },
           { value: 'velocity', text: 'Velocity (V)' },
           { value: 'slope', text: 'Channel Slope (S)' },
@@ -872,6 +907,34 @@
               out('fc').textContent = fmt(froudeCritical);
 
               statusEl.textContent = 'Calculated.';
+              statusEl.style.color = '#0b6b3c';
+              break;
+
+            case 'critical-only':
+              // Solve for only critical depth (no slope or n required)
+              const yCriticalOnly = solveCriticalDepth(Q, channelType, params);
+
+              if (yCriticalOnly === null) {
+                statusEl.textContent = 'Unable to find critical depth. Check inputs.';
+                statusEl.style.color = '#bb0000';
+                return;
+              }
+
+              const criticalOnlyProps = geometryFunc(yCriticalOnly);
+              const vCriticalOnly = Q / criticalOnlyProps.area;
+              const froudeCriticalOnly = vCriticalOnly / Math.sqrt(g * criticalOnlyProps.hydraulicDepth);
+
+              // Display results - only critical, clear normal
+              out('ac').textContent = fmt(criticalOnlyProps.area);
+              out('pc').textContent = fmt(criticalOnlyProps.perimeter);
+              out('tc').textContent = fmt(criticalOnlyProps.topWidth);
+              out('rc').textContent = fmt(criticalOnlyProps.hydraulicRadius);
+              out('dc').textContent = fmt(criticalOnlyProps.hydraulicDepth);
+              out('yc').textContent = fmt(yCriticalOnly);
+              out('vc').textContent = fmt(vCriticalOnly);
+              out('fc').textContent = fmt(froudeCriticalOnly);
+
+              statusEl.textContent = 'Calculated Critical Depth.';
               statusEl.style.color = '#0b6b3c';
               break;
 

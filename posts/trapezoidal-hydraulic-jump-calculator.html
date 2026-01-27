@@ -313,10 +313,10 @@
                     <div class="panel result-card">
                         <h3>Froude Numbers</h3>
                         <dl>
-                            <dt>Upstream $Fr_1$ (Hydraulic)</dt>
-                            <dd id="fr-hyd">--</dd>
-                            <dt>Upstream $Fr_1$ (Depth)</dt>
-                            <dd id="fr-depth">--</dd>
+                            <dt>Upstream Froude Number $Fr_1$</dt>
+                            <dd id="fr1">--</dd>
+                            <dt>Downstream Froude Number $Fr_2$</dt>
+                            <dd id="fr2">--</dd>
                         </dl>
                     </div>
                 </div>
@@ -370,8 +370,8 @@
                 y2y1: document.getElementById('y2y1'),
                 v1: document.getElementById('v1'),
                 v2: document.getElementById('v2'),
-                frHyd: document.getElementById('fr-hyd'),
-                frDepth: document.getElementById('fr-depth')
+                fr1: document.getElementById('fr1'),
+                fr2: document.getElementById('fr2')
             };
 
             const fmt = (val, decimals = 3) => Number.isFinite(val) ? val.toFixed(decimals) : '--';
@@ -447,14 +447,19 @@
                 const A2 = b * y2 + z * y2 * y2;
                 const v2 = Q / A2;
 
+                // Downstream Properties
+                const T2 = b + 2 * z * y2;
+                const D2 = A2 / T2;
+                const Fr2 = v2 / Math.sqrt(g * D2);
+
                 // Update UI
                 outputs.y1.textContent = fmt(y1);
                 outputs.y2.textContent = fmt(y2);
                 outputs.y2y1.textContent = fmt(r);
                 outputs.v1.textContent = fmt(v1);
                 outputs.v2.textContent = fmt(v2);
-                outputs.frHyd.textContent = fmt(FD);
-                outputs.frDepth.textContent = fmt(Fr);
+                outputs.fr1.textContent = fmt(FD); // FD is the Hydraulic Fr1 calculated earlier
+                outputs.fr2.textContent = fmt(Fr2);
             }
 
             function reset() {
