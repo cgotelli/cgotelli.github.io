@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LaTeX Equation Editor - Clemente Gotelli</title>
+    <link rel="icon" type="image/x-icon" href="../images/favicon.png">
+    <link rel="stylesheet" href="../styles.css">
+
+    <!-- MathJax Configuration -->
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                packages: ['base', 'ams', 'noerrors', 'noundefined']
+            },
+            svg: {
+                fontCache: 'local' // Important for standalone SVG export
+            },
+            startup: {
+                typeset: false // We will convert manually
+            }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
+
+    <style>
+        /* Reusing styles from other tools */
+        .workspace {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 24px;
+            margin-top: 24px;
+        }
+
+        @media (min-width: 768px) {
+            .workspace {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .editor-panel,
+        .preview-panel {
+            background: #ffffff;
+            border: 1px solid #e3e7ed;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .editor-panel h3,
+        .preview-panel h3 {
+            margin-top: 0;
+            color: #2a2f45;
+            font-size: 18px;
+            margin-bottom: 16px;
+        }
+
+        textarea {
+            width: 100%;
+            height: 200px;
+            padding: 12px;
+            border: 1px solid #cfd7e3;
+            border-radius: 8px;
+            font-family: "Roboto Mono", monospace;
+            font-size: 16px;
+            resize: vertical;
+            box-sizing: border-box;
+        }
+
+        .preview-container {
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 200px;
+            background-color: #f7f9fb;
+            border: 1px solid #e3e7ed;
+            border-radius: 8px;
+            padding: 20px;
+            overflow: auto;
+        }
+
+        .controls {
+            margin-top: 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            align-items: end;
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .control-group label {
+            font-weight: 600;
+            color: #2a2f45;
+            margin-bottom: 6px;
+        }
+
+        .control-group input,
+        .control-group select {
+            padding: 10px 12px;
+            border: 1px solid #cfd7e3;
+            border-radius: 8px;
+            font-size: 16px;
+            background-color: #fff;
+        }
+
+        .primary-btn {
+            background: #0f6fff;
+            color: #ffffff;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.1s ease;
+        }
+
+        .primary-btn:hover {
+            transform: translateY(-1px);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="top-right-nav">
+        <a href="../news.html">News</a>
+        <a href="../blog.html">Blog</a>
+        <a href="../tools.html">Tools</a>
+        <a href="../aboutme.html">About Me</a>
+    </div>
+    <div class="corner-name"><a href="../index.html">Clemente Gotelli</a></div>
+
+    <div class="post-header">
+        <img src="../images/chalkboard.jpeg" alt="Chalkboard with equations"
+            style="width: 100%; height: 400px; object-fit: cover; object-position: top; border-radius: 20px 20px 20px 20px; margin-bottom: 40px;">
+    </div>
+
+    <div class="post-container">
+        <div class="post-text">
+            <h1>LaTeX Equation Editor</h1>
+            <p>Type your LaTeX equation below, preview it, and export as high-resolution PNG or SVG.</p>
+
+            <div class="workspace">
+                <div class="editor-panel">
+                    <h3>Input</h3>
+                    <textarea id="latex-input"
+                        placeholder="Type LaTeX here... e.g. \int_{-\infty}^{\infty} e^{-x^2} dx">\int_{-\infty}^{\infty} e^{-x^2} dx = \sqrt{\pi}</textarea>
+
+                    <div class="controls">
+                        <div class="control-group">
+                            <label for="format-select">Format</label>
+                            <select id="format-select">
+                                <option value="png">PNG Image</option>
+                                <option value="svg">SVG Vector</option>
+                            </select>
+                        </div>
+                        <div class="control-group" id="dpi-group">
+                            <label for="dpi-input">DPI (Resolution)</label>
+                            <input type="number" id="dpi-input" value="300" min="72" max="2400" step="10">
+                        </div>
+                    </div>
+                    <div style="margin-top: 24px;">
+                        <button id="download-btn" class="primary-btn" style="width: 100%;">Download Image</button>
+                    </div>
+                </div>
+
+                <div class="preview-panel">
+                    <h3>Preview</h3>
+                    <div id="preview-output" class="preview-container"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        window.addEventListener('load', () => {
+            const inputElement = document.getElementById('latex-input');
+            const previewElement = document.getElementById('preview-output');
+            const formatSelect = document.getElementById('format-select');
+            const dpiInput = document.getElementById('dpi-input');
+            const dpiGroup = document.getElementById('dpi-group');
+            const downloadBtn = document.getElementById('download-btn');
+
+            // Handle DPI visiblity
+            formatSelect.addEventListener('change', () => {
+                if (formatSelect.value === 'png') {
+                    dpiGroup.style.display = 'flex';
+                } else {
+                    dpiGroup.style.display = 'none';
+                }
+            });
+
+            // Live Preview
+            let renderPromise = Promise.resolve();
+            const updatePreview = () => {
+                const latex = inputElement.value;
+                if (!window.MathJax) return;
+
+                // Clear previous
+                previewElement.innerHTML = '';
+
+                // Reset promise chain
+                MathJax.tex2svgPromise(latex, { display: true }).then((node) => {
+                    previewElement.appendChild(node);
+                    MathJax.startup.document.clear();
+                    MathJax.startup.document.updateDocument();
+                }).catch((err) => {
+                    previewElement.textContent = 'Error: ' + err.message;
+                    previewElement.style.color = 'red';
+                });
+            };
+
+            inputElement.addEventListener('input', updatePreview);
+
+            // Initial render
+            // Short delay to ensure MathJax loads
+            const checkMathJax = setInterval(() => {
+                if (window.MathJax && MathJax.tex2svgPromise) {
+                    clearInterval(checkMathJax);
+                    updatePreview();
+                }
+            }, 100);
+
+
+            // Download Logic
+            downloadBtn.addEventListener('click', async () => {
+                const svgNode = previewElement.querySelector('svg');
+                if (!svgNode) return;
+
+                const format = formatSelect.value;
+
+                // Get SVG data
+                const serializer = new XMLSerializer();
+                let svgString = serializer.serializeToString(svgNode);
+
+                // Ensure xmlns is present
+                if (!svgString.match(/^<svg[^>]+xmlns="http\:\/\/www\.w3\.org\/2000\/svg"/)) {
+                    svgString = svgString.replace(/^<svg/, '<svg xmlns="http://www.w3.org/2000/svg"');
+                }
+
+                if (format === 'svg') {
+                    const blob = new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' });
+                    const url = URL.createObjectURL(blob);
+                    triggerDownload(url, 'equation.svg');
+                    URL.revokeObjectURL(url);
+                } else {
+                    // PNG with DPI
+                    const dpi = parseInt(dpiInput.value) || 300;
+                    const scaleFactor = dpi / 96; // Browser base DPI is usually 96
+
+                    const img = new Image();
+                    const svgBlob = new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' });
+                    const url = URL.createObjectURL(svgBlob);
+
+                    img.onload = () => {
+                        const canvas = document.createElement('canvas');
+                        // Use getBoundingClientRect for accurate sizing
+                        const rect = svgNode.getBoundingClientRect();
+                        const width = rect.width * scaleFactor;
+                        const height = rect.height * scaleFactor;
+
+                        canvas.width = width;
+                        canvas.height = height;
+
+                        const ctx = canvas.getContext('2d');
+                        // Optional: white background
+                        // ctx.fillStyle = 'white';
+                        // ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                        ctx.drawImage(img, 0, 0, width, height);
+
+                        const pngUrl = canvas.toDataURL('image/png');
+                        triggerDownload(pngUrl, 'equation.png');
+                        URL.revokeObjectURL(url);
+                    };
+                    img.src = url;
+                }
+            });
+
+            function triggerDownload(url, filename) {
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = filename;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+            }
+        });
+    </script>
+</body>
+
+</html>
