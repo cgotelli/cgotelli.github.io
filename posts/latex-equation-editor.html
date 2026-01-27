@@ -163,9 +163,9 @@
                                 <option value="svg">SVG Vector</option>
                             </select>
                         </div>
-                        <div class="control-group" id="dpi-group">
-                            <label for="dpi-input">DPI (Resolution)</label>
-                            <input type="number" id="dpi-input" value="300" min="72" max="2400" step="10">
+                        <div class="control-group" id="scale-group">
+                            <label for="scale-input">Output Scale (x)</label>
+                            <input type="number" id="scale-input" value="1.5" min="0.1" max="10" step="0.1">
                         </div>
                     </div>
                     <div style="margin-top: 24px;">
@@ -186,18 +186,8 @@
             const inputElement = document.getElementById('latex-input');
             const previewElement = document.getElementById('preview-output');
             const formatSelect = document.getElementById('format-select');
-            const dpiInput = document.getElementById('dpi-input');
-            const dpiGroup = document.getElementById('dpi-group');
+            const scaleInput = document.getElementById('scale-input');
             const downloadBtn = document.getElementById('download-btn');
-
-            // Handle DPI visiblity
-            formatSelect.addEventListener('change', () => {
-                if (formatSelect.value === 'png') {
-                    dpiGroup.style.display = 'flex';
-                } else {
-                    dpiGroup.style.display = 'none';
-                }
-            });
 
             // Live Preview
             let renderPromise = Promise.resolve();
@@ -237,10 +227,25 @@
                 if (!svgNode) return;
 
                 const format = formatSelect.value;
+                const scale = parseFloat(scaleInput.value) || 1.5;
 
-                // Get SVG data
+                // Get precise dimensions
+                const rect = svgNode.getBoundingClientRect();
+
+                // Clone and fix SVG dimensions for export
+                // This converts 'ex' units to 'px' to avoid "huge" background issues in viewers
+                // applied with the user-defined scale
+                const clonedSvg = svgNode.cloneNode(true);
+                const finalWidth = rect.width * scale;
+                const finalHeight = rect.height * scale;
+
+                clonedSvg.setAttribute('width', finalWidth.toFixed(2) + 'px');
+                clonedSvg.setAttribute('height', finalHeight.toFixed(2) + 'px');
+                clonedSvg.style.removeProperty('vertical-align');
+
+                // Serialize
                 const serializer = new XMLSerializer();
-                let svgString = serializer.serializeToString(svgNode);
+                let svgString = serializer.serializeToString(clonedSvg);
 
                 // Ensure xmlns is present
                 if (!svgString.match(/^<svg[^>]+xmlns="http\:\/\/www\.w3\.org\/2000\/svg"/)) {
@@ -253,30 +258,23 @@
                     triggerDownload(url, 'equation.svg');
                     URL.revokeObjectURL(url);
                 } else {
-                    // PNG with DPI
-                    const dpi = parseInt(dpiInput.value) || 300;
-                    const scaleFactor = dpi / 96; // Browser base DPI is usually 96
-
+                    // PNG with Scale
                     const img = new Image();
                     const svgBlob = new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' });
                     const url = URL.createObjectURL(svgBlob);
 
                     img.onload = () => {
                         const canvas = document.createElement('canvas');
-                        // Use getBoundingClientRect for accurate sizing
-                        const rect = svgNode.getBoundingClientRect();
-                        const width = rect.width * scaleFactor;
-                        const height = rect.height * scaleFactor;
 
-                        canvas.width = width;
-                        canvas.height = height;
+                        canvas.width = finalWidth;
+                        canvas.height = finalHeight;
 
                         const ctx = canvas.getContext('2d');
                         // Optional: white background
                         // ctx.fillStyle = 'white';
                         // ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-                        ctx.drawImage(img, 0, 0, width, height);
+                        ctx.drawImage(img, 0, 0, finalWidth, finalHeight);
 
                         const pngUrl = canvas.toDataURL('image/png');
                         triggerDownload(pngUrl, 'equation.png');
