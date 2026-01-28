@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Single Variable Equation Solver - Clemente Gotelli</title>
+    <link rel="icon" type="image/x-icon" href="../images/favicon.png">
+    <link rel="stylesheet" href="../styles.css">
+
+    <!-- MathJax Configuration -->
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                packages: ['base', 'ams', 'noerrors', 'noundefined']
+            },
+            startup: {
+                typeset: false // We will convert manually
+            }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
+
+    <!-- Nerdamer for Symbolic Format and Solving -->
+    <script src="https://cdn.jsdelivr.net/npm/nerdamer@1.1.13/nerdamer.core.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/nerdamer@1.1.13/Algebra.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/nerdamer@1.1.13/Calculus.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/nerdamer@1.1.13/Solve.js"></script>
+
+    <style>
+        /* Reusing styles from latex-equation-editor.html */
+        .workspace {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 24px;
+            margin-top: 24px;
+        }
+
+        @media (min-width: 768px) {
+            .workspace {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .editor-panel,
+        .preview-panel {
+            background: #ffffff;
+            border: 1px solid #e3e7ed;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .editor-panel h3,
+        .preview-panel h3 {
+            margin-top: 0;
+            color: #2a2f45;
+            font-size: 18px;
+            margin-bottom: 16px;
+        }
+
+        /* Adjusted for single line input */
+        input[type="text"].equation-input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #cfd7e3;
+            border-radius: 8px;
+            font-family: "Roboto Mono", monospace;
+            font-size: 18px;
+            box-sizing: border-box;
+            margin-bottom: 20px;
+        }
+
+        .preview-container {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 200px;
+            background-color: #f7f9fb;
+            border: 1px solid #e3e7ed;
+            border-radius: 8px;
+            padding: 20px;
+            overflow: auto;
+            text-align: center;
+        }
+
+        .result-display {
+            margin-top: 20px;
+            font-size: 1.2em;
+            color: #2a2f45;
+        }
+
+        .status-message {
+            margin-top: 10px;
+            font-size: 14px;
+            min-height: 20px;
+        }
+
+        .status-error {
+            color: #d32f2f;
+            font-weight: 500;
+        }
+
+        .status-info {
+            color: #0288d1;
+        }
+
+        .variable-badge {
+            display: inline-block;
+            background: #e3f2fd;
+            color: #1565c0;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-top: 8px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="top-right-nav">
+        <a href="../news.html">News</a>
+        <a href="../blog.html">Blog</a>
+        <a href="../tools.html">Tools</a>
+        <a href="../aboutme.html">About Me</a>
+    </div>
+    <div class="corner-name"><a href="../index.html">Clemente Gotelli</a></div>
+
+    <div class="post-header">
+        <!-- Reusing the chalkboard image for consistency -->
+        <img src="../images/chalkboard.jpeg" alt="Chalkboard with equations"
+            style="width: 100%; height: 400px; object-fit: cover; object-position: top; border-radius: 20px 20px 20px 20px; margin-bottom: 40px;">
+    </div>
+
+    <div class="post-container">
+        <div class="post-text">
+            <h1>Single Variable Equation Solver</h1>
+            <p>Enter an equation with a single variable (e.g., <code>2x + 5 = 15</code> or <code>x^2 - 4 = 0</code>).
+                The solver will automatically detect the variable and find the solution in real-time.</p>
+
+            <div class="workspace">
+                <div class="editor-panel">
+                    <h3>Input Equation</h3>
+                    <input type="text" id="equation-input" class="equation-input" placeholder="Type equation here..."
+                        value="2*x + 5 = 15" autocomplete="off">
+
+                    <div id="status-area" class="status-message"></div>
+                    <div id="variable-display"></div>
+
+                    <p style="margin-top: auto; font-size: 0.9em; color: #666;">
+                        <small>Supported operations: +, -, *, /, ^, sqrt(), sin(), cos(), etc.<br>
+                            Format: Use <code>=</code> for equations. Example: <code>3*y - 2 = 10</code></small>
+                    </p>
+                </div>
+
+                <div class="preview-panel">
+                    <h3>Solution Preview</h3>
+                    <div id="preview-output" class="preview-container">
+                        <!-- MathJax output will go here -->
+                        <div id="math-preview" style="margin-bottom: 20px; width: 100%;"></div>
+                        <div style="border-top: 1px solid #ddd; width: 80%; margin: 10px 0;"></div>
+                        <div id="solution-output" class="result-display"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        window.addEventListener('load', () => {
+            const inputElement = document.getElementById('equation-input');
+            const statusArea = document.getElementById('status-area');
+            const variableDisplay = document.getElementById('variable-display');
+            const mathPreview = document.getElementById('math-preview');
+            const solutionOutput = document.getElementById('solution-output');
+
+            const updateSolver = () => {
+                const rawInput = inputElement.value.trim();
+
+                // Reset state
+                statusArea.className = 'status-message';
+                statusArea.textContent = '';
+                variableDisplay.innerHTML = '';
+                solutionOutput.innerHTML = '';
+                mathPreview.innerHTML = '';
+
+                if (!rawInput) {
+                    mathPreview.textContent = 'Start typing to see the result...';
+                    return;
+                }
+
+                try {
+                    // 1. Render Input as LaTeX
+                    // Nerdamer can convert expression to LaTeX
+                    let latexInput = '';
+                    try {
+                        // Prepare for LaTeX rendering - handle equation sign
+                        if (rawInput.includes('=')) {
+                            const parts = rawInput.split('=');
+                            const left = nerdamer(parts[0]).toTeX();
+                            const right = nerdamer(parts[1]).toTeX();
+                            latexInput = `${left} = ${right}`;
+                        } else {
+                            latexInput = nerdamer(rawInput).toTeX();
+                        }
+                    } catch (e) {
+                        // Fallback if parsing fails initially (e.g. typing incomplete)
+                        latexInput = '\\text{...}';
+                    }
+
+                    // Render Preview
+                    MathJax.tex2svgPromise(latexInput, { display: true }).then((node) => {
+                        mathPreview.innerHTML = '';
+                        mathPreview.appendChild(node);
+                    });
+
+                    // 2. Variable Detection
+                    // Nerdamer requires a complete expression. 
+                    const variables = nerdamer(rawInput).variables();
+
+                    if (variables.length === 0) {
+                        statusArea.textContent = 'No variables detected.';
+                        statusArea.classList.add('status-info');
+                        return;
+                    } else if (variables.length > 1) {
+                        statusArea.textContent = `Multiple variables detected: ${variables.join(', ')}. Please use only one.`;
+                        statusArea.classList.add('status-error');
+                        return;
+                    }
+
+                    const variable = variables[0];
+                    variableDisplay.innerHTML = `<span class="variable-badge">Variable: ${variable}</span>`;
+
+                    // 3. Solve
+                    // Solve for the single variable
+                    const solutions = nerdamer.solve(rawInput, variable);
+
+                    // Format Output
+                    // Robustly handle the solution object (Vector or single value)
+                    let solutionArray = [];
+                    const solStr = solutions.toString();
+
+                    if (solStr.startsWith('[') && solStr.endsWith(']')) {
+                        // It represents a vector like [1, 2]
+                        // Remove brackets and split by comma
+                        const inner = solStr.slice(1, -1);
+                        if (inner.trim().length > 0) {
+                            solutionArray = inner.split(',');
+                        }
+                    } else {
+                        // It's a single value
+                        solutionArray = [solStr];
+                    }
+
+                    if (solutionArray.length === 0) {
+                        solutionOutput.innerHTML = 'No solution found.';
+                    } else {
+                        // Render solutions as LaTeX
+                        const solutionsTeX = solutionArray.map(s => {
+                            return `${variable} = ${nerdamer(s).toTeX()}`;
+                        }).join('\\quad \\text{or} \\quad ');
+
+                        MathJax.tex2svgPromise(solutionsTeX, { display: true }).then((node) => {
+                            solutionOutput.innerHTML = '';
+                            solutionOutput.appendChild(node);
+                            MathJax.startup.document.clear();
+                            MathJax.startup.document.updateDocument();
+                        });
+                    }
+
+                } catch (err) {
+                    // Logic for incomplete inputs (e.g. "2*")
+                    // Instead of a hard error, we just wait for valid input
+                    // But we can show a hint if it looks like a syntax error
+                    // statusArea.textContent = 'Invalid equation format.';
+                    // statusArea.classList.add('status-error');
+                    console.log('Solver error:', err);
+                }
+            };
+
+            // Event Listeners
+            inputElement.addEventListener('input', updateSolver);
+
+            // Initial Run
+            // Wait slightly for Nerdamer/MathJax
+            setTimeout(updateSolver, 500);
+        });
+    </script>
+</body>
+
+</html>
