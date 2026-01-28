@@ -521,7 +521,7 @@
             // Calc AIC: 2k - 2ln(L)
             const calcAIC = (logLikelihood, k) => 2 * k - 2 * logLikelihood;
 
-            const fitDistributions = (data) => {
+            const fitDistributions = (data, specificTypes = null) => {
                 const n = data.length;
                 const sum = jStat.sum(data);
                 const mean = jStat.mean(data);
@@ -531,7 +531,7 @@
 
                 const results = [];
                 const skipped = [];
-                const selected = Array.from(document.querySelectorAll('.dist-opt:checked')).map(cb => cb.value);
+                const selected = specificTypes || Array.from(document.querySelectorAll('.dist-opt:checked')).map(cb => cb.value);
 
                 // 1. Normal
                 if (selected.includes('normal')) {
@@ -547,6 +547,7 @@
                         aic: calcAIC(ll, 2),
                         pdf: (x) => pdfNormal(x, mu, sigma),
                         inv: (p) => invNormal(p, mu, sigma),
+                        valueAt: (x, p) => pdfNormal(x, p.mean, p.std),
                         formattedParams: `μ=${mu.toFixed(4)}, σ=${sigma.toFixed(4)}`
                     });
                 }
@@ -565,6 +566,7 @@
                             aic: calcAIC(ll, 1),
                             pdf: (x) => pdfExp(x, lambda),
                             inv: (p) => invExp(p, lambda),
+                            valueAt: (x, p) => pdfExp(x, p.rate),
                             formattedParams: `λ=${lambda.toFixed(4)}`
                         });
                     } else {
@@ -586,6 +588,7 @@
                         aic: calcAIC(ll, 2),
                         pdf: (x) => pdfUniform(x, a, b),
                         inv: (p) => invUniform(p, a, b),
+                        valueAt: (x, p) => pdfUniform(x, p.min, p.max),
                         formattedParams: `a=${a.toFixed(4)}, b=${b.toFixed(4)}`
                     });
                 }
@@ -606,6 +609,7 @@
                             // For plotting discrete, we'll assume integer steps
                             pdf: (x) => pmfPoisson(Math.round(x), lambda),
                             inv: (p) => invPoisson(p, lambda),
+                            valueAt: (x, p) => pmfPoisson(Math.round(x), p.lambda),
                             formattedParams: `λ=${lambda.toFixed(4)}`
                         });
                     } else {
@@ -650,6 +654,7 @@
                                 aic: calcAIC(ll, 2),
                                 pdf: (x) => pdfWeibull(x, lambda, k),
                                 inv: (p) => invWeibull(p, lambda, k),
+                                valueAt: (x, p) => pdfWeibull(x, p.scale, p.shape),
                                 formattedParams: `λ=${lambda.toFixed(4)}, k=${k.toFixed(4)}`
                             });
                         } else {
@@ -676,6 +681,7 @@
                         aic: calcAIC(ll, 2),
                         pdf: (x) => pdfGumbel(x, mu, beta),
                         inv: (p) => invGumbel(p, mu, beta),
+                        valueAt: (x, p) => pdfGumbel(x, p.loc, p.scale),
                         formattedParams: `μ=${mu.toFixed(4)}, β=${beta.toFixed(4)}`
                     });
                 }
@@ -703,6 +709,7 @@
                             aic: calcAIC(ll, 2),
                             pdf: (x) => pdf(x, mu, sigma),
                             inv: (p) => inv(p, mu, sigma),
+                            valueAt: (x, p) => pdf(x, p.mu, p.sigma),
                             formattedParams: `μ=${mu.toFixed(4)}, σ=${sigma.toFixed(4)}`
                         });
                     } else {
@@ -759,6 +766,7 @@
                             aic: calcAIC(bestLL, 2),
                             pdf: (x) => pdf(x, k, theta),
                             inv: (p) => inv(p, k, theta),
+                            valueAt: (x, p) => pdf(x, p.shape, p.scale),
                             formattedParams: `k=${k.toFixed(4)}, θ=${theta.toFixed(4)}`
                         });
                     } else {
@@ -787,6 +795,7 @@
                         aic: calcAIC(ll, 2),
                         pdf: (x) => pdf(x, xm, alpha),
                         inv: (p) => inv(p, xm, alpha),
+                        valueAt: (x, p) => pdf(x, p.xm, p.alpha),
                         formattedParams: `xm=${xm.toFixed(4)}, α=${alpha.toFixed(4)}`
                     });
                 }
@@ -882,6 +891,7 @@
                         aic: calcAIC(maxLL, 3),
                         pdf: (x) => pdf(x, bestParams.mu, bestParams.sigma, bestParams.xi),
                         inv: (p) => inv(p, bestParams.mu, bestParams.sigma, bestParams.xi),
+                        valueAt: (x, p) => pdf(x, p.mu, p.sigma, p.xi),
                         formattedParams: `μ=${bestParams.mu.toFixed(2)}, σ=${bestParams.sigma.toFixed(2)}, ξ=${bestParams.xi.toFixed(3)}`
                     });
                 }
@@ -943,6 +953,7 @@
                                 aic: calcAIC(ll, 2),
                                 pdf: (x) => pmf(Math.round(x), r, p),
                                 inv: (q) => inv(q, r, p),
+                                valueAt: (x, p) => pmf(Math.round(x), p.r, p.p),
                                 formattedParams: `r=${r.toFixed(2)}, p=${p.toFixed(3)}`
                             });
 
@@ -998,6 +1009,7 @@
                                 aic: calcAIC(ll, 2),
                                 pdf: (x) => pmf(Math.round(x), n_est, p),
                                 inv: (q) => inv(q, n_est, p),
+                                valueAt: (x, p) => pmf(Math.round(x), p.n, p.p),
                                 formattedParams: `n=${n_est}, p=${p.toFixed(3)}`
                             });
                         } else {
@@ -1127,6 +1139,11 @@
                     This is most relevant for Poisson/Exponential processes.<br>
                     <em>Note: Assumes ordered observations represent time.</em>`;
                 }
+
+                if (fit.ciFailed) {
+                    text += `<br><br><strong style="color: #d32f2f">Warning:</strong> Confidence intervals could not be reliably estimated for this model.`;
+                }
+
                 diagText.innerHTML = text;
             };
 
@@ -1352,6 +1369,27 @@
                     }
                 }
 
+                // CI Bands
+                const ciUpperData = [];
+                const ciLowerData = [];
+
+                if (bestFit && bestFit.bootstrapParams && bestFit.bootstrapParams.length >= 50 && bestFit.valueAt) {
+                    const curvePoints = 100;
+                    const curveStep = range / curvePoints;
+
+                    for (let i = 0; i <= curvePoints; i++) {
+                        const x = min + i * curveStep;
+                        // For discrete, maybe align x to integers? But this is for drawing bands.
+                        // pdf functions handle x locally.
+                        const values = bestFit.bootstrapParams.map(p => bestFit.valueAt(x, p));
+                        values.sort((a, b) => a - b);
+                        const lower = values[Math.floor(0.025 * values.length)];
+                        const upper = values[Math.ceil(0.975 * values.length) - 1];
+                        ciLowerData.push({ x: x, y: lower });
+                        ciUpperData.push({ x: x, y: upper });
+                    }
+                }
+
                 chartInstance = new Chart(ctx, {
                     type: 'bar', // Base type
                     data: {
@@ -1364,8 +1402,32 @@
                                 borderWidth: 1,
                                 barPercentage: 1.0,
                                 categoryPercentage: 1.0,
-                                order: 2
+                                order: 3
                             },
+                            // CI Band (Upper) - Fills to next dataset (Lower)
+                            (ciUpperData.length > 0) ? {
+                                label: '95% CI',
+                                data: ciUpperData,
+                                type: 'line',
+                                borderColor: 'transparent', // Invisible border
+                                backgroundColor: 'rgba(255, 107, 107, 0.2)', // Shaded area
+                                fill: { target: '+1' }, // Fill to next dataset
+                                pointRadius: 0,
+                                tension: 0.4,
+                                order: 2
+                            } : null,
+                            // CI Band (Lower)
+                            (ciLowerData.length > 0) ? {
+                                label: 'CI Lower', // Hidden from legend usually?
+                                data: ciLowerData,
+                                type: 'line',
+                                borderColor: 'transparent',
+                                fill: false,
+                                pointRadius: 0,
+                                tension: 0.4,
+                                order: 2,
+                                hidden: false // Keep visible for fill target
+                            } : null,
                             bestFit ? {
                                 label: `${bestFit.name} Fit`,
                                 data: curveData, // Scatter points treated as line
@@ -1398,7 +1460,19 @@
                         plugins: {
                             tooltip: {
                                 mode: 'index',
-                                intersect: false
+                                intersect: false,
+                                filter: function (tooltipItem) {
+                                    // Hide CI Lower tooltip
+                                    return tooltipItem.dataset.label !== 'CI Lower';
+                                }
+                            },
+                            legend: {
+                                labels: {
+                                    filter: function (item, chart) {
+                                        // Hide CI Lower
+                                        return !item.text.includes('CI Lower');
+                                    }
+                                }
                             }
                         }
                     }
@@ -1411,8 +1485,27 @@
                 renderVisualization(currentData, fit);
 
                 // Update params display
+                // Update params display
                 if (fit) {
-                    paramsOutput.textContent = `Selected Fit: ${fit.name}\nParameters: ${JSON.stringify(fit.params, null, 2)}`;
+                    let output = `Selected Fit: ${fit.name}\n`;
+
+                    // Format params with CI if available
+                    Object.keys(fit.params).forEach(key => {
+                        const val = fit.params[key];
+                        let line = `${key} = ${val.toFixed(4)}`;
+
+                        if (fit.confidenceIntervals && fit.confidenceIntervals[key]) {
+                            const ci = fit.confidenceIntervals[key];
+                            line += `  [${ci.lower.toFixed(4)}, ${ci.upper.toFixed(4)}]`;
+                        }
+                        output += line + '\n';
+                    });
+
+                    if (fit.ciFailed) {
+                        output += '\nWarning: Confidence intervals could not be reliably estimated for this model.\n';
+                    }
+
+                    paramsOutput.textContent = output;
                 }
 
                 // Update UI highlighting
@@ -1422,7 +1515,82 @@
                 }
             };
 
-            fitBtn.addEventListener('click', () => {
+            // --- BOOTSTRAP LOGIC ---
+
+            const resampleData = (data) => {
+                const n = data.length;
+                const sample = new Array(n);
+                for (let i = 0; i < n; i++) {
+                    sample[i] = data[Math.floor(Math.random() * n)];
+                }
+                return sample;
+            };
+
+            const runBootstrap = async (originalData, fitResult) => {
+                const B = 300;
+                const validParams = [];
+
+                const typeMap = {
+                    'Normal': 'normal',
+                    'Exponential': 'exponential',
+                    'Uniform': 'uniform',
+                    'Weibull': 'weibull',
+                    'Gumbel': 'gumbel',
+                    'Lognormal': 'lognormal',
+                    'Gamma': 'gamma',
+                    'GEV': 'gev',
+                    'Pareto': 'pareto',
+                    'Poisson': 'poisson',
+                    'Negative Binomial': 'negbin',
+                    'Binomial': 'binomial'
+                };
+                const typeKey = typeMap[fitResult.name];
+                if (!typeKey) return null;
+
+                const chunkSize = 20; // Process 20 iterations before yielding
+
+                for (let i = 0; i < B; i += chunkSize) {
+                    // Yield to event loop to keep UI responsive
+                    await new Promise(r => setTimeout(r, 0));
+
+                    const limit = Math.min(i + chunkSize, B);
+                    for (let j = i; j < limit; j++) {
+                        const sample = resampleData(originalData);
+                        // Silence errors/warnings during bootstrap
+                        try {
+                            // fitDistributions returns { results, skipped }
+                            // We only care if we get a result for our specific type
+                            const { results } = fitDistributions(sample, [typeKey]);
+                            if (results.length > 0) {
+                                validParams.push(results[0].params);
+                            }
+                        } catch (e) {
+                            // Ignore fit failures during bootstrap
+                        }
+                    }
+                }
+
+                if (validParams.length < 50) {
+                    return { valid: false };
+                }
+
+                // Compute quantiles
+                const ci = {};
+                const paramNames = Object.keys(validParams[0]);
+                paramNames.forEach(pName => {
+                    const values = validParams.map(p => p[pName]).sort((a, b) => a - b);
+                    const lowerIndex = Math.floor(0.025 * values.length);
+                    const upperIndex = Math.ceil(0.975 * values.length) - 1;
+                    ci[pName] = {
+                        lower: values[Math.max(0, lowerIndex)],
+                        upper: values[Math.min(values.length - 1, upperIndex)]
+                    };
+                });
+
+                return { valid: true, ci, bootstrapParams: validParams };
+            };
+
+            fitBtn.addEventListener('click', async () => {
                 if (!validateInput()) return;
 
                 const { data } = parseData(dataInput.value);
@@ -1477,6 +1645,39 @@
                 }
 
                 checkDataInsights(data);
+
+                // Start Bootstrap Process in background
+                if (fits.length > 0) {
+                    statusArea.textContent = 'Computing confidence intervals...';
+
+                    // We run sequentially to avoid clogging the event loop completely, 
+                    // though parallel promises with yielding might be faster but riskier for responsiveness.
+                    for (let fit of fits) {
+                        try {
+                            const bsResult = await runBootstrap(data, fit);
+                            if (bsResult && bsResult.valid) {
+                                fit.confidenceIntervals = bsResult.ci;
+                                fit.bootstrapParams = bsResult.bootstrapParams;
+                            } else {
+                                // Add warning locally to the fit object or global?
+                                // User rule: "Add a short warning in the diagnostics panel"
+                                fit.ciFailed = true;
+                            }
+                        } catch (e) {
+                            console.error("Bootstrap error for " + fit.name, e);
+                            fit.ciFailed = true;
+                        }
+                    }
+
+                    statusArea.textContent = `Fit and CI computation complete.`;
+
+                    // Refresh current selection if it exists
+                    if (currentSelectedFit) {
+                        // Re-select to update text output and plots
+                        const currentRow = Array.from(document.querySelectorAll('.results-table tr')).find(r => r.classList.contains('selected-row'));
+                        selectFit(currentSelectedFit, currentRow);
+                    }
+                }
             });
 
             // Re-render chart on bin change using SELECTED fit
@@ -1584,6 +1785,7 @@
                     fits: currentFits.map(f => ({
                         name: f.name,
                         params: f.params,
+                        confidenceIntervals: f.confidenceIntervals,
                         aic: f.aic,
                         deltaAIC: f.deltaAIC,
                         weight: f.weight
@@ -1600,11 +1802,26 @@
             // Export CSV
             document.getElementById('export-csv').addEventListener('click', () => {
                 if (currentFits.length === 0) return;
-                let csv = "Rank,Distribution,Parameters,AIC,DeltaAIC,Weight\n";
-                currentFits.forEach((f, i) => {
-                    const paramsStr = JSON.stringify(f.params).replace(/"/g, '""'); // basic escape
-                    csv += `${i + 1},${f.name},"${paramsStr}",${f.aic.toFixed(2)},${f.deltaAIC.toFixed(2)},${f.weight.toFixed(3)}\n`;
+
+                // Header
+                let csv = 'Rank,Distribution,AIC,DeltaAIC,Weight,Parameters,Confidence_Intervals\n';
+
+                currentFits.forEach((f, idx) => {
+                    const paramsStr = Object.entries(f.params)
+                        .map(([k, v]) => `${k}=${v.toFixed(4)}`)
+                        .join('; ');
+
+                    let ciStr = '';
+                    if (f.confidenceIntervals) {
+                        ciStr = Object.entries(f.confidenceIntervals)
+                            .map(([k, v]) => `${k}_lower=${v.lower.toFixed(4)}; ${k}_upper=${v.upper.toFixed(4)}`)
+                            .join('; ');
+                    }
+
+                    // Sanitize for CSV (simple quote escape if needed, though mostly numeric)
+                    csv += `${idx + 1},"${f.name}",${f.aic.toFixed(2)},${f.deltaAIC.toFixed(2)},${f.weight.toFixed(4)},"${paramsStr}","${ciStr}"\n`;
                 });
+
                 const blob = new Blob([csv], { type: 'text/csv' });
                 const url = URL.createObjectURL(blob);
                 const link = document.createElement('a');
@@ -1612,6 +1829,8 @@
                 link.download = `distribution_fit_${Date.now()}.csv`;
                 link.click();
             });
+
+
 
             // Toggle Upper Tail Only
             document.getElementById('upper-tail-only').addEventListener('change', () => {
