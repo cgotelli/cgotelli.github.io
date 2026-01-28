@@ -253,9 +253,21 @@
                                     class="dist-opt continuous" value="weibull"> Weibull</label>
                             <label class="checkbox-label" title="Continuous"><input type="checkbox"
                                     class="dist-opt continuous" value="gumbel"> Gumbel</label>
+                            <label class="checkbox-label" title="Continuous, x > 0"><input type="checkbox"
+                                    class="dist-opt continuous" value="lognormal"> Lognormal</label>
+                            <label class="checkbox-label" title="Continuous, x > 0"><input type="checkbox"
+                                    class="dist-opt continuous" value="gamma"> Gamma</label>
+                            <label class="checkbox-label" title="Continuous, Extreme Value"><input type="checkbox"
+                                    class="dist-opt continuous" value="gev"> GEV</label>
+                            <label class="checkbox-label" title="Continuous, Heavy Tail"><input type="checkbox"
+                                    class="dist-opt continuous" value="pareto"> Pareto</label>
+
                             <label class="checkbox-label" title="Discrete"><input type="checkbox"
                                     class="dist-opt discrete" value="poisson"> Poisson</label>
-                            <!-- <label class="checkbox-label" title="Discrete"><input type="checkbox" class="dist-opt discrete" value="binomial"> Binomial</label> -->
+                            <label class="checkbox-label" title="Discrete, Overdispersed"><input type="checkbox"
+                                    class="dist-opt discrete" value="negbin"> Neg. Binomial</label>
+                            <label class="checkbox-label" title="Discrete, Bounded"><input type="checkbox"
+                                    class="dist-opt discrete" value="binomial"> Binomial</label>
                         </div>
                     </div>
 
@@ -268,7 +280,10 @@
                                 <tr>
                                     <th>Rank</th>
                                     <th>Distribution</th>
-                                    <th>Score (AIC)</th>
+                                    <th title="Akaike Information Criterion">AIC</th>
+                                    <th title="Delta AIC: Difference from best model">ΔAIC</th>
+                                    <th title="Akaike Weight: Probability that this model is the best among the set">
+                                        Weight</th>
                                 </tr>
                             </thead>
                             <tbody id="results-body">
@@ -299,17 +314,47 @@
                                 style="border:none; padding: 6px 12px; border-radius: 4px; font-size: 12px; cursor: pointer; background: transparent; font-weight: 500; color: #555;">Stability</button>
                         </div>
                     </div>
+
+                    <div id="qq-options" style="margin-bottom: 10px; display: none; justify-content: flex-end;">
+                        <label class="checkbox-label" title="Focus on the largest 10% of values">
+                            <input type="checkbox" id="upper-tail-only"> Upper tail only (top 10%)
+                        </label>
+                    </div>
+
                     <!-- Export Button Row -->
-                    <div style="display: flex; justify-content: flex-end; margin-bottom: 10px;">
+                    <div style="display: flex; justify-content: flex-end; margin-bottom: 10px; gap: 8px;">
                         <button id="export-btn"
                             style="background: #fff; border: 1px solid #cfd7e3; color: #555; padding: 4px 8px; border-radius: 4px; font-size: 11px; cursor: pointer; display: flex; align-items: center; gap: 4px;">
                             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                 stroke-width="2">
-                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                                <polyline points="7 10 12 15 17 10"></polyline>
-                                <line x1="12" y1="15" x2="12" y2="3"></line>
+                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                                <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                                <polyline points="21 15 16 10 5 21"></polyline>
                             </svg>
-                            Export PNG
+                            PNG
+                        </button>
+                        <button id="export-json"
+                            style="background: #fff; border: 1px solid #cfd7e3; color: #555; padding: 4px 8px; border-radius: 4px; font-size: 11px; cursor: pointer; display: flex; align-items: center; gap: 4px;">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                <polyline points="14 2 14 8 20 8"></polyline>
+                                <line x1="16" y1="13" x2="8" y2="13"></line>
+                                <line x1="16" y1="17" x2="8" y2="17"></line>
+                                <polyline points="10 9 9 9 8 9"></polyline>
+                            </svg>
+                            JSON
+                        </button>
+                        <button id="export-csv"
+                            style="background: #fff; border: 1px solid #cfd7e3; color: #555; padding: 4px 8px; border-radius: 4px; font-size: 11px; cursor: pointer; display: flex; align-items: center; gap: 4px;">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                <polyline points="14 2 14 8 20 8"></polyline>
+                                <line x1="12" y1="18" x2="12" y2="12"></line>
+                                <line x1="9" y1="15" x2="15" y2="15"></line>
+                            </svg>
+                            CSV
                         </button>
                     </div>
                     <div class="chart-container">
@@ -322,6 +367,14 @@
                     <h4 style="margin: 0 0 8px 0; font-size: 14px; color: #333;">Fit Diagnostics</h4>
                     <p id="diagnostics-text" style="margin: 0; font-size: 13px; color: #555; line-height: 1.4;">Select a
                         distribution to see diagnostics.</p>
+                </div>
+
+                <div id="insights-panel"
+                    style="margin-top: 15px; padding: 12px; background: #e3f2fd; border-radius: 6px; border: 1px solid #bbdefb; display: none;">
+                    <h4 style="margin: 0 0 8px 0; font-size: 14px; color: #1565c0;">Data Insights</h4>
+                    <ul id="insights-list"
+                        style="margin: 0; padding-left: 20px; font-size: 13px; color: #0d47a1; line-height: 1.4;">
+                    </ul>
                 </div>
 
                 <div id="params-output"
@@ -346,7 +399,8 @@
 
             // --- Helpers ---
             const parseData = (text) => {
-                const lines = text.split('\n');
+                // Split by newline or comma
+                const lines = text.split(/[\n,]+/);
                 const data = [];
                 let invalidCount = 0;
                 for (let line of lines) {
@@ -626,7 +680,410 @@
                     });
                 }
 
+                // 7. Lognormal (x > 0)
+                if (selected.includes('lognormal')) {
+                    if (min > 0) {
+                        const logData = data.map(x => Math.log(x));
+                        const mu = jStat.mean(logData);
+                        const sigma = jStat.stdev(logData, true);
+
+                        const pdf = (x, mu, sigma) => {
+                            if (x <= 0) return 0;
+                            return (1 / (x * sigma * Math.sqrt(2 * Math.PI))) * Math.exp(-Math.pow(Math.log(x) - mu, 2) / (2 * sigma * sigma));
+                        };
+                        const inv = (p, mu, sigma) => Math.exp(jStat.normal.inv(p, mu, sigma));
+
+                        let ll = 0;
+                        for (let x of data) ll += Math.log(pdf(x, mu, sigma) + 1e-10);
+
+                        results.push({
+                            name: 'Lognormal',
+                            type: 'continuous',
+                            params: { mu: mu, sigma: sigma },
+                            aic: calcAIC(ll, 2),
+                            pdf: (x) => pdf(x, mu, sigma),
+                            inv: (p) => inv(p, mu, sigma),
+                            formattedParams: `μ=${mu.toFixed(4)}, σ=${sigma.toFixed(4)}`
+                        });
+                    } else {
+                        skipped.push('Lognormal (requires strictly positive data)');
+                    }
+                }
+
+                // 8. Gamma (x > 0)
+                if (selected.includes('gamma')) {
+                    if (min > 0) {
+                        // MOM Initial guess
+                        const k_mom = (mean * mean) / (std * std);
+                        const theta_mom = (std * std) / mean; // scale
+
+                        // Simple optimization for k (shape) using Newton-Raphson on log-likelihood derivative is complex
+                        // We will use a simple line search around MOM estimate to improve k
+                        const logLikelihoodGamma = (k, theta, d) => {
+                            let sum = 0;
+                            for (let x of d) {
+                                if (x <= 0) return -Infinity;
+                                // log pdf = (k-1)ln(x) - x/theta - k ln(theta) - ln(Gamma(k))
+                                sum += (k - 1) * Math.log(x) - x / theta - k * Math.log(theta) - jStat.gammaln(k);
+                            }
+                            return sum;
+                        };
+
+                        // Optimize k. Theta is determined by mean/k for MLE? No, theta = mean/k is MLE for theta given k.
+                        // So we maximize L(k, mean/k).
+                        let bestK = k_mom;
+                        let bestLL = -Infinity;
+                        // Search range: 0.5*mom to 2.0*mom, fine steps? Or assume MOM is good enough. 
+                        // Let's do a small local search to refine.
+                        for (let step = -0.5; step <= 0.5; step += 0.05) {
+                            const tryK = k_mom * (1 + step);
+                            if (tryK <= 0) continue;
+                            const tryTheta = mean / tryK;
+                            const currentLL = logLikelihoodGamma(tryK, tryTheta, data);
+                            if (currentLL > bestLL) {
+                                bestLL = currentLL;
+                                bestK = tryK;
+                            }
+                        }
+
+                        const k = bestK;
+                        const theta = mean / k;
+
+                        const pdf = (x, k, theta) => jStat.gamma.pdf(x, k, theta); // jStat uses shape, scale
+                        const inv = (p, k, theta) => jStat.gamma.inv(p, k, theta);
+
+                        results.push({
+                            name: 'Gamma',
+                            type: 'continuous',
+                            params: { shape: k, scale: theta },
+                            aic: calcAIC(bestLL, 2),
+                            pdf: (x) => pdf(x, k, theta),
+                            inv: (p) => inv(p, k, theta),
+                            formattedParams: `k=${k.toFixed(4)}, θ=${theta.toFixed(4)}`
+                        });
+                    } else {
+                        skipped.push('Gamma (requires strictly positive data)');
+                    }
+                }
+
+                // 9. Pareto (Type I) (x >= xm)
+                if (selected.includes('pareto')) {
+                    // MLE: xm = min(data), alpha = n / sum(ln(xi/xm))
+                    const xm = min;
+                    let sumLn = 0;
+                    for (let x of data) sumLn += Math.log(x / xm);
+                    const alpha = n / sumLn;
+
+                    const pdf = (x, xm, alpha) => (x >= xm) ? (alpha * Math.pow(xm, alpha)) / Math.pow(x, alpha + 1) : 0;
+                    const inv = (p, xm, alpha) => xm / Math.pow(1 - p, 1 / alpha);
+
+                    let ll = 0;
+                    for (let x of data) ll += Math.log(pdf(x, xm, alpha) + 1e-10);
+
+                    results.push({
+                        name: 'Pareto',
+                        type: 'continuous',
+                        params: { xm: xm, alpha: alpha },
+                        aic: calcAIC(ll, 2),
+                        pdf: (x) => pdf(x, xm, alpha),
+                        inv: (p) => inv(p, xm, alpha),
+                        formattedParams: `xm=${xm.toFixed(4)}, α=${alpha.toFixed(4)}`
+                    });
+                }
+
+                // 10. GEV (Generalized Extreme Value)
+                if (selected.includes('gev')) {
+                    // Parameters: mu (loc), sigma (scale), xi (shape)
+                    // If xi=0, Gumbel.
+                    // Numerical MLE required. 3 parameters.
+                    // Initial guess: L-moments or MOM roughly? 
+                    // Let's assume Gumbel fit as starting point (xi=0).
+                    const gumbelBeta = std * Math.sqrt(6) / Math.PI;
+                    const gumbelMu = mean - 0.57721 * gumbelBeta;
+
+                    const logLikelihoodGEV = (mu, sigma, xi, d) => {
+                        if (sigma <= 0) return -Infinity;
+                        let sum = 0;
+                        for (let x of d) {
+                            const s = (x - mu) / sigma;
+                            const t = (xi === 0) ? Math.exp(-s) : Math.pow(1 + xi * s, -1 / xi);
+                            if (xi !== 0 && (1 + xi * s) <= 0) return -Infinity; // Support constraint
+                            const logPdf = -Math.log(sigma) + (xi + 1) * Math.log(t) - t; // Check this def?
+                            // Standard form: f(x) = (1/sigma) * t^(xi+1) * e^(-t)
+                            // But usually defined t(x) = ...
+                            // Correct Log PDF: -log(sigma) - (1 + 1/xi)*log(1 + xi*s) - (1 + xi*s)^(-1/xi)
+                            // Wait, let's use the explicit form:
+                            // z = (x - mu)/sigma
+                            // if xi != 0: t = (1 + xi*z)^(-1/xi). log_pdf = -log(sigma) + (xi+1)*log(t) - t? No.
+                            // Typically: L = -n log sigma - (1 + 1/xi) sum log(1+xi zi) - sum (1+xi zi)^(-1/xi)
+
+                            let term1, term2;
+                            if (Math.abs(xi) < 1e-5) {
+                                // Gumbel limit
+                                const e_z = Math.exp(-s);
+                                sum += -Math.log(sigma) - s - e_z;
+                            } else {
+                                if (1 + xi * s <= 0) return -Infinity;
+                                term1 = Math.log(1 + xi * s);
+                                term2 = Math.pow(1 + xi * s, -1 / xi);
+                                sum += -Math.log(sigma) - (1 + 1 / xi) * term1 - term2;
+                            }
+                        }
+                        return sum;
+                    };
+
+                    // Simple Nelder-Mead or Grid Search?
+                    // We'll search xi in small range [-0.5, 0.5] and refine mu, sigma.
+                    // Heuristic: Fix xi, opt mu/sigma? or Search all 3.
+                    // Simplification: Search xi in discrete steps, optimize mu/sigma conditional?
+                    // Even simpler: Check if xi ~ 0 (Gumbel), positive (Frechet), negative (Weibull-like).
+                    // We'll perform a randomized local search around the Gumbel parameters.
+
+                    let bestParams = { mu: gumbelMu, sigma: gumbelBeta, xi: 0 };
+                    let maxLL = logLikelihoodGEV(gumbelMu, gumbelBeta, 0, data);
+
+                    const attempts = 50;
+                    for (let i = 0; i < attempts; i++) {
+                        // Perturb
+                        const t_xi = (Math.random() - 0.5); // -0.5 to 0.5
+                        const t_mu = gumbelMu + (Math.random() - 0.5) * gumbelBeta;
+                        const t_sigma = gumbelBeta * (0.5 + Math.random()); // 0.5 to 1.5x
+
+                        const ll = logLikelihoodGEV(t_mu, t_sigma, t_xi, data);
+                        if (ll > maxLL) {
+                            maxLL = ll;
+                            bestParams = { mu: t_mu, sigma: t_sigma, xi: t_xi };
+                        }
+                    }
+
+                    // PDF & Inv
+                    const pdf = (x, mu, sigma, xi) => {
+                        const s = (x - mu) / sigma;
+                        if (Math.abs(xi) < 1e-5) {
+                            const z = Math.exp(-s);
+                            return (1 / sigma) * z * Math.exp(-z);
+                        }
+                        if (1 + xi * s <= 0) return 0;
+                        const t = Math.pow(1 + xi * s, -1 / xi);
+                        return (1 / sigma) * Math.pow(t, xi + 1) * Math.exp(-t);
+                    };
+
+                    const inv = (p, mu, sigma, xi) => {
+                        if (Math.abs(xi) < 1e-5) {
+                            return mu - sigma * Math.log(-Math.log(p));
+                        }
+                        return mu + (sigma / xi) * (Math.pow(-Math.log(p), -xi) - 1);
+                    };
+
+                    results.push({
+                        name: 'GEV',
+                        type: 'continuous',
+                        params: bestParams,
+                        aic: calcAIC(maxLL, 3),
+                        pdf: (x) => pdf(x, bestParams.mu, bestParams.sigma, bestParams.xi),
+                        inv: (p) => inv(p, bestParams.mu, bestParams.sigma, bestParams.xi),
+                        formattedParams: `μ=${bestParams.mu.toFixed(2)}, σ=${bestParams.sigma.toFixed(2)}, ξ=${bestParams.xi.toFixed(3)}`
+                    });
+                }
+
+                // 11. Negative Binomial (Discrete) (Overdispersed counts: Var > Mean)
+                if (selected.includes('negbin')) {
+                    const isInteger = data.every(x => Number.isInteger(x) && x >= 0);
+                    if (isInteger) {
+                        const vari = jStat.variance(data, true);
+                        const m = mean;
+
+                        if (vari > m) {
+                            // MOM Estimation
+                            // p = m / var, r = m*p / (1-p) ? No.
+                            // var = r(1-p)/p^2, mean = r(1-p)/p (Type I) or r(1-p)/p
+                            // Wikipedia: p = probability of success. Mean = pr/(1-p). Var = pr/(1-p)^2.
+                            // Alternative param: r (failures), p. Mean = r(1-p)/p.
+                            // Convention: Mean = m, Variance = v.
+                            // p_est = m / v. r_est = m^2 / (v - m).
+
+                            let p = m / vari;
+                            let r = (m * m) / (vari - m);
+
+                            // PMF: Gamma(k+r)/(k! Gamma(r)) * p^r * (1-p)^k
+                            // k is number of failures (x).
+                            // Let's implement LogLikelihood to refine or just use MOM.
+                            // MOM is usually fine for initial check.
+
+                            const combination = (k, r) => {
+                                // Use log gamma for stability
+                                // ln(C) = lnGamma(k+r) - lnGamma(k+1) - lnGamma(r)
+                                return Math.exp(jStat.gammaln(k + r) - jStat.gammaln(k + 1) - jStat.gammaln(r));
+                            };
+                            const pmf = (k, r, p) => {
+                                if (k < 0 || !Number.isInteger(k)) return 0;
+                                return combination(k, r) * Math.pow(p, r) * Math.pow(1 - p, k);
+                            };
+
+                            // Helper for Inv.
+                            const inv = (q, r, p) => {
+                                let sum = 0;
+                                let k = 0;
+                                while (sum < q) {
+                                    sum += pmf(k, r, p);
+                                    if (sum >= q) return k;
+                                    k++;
+                                    if (k > 2000) break;
+                                }
+                                return k;
+                            };
+
+                            let ll = 0;
+                            for (let x of data) ll += Math.log(pmf(x, r, p) + 1e-10);
+
+                            results.push({
+                                name: 'Negative Binomial',
+                                type: 'discrete',
+                                params: { r: r, p: p },
+                                aic: calcAIC(ll, 2),
+                                pdf: (x) => pmf(Math.round(x), r, p),
+                                inv: (q) => inv(q, r, p),
+                                formattedParams: `r=${r.toFixed(2)}, p=${p.toFixed(3)}`
+                            });
+
+                        } else {
+                            skipped.push('Negative Binomial (requires Variance > Mean)');
+                        }
+                    } else {
+                        skipped.push('Negative Binomial (requires non-negative integers)');
+                    }
+                }
+
+                // 12. Binomial (Discrete) (Bounded integers)
+                if (selected.includes('binomial')) {
+                    const isInteger = data.every(x => Number.isInteger(x) && x >= 0);
+                    if (isInteger) {
+                        const m = mean;
+                        const v = jStat.variance(data, true);
+
+                        // MME: mean = np, var = np(1-p).
+                        // p = 1 - v/m. n = m/p.
+                        // Valid only if v < m (underdispersion).
+                        if (v < m) {
+                            let p = 1 - (v / m);
+                            let n_est = Math.round(m / p); // n must be integer
+                            // Recalculate p based on integer n? p = m/n
+                            p = m / n_est;
+
+                            // Check if max(data) <= n
+                            const maxVal = Math.max(...data);
+                            if (maxVal > n_est) n_est = maxVal; // Force n to conform data
+
+                            const pmf = (k, n, p) => {
+                                if (k < 0 || k > n || !Number.isInteger(k)) return 0;
+                                return jStat.combination(n, k) * Math.pow(p, k) * Math.pow(1 - p, n - k);
+                            };
+
+                            const inv = (q, n, p) => {
+                                let sum = 0;
+                                for (let k = 0; k <= n; k++) {
+                                    sum += pmf(k, n, p);
+                                    if (sum >= q) return k;
+                                }
+                                return n;
+                            };
+
+                            let ll = 0;
+                            for (let x of data) ll += Math.log(pmf(x, n_est, p) + 1e-10);
+
+                            results.push({
+                                name: 'Binomial',
+                                type: 'discrete',
+                                params: { n: n_est, p: p },
+                                aic: calcAIC(ll, 2),
+                                pdf: (x) => pmf(Math.round(x), n_est, p),
+                                inv: (q) => inv(q, n_est, p),
+                                formattedParams: `n=${n_est}, p=${p.toFixed(3)}`
+                            });
+                        } else {
+                            skipped.push('Binomial (Variance >= Mean, implies Poisson/NegBin)');
+                        }
+                    } else {
+                        skipped.push('Binomial (requires non-negative integers)');
+                    }
+                }
+
+                // --- Add CDFs and Calculate Metrics ---
+
+                // Add CDFs for PP plots
+                results.forEach(res => {
+                    if (!res.cdf) {
+                        if (res.name === 'Normal') res.cdf = (x) => jStat.normal.cdf(x, res.params.mean, res.params.std);
+                        if (res.name === 'Exponential') res.cdf = (x) => jStat.exponential.cdf(x, res.params.rate);
+                        if (res.name === 'Uniform') res.cdf = (x) => jStat.uniform.cdf(x, res.params.min, res.params.max);
+                        if (res.name === 'Weibull') res.cdf = (x) => jStat.weibull.cdf(x, res.params.scale, res.params.shape);
+                        if (res.name === 'Lognormal') res.cdf = (x) => jStat.lognormal.cdf(x, res.params.mu, res.params.sigma);
+                        if (res.name === 'Gamma') res.cdf = (x) => jStat.gamma.cdf(x, res.params.shape, res.params.scale);
+                        if (res.name === 'Poisson') res.cdf = (x) => jStat.poisson.cdf(Math.floor(x), res.params.lambda);
+
+                        if (res.name === 'Gumbel') {
+                            res.cdf = (x) => {
+                                const z = (x - res.params.loc) / res.params.scale;
+                                return Math.exp(-Math.exp(-z));
+                            };
+                        }
+                        if (res.name === 'Pareto') {
+                            res.cdf = (x) => {
+                                if (x < res.params.xm) return 0;
+                                return 1 - Math.pow(res.params.xm / x, res.params.alpha);
+                            };
+                        }
+                        if (res.name === 'GEV') {
+                            res.cdf = (x) => {
+                                const mu = res.params.mu;
+                                const sigma = res.params.sigma;
+                                const xi = res.params.xi;
+                                const s = (x - mu) / sigma;
+                                if (Math.abs(xi) < 1e-5) return Math.exp(-Math.exp(-s));
+                                if (1 + xi * s <= 0) return xi > 0 ? 0 : 1;
+                                return Math.exp(-Math.pow(1 + xi * s, -1 / xi));
+                            };
+                        }
+                        if (res.name === 'Negative Binomial') {
+                            res.cdf = (x) => {
+                                const k_end = Math.floor(x);
+                                if (k_end < 0) return 0;
+                                let sum = 0;
+                                for (let k = 0; k <= k_end; k++) {
+                                    sum += res.pdf(k);
+                                }
+                                return Math.min(1, sum);
+                            };
+                        }
+                        if (res.name === 'Binomial') {
+                            res.cdf = (x) => {
+                                const k_end = Math.floor(x);
+                                if (k_end < 0) return 0;
+                                let sum = 0;
+                                for (let k = 0; k <= k_end; k++) {
+                                    sum += res.pdf(k);
+                                }
+                                return Math.min(1, sum);
+                            };
+                        }
+                    }
+                });
+
                 results.sort((a, b) => a.aic - b.aic);
+
+                if (results.length > 0) {
+                    const minAIC = results[0].aic;
+                    let sumExp = 0;
+                    results.forEach(r => {
+                        r.deltaAIC = r.aic - minAIC;
+                        r.weightRaw = Math.exp(-0.5 * r.deltaAIC);
+                        sumExp += r.weightRaw;
+                    });
+                    results.forEach(r => {
+                        r.weight = r.weightRaw / sumExp;
+                    });
+                }
+
                 return { results, skipped };
             };
 
@@ -667,7 +1124,8 @@
                     text = `<strong>Rate Stability Check:</strong> Used to check if the mean rate is constant (stationary). <br>
                     - Data (blue line) should roughly follow the straight reference (dashed).<br>
                     - <em>Bending up/down:</em> Implementation suggests the rate (mean) changes over time (non-stationary).<br>
-                    This is most relevant for Poisson/Exponential processes.`;
+                    This is most relevant for Poisson/Exponential processes.<br>
+                    <em>Note: Assumes ordered observations represent time.</em>`;
                 }
                 diagText.innerHTML = text;
             };
@@ -755,35 +1213,67 @@
             };
 
             const updateQQPlot = (data, bestFit) => {
-                // If no fit selected, can't show QQ plot properly against nothing?
-                // Or just show nothing.
                 if (!bestFit) return;
+
+                const isDiscrete = (bestFit.type === 'discrete');
+                const useUpperTail = document.getElementById('upper-tail-only').checked;
 
                 const n = data.length;
                 const sorted = [...data].sort((a, b) => a - b);
-                const scatterData = [];
-                const minVal = sorted[0];
-                const maxVal = sorted[n - 1];
+                let scatterData = [];
 
-                // Calculate quantiles
-                for (let i = 0; i < n; i++) {
-                    const p = (i + 0.5) / n;
-                    const theoreticalQ = bestFit.inv(p);
-                    scatterData.push({ x: theoreticalQ, y: sorted[i] });
+                let xLabel = 'Theoretical Quantiles';
+                let yLabel = 'Empirical Quantiles';
+                let title = `${bestFit.name} Q-Q Plot`;
+
+                if (isDiscrete) {
+                    title = `${bestFit.name} P-P Plot`;
+                    xLabel = 'Model Probability (CDF)';
+                    yLabel = 'Empirical Probability';
+
+                    for (let i = 0; i < n; i++) {
+                        const p_emp = (i + 0.5) / n;
+                        const p_model = bestFit.cdf(sorted[i]);
+                        scatterData.push({ x: p_model, y: p_emp });
+                    }
+                } else {
+                    for (let i = 0; i < n; i++) {
+                        const p = (i + 0.5) / n;
+                        const theoreticalQ = bestFit.inv(p);
+                        scatterData.push({ x: theoreticalQ, y: sorted[i] });
+                    }
                 }
 
-                // Finds min/max for 1:1 line
-                // To look nice, we typically want the range that covers both x and y
-                const allVals = scatterData.flatMap(p => [p.x, p.y]);
-                const niceMin = jStat.min(allVals);
-                const niceMax = jStat.max(allVals);
+                // Filter for upper tail if requested
+                if (useUpperTail) {
+                    // Top 10%
+                    const startIndex = Math.floor(n * 0.9);
+                    scatterData = scatterData.slice(startIndex);
+                }
+
+                // Reference line
+                let refData = [];
+                if (isDiscrete) {
+                    refData = [{ x: 0, y: 0 }, { x: 1, y: 1 }];
+                    if (useUpperTail && scatterData.length > 0) {
+                        const minVal = Math.min(scatterData[0].x, scatterData[0].y);
+                        refData = [{ x: minVal, y: minVal }, { x: 1, y: 1 }];
+                    }
+                } else {
+                    if (scatterData.length > 0) {
+                        const allVals = scatterData.flatMap(p => [p.x, p.y]);
+                        const min = jStat.min(allVals);
+                        const max = jStat.max(allVals);
+                        refData = [{ x: min, y: min }, { x: max, y: max }];
+                    }
+                }
 
                 chartInstance = new Chart(ctx, {
                     type: 'scatter',
                     data: {
                         datasets: [
                             {
-                                label: 'Model Quantiles',
+                                label: isDiscrete ? 'Probabilities' : 'Quantiles',
                                 data: scatterData,
                                 backgroundColor: 'rgba(15, 111, 255, 0.6)',
                                 borderColor: 'rgba(15, 111, 255, 1)',
@@ -791,7 +1281,7 @@
                             },
                             {
                                 label: 'Reference Line',
-                                data: [{ x: niceMin, y: niceMin }, { x: niceMax, y: niceMax }],
+                                data: refData,
                                 type: 'line',
                                 borderColor: '#ccc',
                                 borderDash: [5, 5],
@@ -809,17 +1299,17 @@
                         plugins: {
                             title: {
                                 display: true,
-                                text: `${bestFit.name} Q-Q Plot`
+                                text: title
                             }
                         },
                         scales: {
                             x: {
                                 type: 'linear',
-                                title: { display: true, text: 'Theoretical Quantiles' }
+                                title: { display: true, text: xLabel }
                             },
                             y: {
                                 type: 'linear',
-                                title: { display: true, text: 'Empirical Quantiles' }
+                                title: { display: true, text: yLabel }
                             }
                         }
                     }
@@ -948,7 +1438,7 @@
                 warningBox.style.display = 'none';
 
                 if (fits.length === 0) {
-                    resultsBody.innerHTML = '<tr><td colspan="3">No valid distributions found.</td></tr>';
+                    resultsBody.innerHTML = '<tr><td colspan="5">No valid distributions found.</td></tr>';
                     currentSelectedFit = null;
                     paramsOutput.textContent = '';
                     updateHistogram(data, null);
@@ -962,6 +1452,8 @@
                             <td>${idx + 1}</td>
                             <td><strong>${fit.name}</strong><br><small>${fit.formattedParams}</small></td>
                             <td>${fit.aic.toFixed(2)}</td>
+                            <td>${fit.deltaAIC.toFixed(2)}</td>
+                            <td>${fit.weight.toFixed(3)}</td>
                         `;
 
                         // Add interactive click
@@ -983,25 +1475,27 @@
                     warningBox.style.display = 'block';
                     warningBox.innerHTML = `<strong>Skipped Distributions:</strong><ul style="margin:5px 0 0 20px; padding:0;">${skipped.map(s => `<li>${s}</li>`).join('')}</ul>`;
                 }
+
+                checkDataInsights(data);
             });
 
             // Re-render chart on bin change using SELECTED fit
             document.getElementById('bin-count').addEventListener('input', () => {
-                const { data } = parseData(dataInput.value);
-                if (data.length < 2) return;
                 // Do not refit, just update chart with current selected fit
-                if (data.length < 2) return;
-                // Do not refit, just update chart with current selected fit
-                renderVisualization(data, currentSelectedFit);
+                if (currentData.length < 2) return;
+                renderVisualization(currentData, currentSelectedFit);
             });
 
             // View Toggles
             const btnHist = document.getElementById('view-hist');
             const btnQQ = document.getElementById('view-qq');
             const btnStab = document.getElementById('view-stab');
+            const qqOptions = document.getElementById('qq-options');
 
             const setView = (view) => {
                 currentView = view;
+                qqOptions.style.display = (view === 'qq') ? 'flex' : 'none';
+
                 // Update buttons
                 if (view === 'hist') {
                     btnHist.classList.add('active');
@@ -1076,11 +1570,105 @@
                 link.click();
             });
 
+            // Export JSON
+            document.getElementById('export-json').addEventListener('click', () => {
+                if (currentFits.length === 0) return;
+                const exportObj = {
+                    summary: {
+                        n: currentData.length,
+                        mean: jStat.mean(currentData),
+                        variance: jStat.variance(currentData, true),
+                        min: jStat.min(currentData),
+                        max: jStat.max(currentData)
+                    },
+                    fits: currentFits.map(f => ({
+                        name: f.name,
+                        params: f.params,
+                        aic: f.aic,
+                        deltaAIC: f.deltaAIC,
+                        weight: f.weight
+                    }))
+                };
+                const blob = new Blob([JSON.stringify(exportObj, null, 2)], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = `distribution_fit_${Date.now()}.json`;
+                link.click();
+            });
+
+            // Export CSV
+            document.getElementById('export-csv').addEventListener('click', () => {
+                if (currentFits.length === 0) return;
+                let csv = "Rank,Distribution,Parameters,AIC,DeltaAIC,Weight\n";
+                currentFits.forEach((f, i) => {
+                    const paramsStr = JSON.stringify(f.params).replace(/"/g, '""'); // basic escape
+                    csv += `${i + 1},${f.name},"${paramsStr}",${f.aic.toFixed(2)},${f.deltaAIC.toFixed(2)},${f.weight.toFixed(3)}\n`;
+                });
+                const blob = new Blob([csv], { type: 'text/csv' });
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = `distribution_fit_${Date.now()}.csv`;
+                link.click();
+            });
+
+            // Toggle Upper Tail Only
+            document.getElementById('upper-tail-only').addEventListener('change', () => {
+                if (currentView === 'qq') {
+                    renderVisualization(currentData, currentSelectedFit);
+                }
+            });
+
             // Checkboxes event to trigger validation
             document.querySelectorAll('.dist-opt').forEach(cb => {
                 cb.addEventListener('change', validateInput);
             });
 
+            const checkDataInsights = (data) => {
+                const insightsPanel = document.getElementById('insights-panel');
+                const insightsList = document.getElementById('insights-list');
+                insightsList.innerHTML = '';
+                let hints = [];
+
+                if (!data || data.length === 0) return;
+
+                const mean = jStat.mean(data);
+                const variance = jStat.variance(data, true);
+                const skewness = jStat.skewness(data);
+                const kurtosis = jStat.kurtosis(data);
+                const isInteger = data.every(x => Number.isInteger(x) && x >= 0);
+                const max = jStat.max(data);
+                const median = jStat.median(data);
+
+                if (isInteger) {
+                    hints.push("Data are non-negative integers → Discrete models (Poisson, Negative Binomial) are appropriate.");
+                    if (variance > mean) {
+                        hints.push(`Variance (${variance.toFixed(2)}) > Mean (${mean.toFixed(2)}) → Overdispersion detected. Suggestions: Negative Binomial.`);
+                    } else if (variance < mean) {
+                        hints.push(`Variance (${variance.toFixed(2)}) < Mean (${mean.toFixed(2)}) → Underdispersion detected. Suggestions: Binomial.`);
+                    }
+                }
+
+                if (skewness > 0.5) {
+                    hints.push(`Positive skewness (${skewness.toFixed(2)}) → Data leans right. Suggestions: Gamma, Lognormal, Weibull.`);
+                }
+
+                if (kurtosis > 1 || (max / median > 5)) {
+                    hints.push("Possible heavy tail detected → Suggestions: Pareto, GEV, Lognormal.");
+                }
+
+                if (hints.length > 0) {
+                    insightsPanel.style.display = 'block';
+                    hints.forEach(h => {
+                        const li = document.createElement('li');
+                        li.textContent = h;
+                        insightsList.appendChild(li);
+                    });
+                } else {
+                    insightsPanel.style.display = 'none';
+                }
+            };
         });
     </script>
 </body>
