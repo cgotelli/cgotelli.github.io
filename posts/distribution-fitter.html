@@ -1,0 +1,1088 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Probability Distribution Fitter - Clemente Gotelli</title>
+    <link rel="icon" type="image/x-icon" href="../images/favicon.png">
+    <link rel="stylesheet" href="../styles.css">
+
+    <!-- JStat via CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/jstat@latest/dist/jstat.min.js"></script>
+    <!-- Chart.js via CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        /* Reusing styles from equation-solver.html */
+        .workspace {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 24px;
+            margin-top: 24px;
+        }
+
+        @media (min-width: 768px) {
+            .workspace {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .preview-panel {
+                grid-column: 1 / -1;
+            }
+        }
+
+        .editor-panel,
+        .preview-panel {
+            background: #ffffff;
+            border: 1px solid #e3e7ed;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .editor-panel h3,
+        .preview-panel h3 {
+            margin-top: 0;
+            color: #2a2f45;
+            font-size: 18px;
+            margin-bottom: 16px;
+        }
+
+        textarea.data-input {
+            width: 100%;
+            height: 250px;
+            padding: 12px;
+            border: 1px solid #cfd7e3;
+            border-radius: 8px;
+            font-family: "Roboto Mono", monospace;
+            font-size: 14px;
+            box-sizing: border-box;
+            margin-bottom: 10px;
+            resize: vertical;
+        }
+
+        .chart-container {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 300px;
+            background-color: #f7f9fb;
+            border: 1px solid #e3e7ed;
+            border-radius: 8px;
+            padding: 10px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .status-message {
+            margin-top: 5px;
+            font-size: 14px;
+            min-height: 20px;
+        }
+
+        .status-error {
+            color: #d32f2f;
+            font-weight: 500;
+        }
+
+        .status-info {
+            color: #0288d1;
+        }
+
+        .primary-btn {
+            background: #0f6fff;
+            color: #ffffff;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.1s ease;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .primary-btn:hover {
+            transform: translateY(-1px);
+        }
+
+        .primary-btn:disabled {
+            background: #b0c4de;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .options-group {
+            margin-top: 10px;
+            margin-bottom: 20px;
+        }
+
+        .options-header {
+            font-weight: 600;
+            margin-bottom: 5px;
+            font-size: 14px;
+            color: #444;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .checkbox-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+            gap: 8px;
+        }
+
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            font-size: 13px;
+            color: #333;
+            cursor: pointer;
+        }
+
+        .checkbox-label input {
+            margin-right: 6px;
+        }
+
+        .results-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+            margin-top: 10px;
+        }
+
+        .results-table th,
+        .results-table td {
+            text-align: left;
+            padding: 8px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .results-table th {
+            font-weight: 600;
+            color: #555;
+            background: #fafafa;
+        }
+
+        .rank-1 {
+            background-color: #e8f5e9;
+            font-weight: 600;
+        }
+
+        .selected-row {
+            background-color: #e3f2fd !important;
+            border-left: 4px solid #0f6fff;
+        }
+
+        .results-table tr {
+            cursor: pointer;
+            transition: background-color 0.1s;
+        }
+
+        .results-table tr:hover {
+            background-color: #f5f5f5;
+        }
+
+        .warning-box {
+            background-color: #fff3e0;
+            border: 1px solid #ffe0b2;
+            color: #e65100;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 13px;
+            margin-top: 15px;
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="top-right-nav">
+        <a href="../news.html">News</a>
+        <a href="../blog.html">Blog</a>
+        <a href="../tools.html">Tools</a>
+        <a href="../aboutme.html">About Me</a>
+    </div>
+    <div class="corner-name"><a href="../index.html">Clemente Gotelli</a></div>
+
+    <div class="post-header">
+        <img src="../images/normal.png" alt="Normal probabilities"
+            style="width: 100%; height: 400px; object-fit: cover; object-position: center; border-radius: 20px 20px 20px 20px; margin-bottom: 40px;">
+    </div>
+
+    <div class="post-container">
+        <div class="post-text">
+            <h1>Probability Distribution Fitter</h1>
+            <p>Paste your data (one number per line) to fit and compare probability distributions. Uses Maximum
+                Likelihood Estimation (MLE) or Method of Moments to find the best fit.</p>
+
+            <div class="workspace">
+                <div class="editor-panel">
+                    <h3>Data Input</h3>
+                    <textarea id="data-input" class="data-input"
+                        placeholder="Paste numeric data here...&#10;1.2&#10;3.5&#10;4.8..."></textarea>
+
+                    <div id="status-area" class="status-message"></div>
+                </div>
+
+                <div class="editor-panel">
+                    <h3>Distribution Selection</h3>
+                    <div class="options-group">
+                        <div class="options-header">
+                            <span>Distributions</span>
+                            <div>
+                                <a href="#" id="select-all" style="font-size:12px; margin-right:8px;">All</a>
+                                <a href="#" id="select-continuous"
+                                    style="font-size:12px; margin-right:8px;">Continuous</a>
+                                <a href="#" id="select-discrete" style="font-size:12px;">Discrete</a>
+                            </div>
+                        </div>
+                        <div class="checkbox-grid">
+                            <label class="checkbox-label" title="Continuous"><input type="checkbox"
+                                    class="dist-opt continuous" value="normal" checked> Normal</label>
+                            <label class="checkbox-label" title="Continuous"><input type="checkbox"
+                                    class="dist-opt continuous" value="exponential" checked> Exponential</label>
+                            <label class="checkbox-label" title="Continuous"><input type="checkbox"
+                                    class="dist-opt continuous" value="uniform" checked> Uniform</label>
+                            <label class="checkbox-label" title="Continuous"><input type="checkbox"
+                                    class="dist-opt continuous" value="weibull"> Weibull</label>
+                            <label class="checkbox-label" title="Continuous"><input type="checkbox"
+                                    class="dist-opt continuous" value="gumbel"> Gumbel</label>
+                            <label class="checkbox-label" title="Discrete"><input type="checkbox"
+                                    class="dist-opt discrete" value="poisson"> Poisson</label>
+                            <!-- <label class="checkbox-label" title="Discrete"><input type="checkbox" class="dist-opt discrete" value="binomial"> Binomial</label> -->
+                        </div>
+                    </div>
+
+                    <button id="fit-btn" class="primary-btn">Fit Distributions</button>
+
+                    <div id="results-area" style="margin-top: 20px; display: none;">
+                        <h3>Ranking (AIC)</h3>
+                        <table class="results-table">
+                            <thead>
+                                <tr>
+                                    <th>Rank</th>
+                                    <th>Distribution</th>
+                                    <th>Score (AIC)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="results-body">
+                            </tbody>
+                        </table>
+
+                        <div id="warnings-area" class="warning-box"></div>
+                    </div>
+                </div>
+
+                <div class="preview-panel">
+                    <h3>Visualization</h3>
+                    <div
+                        style="margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between;">
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <label for="bin-count" style="font-size: 13px; font-weight: 600; color: #444;">Number of
+                                Bins:</label>
+                            <input type="number" id="bin-count" value="" placeholder="Auto" min="2" max="100"
+                                style="width: 60px; padding: 4px; border: 1px solid #cfd7e3; border-radius: 4px;">
+                        </div>
+                        <div style="display: flex; background: #e3e7ed; padding: 2px; border-radius: 6px;">
+                            <button id="view-hist" class="view-btn active"
+                                style="border:none; padding: 6px 12px; border-radius: 4px; font-size: 12px; cursor: pointer; background: #fff; font-weight: 600; color: #0f6fff; box-shadow: 0 1px 2px rgba(0,0,0,0.1);">Histogram</button>
+                            <button id="view-qq" class="view-btn"
+                                style="border:none; padding: 6px 12px; border-radius: 4px; font-size: 12px; cursor: pointer; background: transparent; font-weight: 500; color: #555;">QQ
+                                Plot</button>
+                            <button id="view-stab" class="view-btn"
+                                style="border:none; padding: 6px 12px; border-radius: 4px; font-size: 12px; cursor: pointer; background: transparent; font-weight: 500; color: #555;">Stability</button>
+                        </div>
+                    </div>
+                    <!-- Export Button Row -->
+                    <div style="display: flex; justify-content: flex-end; margin-bottom: 10px;">
+                        <button id="export-btn"
+                            style="background: #fff; border: 1px solid #cfd7e3; color: #555; padding: 4px 8px; border-radius: 4px; font-size: 11px; cursor: pointer; display: flex; align-items: center; gap: 4px;">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                <polyline points="7 10 12 15 17 10"></polyline>
+                                <line x1="12" y1="15" x2="12" y2="3"></line>
+                            </svg>
+                            Export PNG
+                        </button>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="fit-chart"></canvas>
+                    </div>
+                </div>
+
+                <div id="diagnostics-panel"
+                    style="margin-top: 15px; padding: 12px; background: #fafafa; border-radius: 6px; border: 1px solid #eee;">
+                    <h4 style="margin: 0 0 8px 0; font-size: 14px; color: #333;">Fit Diagnostics</h4>
+                    <p id="diagnostics-text" style="margin: 0; font-size: 13px; color: #555; line-height: 1.4;">Select a
+                        distribution to see diagnostics.</p>
+                </div>
+
+                <div id="params-output"
+                    style="margin-top: 20px; font-family: monospace; font-size: 13px; white-space: pre-wrap; color: #333;">
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+
+    <script>
+        window.addEventListener('load', () => {
+            const dataInput = document.getElementById('data-input');
+            const statusArea = document.getElementById('status-area');
+            const fitBtn = document.getElementById('fit-btn');
+            const resultsArea = document.getElementById('results-area');
+            const resultsBody = document.getElementById('results-body');
+            const paramsOutput = document.getElementById('params-output');
+            const ctx = document.getElementById('fit-chart').getContext('2d');
+
+            let chartInstance = null;
+
+            // --- Helpers ---
+            const parseData = (text) => {
+                const lines = text.split('\n');
+                const data = [];
+                let invalidCount = 0;
+                for (let line of lines) {
+                    line = line.trim();
+                    if (line === '') continue;
+                    const num = Number(line);
+                    if (!isNaN(num)) {
+                        data.push(num);
+                    } else {
+                        invalidCount++;
+                    }
+                }
+                return { data, invalidCount };
+            };
+
+            const validateInput = () => {
+                const { data, invalidCount } = parseData(dataInput.value);
+                if (dataInput.value.trim() === '') {
+                    statusArea.textContent = 'Waiting for input...';
+                    statusArea.className = 'status-message status-info';
+                    fitBtn.disabled = true;
+                    return false;
+                }
+                if (data.length < 2) {
+                    statusArea.textContent = 'Need at least 2 data points.';
+                    statusArea.className = 'status-message status-error';
+                    fitBtn.disabled = true;
+                    return false;
+                }
+                if (invalidCount > 0) {
+                    statusArea.textContent = `Warning: ${invalidCount} invalid values ignored.`;
+                    statusArea.className = 'status-message status-error';
+                } else {
+                    statusArea.textContent = `${data.length} valid points ready.`;
+                    statusArea.className = 'status-message status-info';
+                }
+
+                // Check distributions
+                const checked = document.querySelectorAll('.dist-opt:checked').length;
+                if (checked === 0) {
+                    statusArea.textContent = 'Select at least one distribution.';
+                    statusArea.className = 'status-message status-error';
+                    fitBtn.disabled = true;
+                    return false;
+                }
+
+                fitBtn.disabled = false;
+                return true;
+            };
+
+            dataInput.addEventListener('input', validateInput);
+
+            // --- Selection Handlers ---
+            const getCheckboxes = () => document.querySelectorAll('.dist-opt');
+
+            document.getElementById('select-all').onclick = (e) => {
+                e.preventDefault();
+                getCheckboxes().forEach(cb => cb.checked = true);
+            };
+            document.getElementById('select-continuous').onclick = (e) => {
+                e.preventDefault();
+                getCheckboxes().forEach(cb => cb.checked = cb.classList.contains('continuous'));
+            };
+            document.getElementById('select-discrete').onclick = (e) => {
+                e.preventDefault();
+                getCheckboxes().forEach(cb => cb.checked = cb.classList.contains('discrete'));
+            };
+
+            let currentFits = [];
+            let currentData = [];
+            let currentSelectedFit = null;
+            let currentView = 'hist'; // 'hist' or 'qq'
+
+            // --- FITTING LOGIC ---
+
+            // Standard Normal PDF & Inv
+            const pdfNormal = (x, mean, std) => jStat.normal.pdf(x, mean, std);
+            const invNormal = (p, mean, std) => jStat.normal.inv(p, mean, std);
+
+            // Exponential PDF & Inv
+            const pdfExp = (x, rate) => x >= 0 ? jStat.exponential.pdf(x, rate) : 0;
+            const invExp = (p, rate) => jStat.exponential.inv(p, rate);
+
+            // Uniform PDF & Inv
+            const pdfUniform = (x, a, b) => jStat.uniform.pdf(x, a, b);
+            const invUniform = (p, a, b) => jStat.uniform.inv(p, a, b);
+
+            // Poisson PMF & Inv (discrete)
+            const pmfPoisson = (k, lambda) => Number.isInteger(k) && k >= 0 ? jStat.poisson.pdf(k, lambda) : 0;
+            // jStat doesn't have poisson.inv easily exposed sometimes, use cdf search or approx?
+            // jStat.poisson.cdf(k, lambda) exists.
+            const invPoisson = (p, lambda) => {
+                let k = 0;
+                while (jStat.poisson.cdf(k, lambda) < p) {
+                    k++;
+                    if (k > 1000) break; // Safety
+                }
+                return k;
+            };
+
+            // Weibull PDF & Inv
+            const pdfWeibull = (x, scale, shape) => x >= 0 ? jStat.weibull.pdf(x, scale, shape) : 0;
+            const invWeibull = (p, scale, shape) => jStat.weibull.inv(p, scale, shape);
+
+            // Gumbel PDF & Inv
+            // PDF: f(x) = (1/beta) * exp( -(z + exp(-z)) ) where z = (x - mu) / beta
+            // CDF: F(x) = exp( -exp(-z) )
+            // Inv: x = mu - beta * ln( -ln(p) )
+            const pdfGumbel = (x, mu, beta) => {
+                const z = (x - mu) / beta;
+                return (1 / beta) * Math.exp(-(z + Math.exp(-z)));
+            };
+            const invGumbel = (p, mu, beta) => {
+                return mu - beta * Math.log(-Math.log(p));
+            };
+
+
+            // Calc AIC: 2k - 2ln(L)
+            const calcAIC = (logLikelihood, k) => 2 * k - 2 * logLikelihood;
+
+            const fitDistributions = (data) => {
+                const n = data.length;
+                const sum = jStat.sum(data);
+                const mean = jStat.mean(data);
+                const min = jStat.min(data);
+                const max = jStat.max(data);
+                const std = jStat.stdev(data, true); // sample std
+
+                const results = [];
+                const skipped = [];
+                const selected = Array.from(document.querySelectorAll('.dist-opt:checked')).map(cb => cb.value);
+
+                // 1. Normal
+                if (selected.includes('normal')) {
+                    const mu = mean;
+                    const sigma = jStat.stdev(data, false);
+                    let ll = 0;
+                    for (let x of data) ll += Math.log(pdfNormal(x, mu, sigma) + 1e-10);
+
+                    results.push({
+                        name: 'Normal',
+                        type: 'continuous',
+                        params: { mean: mu, std: sigma },
+                        aic: calcAIC(ll, 2),
+                        pdf: (x) => pdfNormal(x, mu, sigma),
+                        inv: (p) => invNormal(p, mu, sigma),
+                        formattedParams: `μ=${mu.toFixed(4)}, σ=${sigma.toFixed(4)}`
+                    });
+                }
+
+                // 2. Exponential (x >= 0)
+                if (selected.includes('exponential')) {
+                    if (min >= 0) {
+                        const lambda = 1 / mean;
+                        let ll = 0;
+                        for (let x of data) ll += Math.log(pdfExp(x, lambda) + 1e-10);
+
+                        results.push({
+                            name: 'Exponential',
+                            type: 'continuous',
+                            params: { rate: lambda },
+                            aic: calcAIC(ll, 1),
+                            pdf: (x) => pdfExp(x, lambda),
+                            inv: (p) => invExp(p, lambda),
+                            formattedParams: `λ=${lambda.toFixed(4)}`
+                        });
+                    } else {
+                        skipped.push('Exponential (requires non-negative data)');
+                    }
+                }
+
+                // 3. Uniform
+                if (selected.includes('uniform')) {
+                    const a = min;
+                    const b = max;
+                    let ll = 0;
+                    for (let x of data) ll += Math.log(pdfUniform(x, a, b) + 1e-10);
+
+                    results.push({
+                        name: 'Uniform',
+                        type: 'continuous',
+                        params: { min: a, max: b },
+                        aic: calcAIC(ll, 2),
+                        pdf: (x) => pdfUniform(x, a, b),
+                        inv: (p) => invUniform(p, a, b),
+                        formattedParams: `a=${a.toFixed(4)}, b=${b.toFixed(4)}`
+                    });
+                }
+
+                // 4. Poisson (Integers >= 0)
+                if (selected.includes('poisson')) {
+                    const isInteger = data.every(x => Number.isInteger(x) && x >= 0);
+                    if (isInteger) {
+                        const lambda = mean; // MLE
+                        let ll = 0;
+                        for (let x of data) ll += Math.log(pmfPoisson(x, lambda) + 1e-10);
+
+                        results.push({
+                            name: 'Poisson',
+                            type: 'discrete',
+                            params: { lambda: lambda },
+                            aic: calcAIC(ll, 1),
+                            // For plotting discrete, we'll assume integer steps
+                            pdf: (x) => pmfPoisson(Math.round(x), lambda),
+                            inv: (p) => invPoisson(p, lambda),
+                            formattedParams: `λ=${lambda.toFixed(4)}`
+                        });
+                    } else {
+                        skipped.push('Poisson (requires non-negative integers)');
+                    }
+                }
+
+                // 5. Weibull (x >= 0)
+                if (selected.includes('weibull')) {
+                    if (min >= 0) {
+                        const sorted = [...data].sort((a, b) => a - b);
+                        const validData = sorted.filter(x => x > 0);
+
+                        if (validData.length > 2) {
+                            const xs = [];
+                            const ys = [];
+                            const n_v = validData.length;
+                            for (let i = 0; i < n_v; i++) {
+                                const p = (i + 0.5) / n_v;
+                                ys.push(Math.log(-Math.log(1 - p)));
+                                xs.push(Math.log(validData[i]));
+                            }
+
+                            const meanX = jStat.mean(xs);
+                            const meanY = jStat.mean(ys);
+                            let num = 0, den = 0;
+                            for (let i = 0; i < xs.length; i++) {
+                                num += (xs[i] - meanX) * (ys[i] - meanY);
+                                den += (xs[i] - meanX) ** 2;
+                            }
+                            const k = num / den;
+                            const intercept = meanY - k * meanX;
+                            const lambda = Math.exp(-intercept / k);
+
+                            let ll = 0;
+                            for (let x of validData) ll += Math.log(pdfWeibull(x, lambda, k) + 1e-10);
+
+                            results.push({
+                                name: 'Weibull',
+                                type: 'continuous',
+                                params: { scale: lambda, shape: k },
+                                aic: calcAIC(ll, 2),
+                                pdf: (x) => pdfWeibull(x, lambda, k),
+                                inv: (p) => invWeibull(p, lambda, k),
+                                formattedParams: `λ=${lambda.toFixed(4)}, k=${k.toFixed(4)}`
+                            });
+                        } else {
+                            skipped.push('Weibull (too few positive data points)');
+                        }
+                    } else {
+                        skipped.push('Weibull (requires non-negative data)');
+                    }
+                }
+
+                // 6. Gumbel (Extreme Value Type I)
+                if (selected.includes('gumbel')) {
+                    const gamma = 0.57721;
+                    const beta = std * Math.sqrt(6) / Math.PI;
+                    const mu = mean - gamma * beta;
+
+                    let ll = 0;
+                    for (let x of data) ll += Math.log(pdfGumbel(x, mu, beta) + 1e-10);
+
+                    results.push({
+                        name: 'Gumbel',
+                        type: 'continuous',
+                        params: { loc: mu, scale: beta },
+                        aic: calcAIC(ll, 2),
+                        pdf: (x) => pdfGumbel(x, mu, beta),
+                        inv: (p) => invGumbel(p, mu, beta),
+                        formattedParams: `μ=${mu.toFixed(4)}, β=${beta.toFixed(4)}`
+                    });
+                }
+
+                results.sort((a, b) => a.aic - b.aic);
+                return { results, skipped };
+            };
+
+            // --- Plotting ---
+            // --- Plotting ---
+
+            const renderVisualization = (data, fit) => {
+                if (chartInstance) {
+                    chartInstance.destroy();
+                }
+
+                if (currentView === 'qq') {
+                    updateQQPlot(data, fit);
+                } else if (currentView === 'stab') {
+                    updateStabilityPlot(data, fit);
+                } else {
+                    updateHistogram(data, fit);
+                }
+                updateDiagnostics(fit);
+            };
+
+            const updateDiagnostics = (fit) => {
+                const diagText = document.getElementById('diagnostics-text');
+                if (!fit) {
+                    diagText.textContent = "Select a distribution to see diagnostics.";
+                    return;
+                }
+
+                let text = "";
+                if (currentView === 'hist') {
+                    text = `<strong>Histogram Check:</strong> Look for how well the red curve overlays the blue bars. Good fits follow the shape closely. Gaps or spikes suggest the model may not capture all data features.`;
+                } else if (currentView === 'qq') {
+                    text = `<strong>Q-Q Plot Assessment:</strong> Points should fall along the dashed diagonal line. <br>
+                    - <em>Curves at ends:</em> The distribution tail weight differs from data.<br>
+                    - <em>S-shape:</em> Skewness mismatch.<br>
+                    Points far from the line indicate a poor fit.`;
+                } else if (currentView === 'stab') {
+                    text = `<strong>Rate Stability Check:</strong> Used to check if the mean rate is constant (stationary). <br>
+                    - Data (blue line) should roughly follow the straight reference (dashed).<br>
+                    - <em>Bending up/down:</em> Implementation suggests the rate (mean) changes over time (non-stationary).<br>
+                    This is most relevant for Poisson/Exponential processes.`;
+                }
+                diagText.innerHTML = text;
+            };
+
+            const updateStabilityPlot = (data, fit) => {
+                // Plot Cumulative Sum vs Index
+                // Ref line slope = mean
+                const n = data.length;
+                const cumSum = [];
+                let runningSum = 0;
+                for (let x of data) {
+                    runningSum += x;
+                    cumSum.push(runningSum);
+                }
+
+                // Reference line: Slope = Fit Mean (or sample mean if fit matches)
+                // We use fit params to be rigorous about "checking the fit"
+                // For most distributions, E[X] is available. 
+                let estimatedMean = jStat.mean(data);
+                if (fit) {
+                    if (fit.name === 'Exponential') estimatedMean = 1 / fit.params.rate;
+                    if (fit.name === 'Poisson') estimatedMean = fit.params.lambda;
+                    if (fit.name === 'Normal') estimatedMean = fit.params.mean;
+                    if (fit.name === 'Uniform') estimatedMean = (fit.params.min + fit.params.max) / 2;
+                    // For others, we might rely on sample mean or derivation
+                }
+
+                const refData = [
+                    { x: 0, y: 0 },
+                    { x: n, y: estimatedMean * n }
+                ];
+
+                // Data points: (i+1, cumSum[i])
+                const plotData = cumSum.map((val, idx) => ({ x: idx + 1, y: val }));
+
+                chartInstance = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        datasets: [
+                            {
+                                label: 'Observed Cumulative',
+                                data: plotData,
+                                borderColor: 'rgba(15, 111, 255, 1)',
+                                borderWidth: 2,
+                                fill: false,
+                                pointRadius: 0,
+                                tension: 0.1,
+                                order: 1
+                            },
+                            {
+                                label: `Expected (Mean = ${estimatedMean.toFixed(2)})`,
+                                data: refData,
+                                borderColor: '#ff6b6b',
+                                borderDash: [5, 5],
+                                borderWidth: 2,
+                                pointRadius: 0,
+                                fill: false,
+                                order: 2
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: 'Rate Stability / Stationarity Check'
+                            }
+                        },
+                        scales: {
+                            x: {
+                                type: 'linear',
+                                title: { display: true, text: 'Observation Index' },
+                                min: 0
+                            },
+                            y: {
+                                type: 'linear',
+                                title: { display: true, text: 'Cumulative Value' }
+                            }
+                        }
+                    }
+                });
+
+            };
+
+            const updateQQPlot = (data, bestFit) => {
+                // If no fit selected, can't show QQ plot properly against nothing?
+                // Or just show nothing.
+                if (!bestFit) return;
+
+                const n = data.length;
+                const sorted = [...data].sort((a, b) => a - b);
+                const scatterData = [];
+                const minVal = sorted[0];
+                const maxVal = sorted[n - 1];
+
+                // Calculate quantiles
+                for (let i = 0; i < n; i++) {
+                    const p = (i + 0.5) / n;
+                    const theoreticalQ = bestFit.inv(p);
+                    scatterData.push({ x: theoreticalQ, y: sorted[i] });
+                }
+
+                // Finds min/max for 1:1 line
+                // To look nice, we typically want the range that covers both x and y
+                const allVals = scatterData.flatMap(p => [p.x, p.y]);
+                const niceMin = jStat.min(allVals);
+                const niceMax = jStat.max(allVals);
+
+                chartInstance = new Chart(ctx, {
+                    type: 'scatter',
+                    data: {
+                        datasets: [
+                            {
+                                label: 'Model Quantiles',
+                                data: scatterData,
+                                backgroundColor: 'rgba(15, 111, 255, 0.6)',
+                                borderColor: 'rgba(15, 111, 255, 1)',
+                                order: 1
+                            },
+                            {
+                                label: 'Reference Line',
+                                data: [{ x: niceMin, y: niceMin }, { x: niceMax, y: niceMax }],
+                                type: 'line',
+                                borderColor: '#ccc',
+                                borderDash: [5, 5],
+                                borderWidth: 2,
+                                pointRadius: 0,
+                                fill: false,
+                                animation: false,
+                                order: 2
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: `${bestFit.name} Q-Q Plot`
+                            }
+                        },
+                        scales: {
+                            x: {
+                                type: 'linear',
+                                title: { display: true, text: 'Theoretical Quantiles' }
+                            },
+                            y: {
+                                type: 'linear',
+                                title: { display: true, text: 'Empirical Quantiles' }
+                            }
+                        }
+                    }
+                });
+            };
+
+            const updateHistogram = (data, bestFit) => {
+                const binInputVal = parseInt(document.getElementById('bin-count').value);
+                const binCount = (binInputVal && binInputVal > 1) ? binInputVal : Math.max(5, Math.floor(Math.sqrt(data.length)));
+                const min = jStat.min(data);
+                const max = jStat.max(data);
+                const range = max - min;
+                const step = range / binCount;
+
+                // Create bins
+                const bins = new Array(binCount).fill(0);
+
+                for (let x of data) {
+                    let idx = Math.floor((x - min) / step);
+                    if (idx >= binCount) idx = binCount - 1;
+                    bins[idx]++;
+                }
+
+                // Normalized density for histogram with numeric x-coordinates
+                const histogramData = [];
+                for (let i = 0; i < binCount; i++) {
+                    const center = min + (i + 0.5) * step;
+                    const densityVal = bins[i] / (data.length * step);
+                    histogramData.push({ x: center, y: densityVal });
+                }
+
+                // Best Fit Curve points
+                const curveData = [];
+                if (bestFit) {
+                    const curvePoints = 100;
+                    const curveStep = range / curvePoints;
+                    for (let i = 0; i <= curvePoints; i++) {
+                        const x = min + i * curveStep;
+                        curveData.push({ x: x, y: bestFit.pdf(x) });
+                    }
+                }
+
+                chartInstance = new Chart(ctx, {
+                    type: 'bar', // Base type
+                    data: {
+                        datasets: [
+                            {
+                                label: 'Data Density',
+                                data: histogramData,
+                                backgroundColor: 'rgba(15, 111, 255, 0.4)',
+                                borderColor: 'rgba(15, 111, 255, 1)',
+                                borderWidth: 1,
+                                barPercentage: 1.0,
+                                categoryPercentage: 1.0,
+                                order: 2
+                            },
+                            bestFit ? {
+                                label: `${bestFit.name} Fit`,
+                                data: curveData, // Scatter points treated as line
+                                type: 'line',
+                                borderColor: '#ff6b6b',
+                                borderWidth: 3,
+                                pointRadius: 0,
+                                fill: false,
+                                tension: 0.4,
+                                order: 1
+                            } : null
+                        ].filter(x => x)
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            x: {
+                                type: 'linear',
+                                min: min,
+                                max: max,
+                                title: { display: true, text: 'Value' },
+                                offset: false,
+                            },
+                            y: {
+                                beginAtZero: true,
+                                title: { display: true, text: 'Density' }
+                            }
+                        },
+                        plugins: {
+                            tooltip: {
+                                mode: 'index',
+                                intersect: false
+                            }
+                        }
+                    }
+                });
+            };
+
+            const selectFit = (fit, row) => {
+                currentSelectedFit = fit;
+                // Update chart
+                renderVisualization(currentData, fit);
+
+                // Update params display
+                if (fit) {
+                    paramsOutput.textContent = `Selected Fit: ${fit.name}\nParameters: ${JSON.stringify(fit.params, null, 2)}`;
+                }
+
+                // Update UI highlighting
+                document.querySelectorAll('.results-table tr').forEach(r => r.classList.remove('selected-row'));
+                if (row) {
+                    row.classList.add('selected-row');
+                }
+            };
+
+            fitBtn.addEventListener('click', () => {
+                if (!validateInput()) return;
+
+                const { data } = parseData(dataInput.value);
+                currentData = data;
+
+                const { results: fits, skipped } = fitDistributions(data);
+                currentFits = fits;
+
+                // Show Table
+                resultsArea.style.display = 'block';
+                resultsBody.innerHTML = '';
+                const warningBox = document.getElementById('warnings-area');
+                warningBox.style.display = 'none';
+
+                if (fits.length === 0) {
+                    resultsBody.innerHTML = '<tr><td colspan="3">No valid distributions found.</td></tr>';
+                    currentSelectedFit = null;
+                    paramsOutput.textContent = '';
+                    updateHistogram(data, null);
+                } else {
+                    fits.forEach((fit, idx) => {
+                        const row = document.createElement('tr');
+                        // Add best fit styling to first
+                        if (idx === 0) row.classList.add('rank-1');
+
+                        row.innerHTML = `
+                            <td>${idx + 1}</td>
+                            <td><strong>${fit.name}</strong><br><small>${fit.formattedParams}</small></td>
+                            <td>${fit.aic.toFixed(2)}</td>
+                        `;
+
+                        // Add interactive click
+                        row.onclick = () => selectFit(fit, row);
+
+                        resultsBody.appendChild(row);
+
+                        // Select best fit by default
+                        if (idx === 0) {
+                            selectFit(fit, row);
+                            // Ensure we reset to histogram view on new fit
+                            setView('hist');
+                        }
+                    });
+                }
+
+                // Show skipped messages
+                if (skipped.length > 0) {
+                    warningBox.style.display = 'block';
+                    warningBox.innerHTML = `<strong>Skipped Distributions:</strong><ul style="margin:5px 0 0 20px; padding:0;">${skipped.map(s => `<li>${s}</li>`).join('')}</ul>`;
+                }
+            });
+
+            // Re-render chart on bin change using SELECTED fit
+            document.getElementById('bin-count').addEventListener('input', () => {
+                const { data } = parseData(dataInput.value);
+                if (data.length < 2) return;
+                // Do not refit, just update chart with current selected fit
+                if (data.length < 2) return;
+                // Do not refit, just update chart with current selected fit
+                renderVisualization(data, currentSelectedFit);
+            });
+
+            // View Toggles
+            const btnHist = document.getElementById('view-hist');
+            const btnQQ = document.getElementById('view-qq');
+            const btnStab = document.getElementById('view-stab');
+
+            const setView = (view) => {
+                currentView = view;
+                // Update buttons
+                if (view === 'hist') {
+                    btnHist.classList.add('active');
+                    btnHist.style.background = '#fff';
+                    btnHist.style.color = '#0f6fff';
+                    btnHist.style.boxShadow = '0 1px 2px rgba(0,0,0,0.1)';
+
+                    btnQQ.classList.remove('active');
+                    btnQQ.style.background = 'transparent';
+                    btnQQ.style.color = '#555';
+                    btnQQ.style.boxShadow = 'none';
+
+                    btnStab.classList.remove('active');
+                    btnStab.style.background = 'transparent';
+                    btnStab.style.color = '#555';
+                    btnStab.style.boxShadow = 'none';
+
+                    document.getElementById('bin-count').parentElement.style.visibility = 'visible';
+                } else if (view === 'qq') {
+                    btnQQ.classList.add('active');
+                    btnQQ.style.background = '#fff';
+                    btnQQ.style.color = '#0f6fff';
+                    btnQQ.style.boxShadow = '0 1px 2px rgba(0,0,0,0.1)';
+
+                    btnHist.classList.remove('active');
+                    btnHist.style.background = 'transparent';
+                    btnHist.style.color = '#555';
+                    btnHist.style.boxShadow = 'none';
+
+                    btnStab.classList.remove('active');
+                    btnStab.style.background = 'transparent';
+                    btnStab.style.color = '#555';
+                    btnStab.style.boxShadow = 'none';
+
+                    document.getElementById('bin-count').parentElement.style.visibility = 'hidden';
+                } else { // Stability
+                    btnHist.classList.remove('active');
+                    btnQQ.classList.remove('active');
+                    btnStab.classList.add('active');
+
+                    [btnHist, btnQQ].forEach(btn => {
+                        btn.style.background = 'transparent';
+                        btn.style.color = '#555';
+                        btn.style.boxShadow = 'none';
+                    });
+
+                    btnStab.style.background = '#fff';
+                    btnStab.style.color = '#0f6fff';
+                    btnStab.style.boxShadow = '0 1px 2px rgba(0,0,0,0.1)';
+                    document.getElementById('bin-count').parentElement.style.visibility = 'hidden';
+                }
+
+                // Re-render
+                if (currentData.length > 0) {
+                    renderVisualization(currentData, currentSelectedFit);
+                }
+            };
+
+            btnHist.addEventListener('click', () => setView('hist'));
+            btnQQ.addEventListener('click', () => setView('qq'));
+            btnStab.addEventListener('click', () => setView('stab'));
+
+            // Export to PNG
+            document.getElementById('export-btn').addEventListener('click', () => {
+                const link = document.createElement('a');
+                let filename = 'distribution_fit.png';
+                if (currentView === 'qq') filename = 'qq_plot.png';
+                else if (currentView === 'stab') filename = 'rate_stability.png';
+
+                link.download = filename;
+                link.href = document.getElementById('fit-chart').toDataURL('image/png');
+                link.click();
+            });
+
+            // Checkboxes event to trigger validation
+            document.querySelectorAll('.dist-opt').forEach(cb => {
+                cb.addEventListener('change', validateInput);
+            });
+
+        });
+    </script>
+</body>
+
+</html>
