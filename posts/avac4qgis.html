@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Avalanche-Generated Impulse Waves in Reservoirs - Clemente Gotelli</title>
+  <link rel="icon" type="image/x-icon" href="../images/favicon.png">
+  <link rel="stylesheet" href="../styles.css">
+  <style>
+    .tag-badges { display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0 18px; }
+    .tag-badge { padding: 6px 10px; border-radius: 12px; background: #e5e7eb; color: #2a2f45; font-size: 13px; font-weight: 600; }
+    .lead { color: #333; font-size: 18px; line-height: 1.65; }
+    .section-block { margin-top: 30px; }
+    .feature-list { padding-left: 22px; }
+    .feature-list li { margin: 10px 0; }
+    .interface-shot { display: block; width: 100%; max-width: 580px; margin: 24px auto 10px; border: 1px solid #d1d5db; border-radius: 12px; box-shadow: 0 12px 30px rgba(0, 0, 0, .12); }
+    .caption { max-width: 580px; margin: 0 auto; color: #667085; font-size: 14px; text-align: center; }
+    .hero-caption { margin: -28px 0 28px; color: #667085; font-size: 13px; text-align: center; }
+    .note { margin: 28px 0; padding: 18px 20px; border-left: 4px solid #0f6fff; background: #f1f6ff; border-radius: 0 10px 10px 0; }
+  </style>
+</head>
+
+<body>
+  <div class="top-right-nav">
+    <a href="../news.html">News</a>
+    <a href="../blog.html">Blog</a>
+    <a href="../tools.html">Tools</a>
+    <a href="../aboutme.html">About Me</a>
+  </div>
+  <div class="corner-name"><a href="../index.html">Clemente Gotelli</a></div>
+
+  <div class="post-header">
+    <img src="../images/avac4qgis-alpine-reservoir-hero.png" alt="Snow avalanche descending toward an Alpine reservoir and dam"
+      style="width: 100%; height: 400px; object-fit: cover; object-position: center; border-radius: 20px; margin-bottom: 40px;">
+    <p class="hero-caption">AI-generated illustrative image; it does not depict a real avalanche, reservoir, or dam.</p>
+  </div>
+
+  <div class="post-container">
+    <div class="post-text">
+      <h1>Avalanche-generated impulse waves in reservoirs</h1>
+      <div class="tag-badges">
+        <span class="tag-badge">Natural hazards</span>
+        <span class="tag-badge">Hydraulics</span>
+        <span class="tag-badge">Open science</span>
+      </div>
+
+      <p class="lead">High-mountain reservoirs bring water storage, renewable-energy infrastructure, and communities into close proximity with steep, dynamic terrain. When an avalanche, rockfall, or landslide enters a reservoir, it suddenly displaces water and creates a short, energetic wave - an impulse wave. We are developing AVAC4QGIS to model this process from avalanche motion to reservoir response, with the ultimate aim of supporting scenario-based risk analysis for design and operational decisions.</p>
+
+      <div class="section-block">
+        <h2>A coupled mountain-hazard problem</h2>
+        <p>Reservoirs in steep terrain are exposed to processes originating well beyond the dam itself. Avalanches, rockfalls, landslides, and glacier failures can enter a water body and generate impulse waves. The resulting hazard depends on the moving mass, its impact geometry, reservoir level and geometry, and the response of the shore and dam. These processes occur in mountain regions worldwide and must be assessed as coupled mass-movement and hydraulic problems (<a href="https://vaw.ethz.ch/en/research/hydraulic-engineering/completed-projects.html">VAW, 2026</a>).</p>
+        <p>Climate change adds further motivation for studying these coupled processes. Warming, glacier retreat, and changing periglacial conditions are altering the setting in which gravitational hazards occur, while hydropower systems remain central to water and energy infrastructure (<a href="https://www.nccs.admin.ch/nccs/en/home/climate-change-and-impacts/schweizer-klimaszenarien-ch2025/observed-climate-change-in-switzerland.html">NCCS, 2025</a>). The direction and magnitude of change vary by process and location; the relevant question is therefore not a universal increase in avalanche activity, but how evolving terrain, snow, water bodies, and exposed infrastructure interact.</p>
+        <p>Switzerland illustrates this design context. The proposed enlargement of Lake Grimsel would raise the reservoir level by 23 m and increase storage from 90 to 170 million m³ (<a href="https://www.grimselstrom.ch/projekte/vergroesserung-grimselsee">KWO, 2025</a>). A reservoir enlargement changes the physical and operational configuration that a hazard assessment must consider: water levels, available freeboard, shore geometry, and the consequences of wave run-up or overtopping. This does not imply a specific avalanche scenario at Lake Grimsel; it illustrates why mass-movement-induced waves should be examined explicitly when high-mountain reservoirs are designed, upgraded, or operated.</p>
+      </div>
+
+      <div class="section-block">
+        <h2>From avalanche dynamics to reservoir response</h2>
+        <p>The first task is to compute the avalanche: its release, acceleration, spreading, runout, depth, and velocity over complex terrain. These outputs define the conditions under which snow reaches the reservoir. The second task is to use that information to drive a hydrodynamic simulation of wave generation, propagation, run-up, and potential overtopping.</p>
+        <p>AVAC4QGIS is being developed to make this sequence explicit and reproducible. A user prepares and runs an avalanche scenario from a digital elevation model and release polygon in QGIS. Once an avalanche run is complete, the optional lake-wave extension uses its output as the input to a separate reservoir-wave scenario. The original avalanche simulation remains unchanged, allowing each stage to be examined independently and as part of the full chain.</p>
+      </div>
+
+      <img class="interface-shot" src="../images/avac4qgis-interface.png" alt="AVAC4QGIS interface with AVAC, WAVE, and Results workflow tabs">
+      <p class="caption">AVAC4QGIS runs inside QGIS: avalanche setup, avalanche run, optional lake-wave setup, wave run, and results are organised in one workflow.</p>
+
+      <div class="section-block">
+        <h2>AVAC4QGIS</h2>
+        <p>AVAC4QGIS builds on <a href="https://github.com/cancey/avac">AVAC</a>, the open-source avalanche-dynamics code developed by Christophe Ancey. The plugin integrates AVAC with QGIS so that spatial inputs, model parameters, runs, and results can be prepared and analysed within the same geographic information system (<a href="https://www.epfl.ch/schools/enac/avac3-0/">Ancey, 2022</a>).</p>
+        <ul class="feature-list">
+          <li><strong>Plug and play:</strong> the required runtime is packaged with the plugin, removing the need to configure AVAC, Clawpack, compilers, or a separate Python environment.</li>
+          <li><strong>Parallel execution:</strong> AVAC and the wave solver use OpenMP; the number of CPU cores is selected directly in the interface.</li>
+          <li><strong>Integrated spatial workflow:</strong> terrain, release areas, parameters, prepared cases, output maps, profiles, gauges, and animations remain associated with the QGIS project.</li>
+          <li><strong>Cross-platform delivery:</strong> native managed runtimes are being prepared for macOS, Linux, and Windows.</li>
+        </ul>
+      </div>
+
+      <div class="note">
+        <strong>Intended use.</strong> AVAC4QGIS is a research and development tool. It is intended to make scenario assumptions and model outputs transparent, so that avalanche-generated impulse-wave hazards can be evaluated consistently and used alongside engineering judgement, monitoring, and site-specific studies to inform reservoir design and operational decisions.
+      </div>
+
+      <div class="section-block">
+        <h2>Next steps</h2>
+        <p>Current work focuses on strengthening the verification of AVAC against analytical benchmarks and refining the transfer from avalanche output to reservoir-wave simulations. The objective is a transparent workflow for coupled-hazard scenarios, suitable for systematic risk analysis rather than a black-box prediction tool.</p>
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>
