@@ -15,6 +15,7 @@
     .feature-list { padding-left: 22px; }
     .feature-list li { margin: 10px 0; }
     .interface-shot { display: block; width: 100%; max-width: 580px; margin: 24px auto 10px; border: 1px solid #d1d5db; border-radius: 12px; box-shadow: 0 12px 30px rgba(0, 0, 0, .12); }
+    .simulation-shot { display: block; width: 100%; max-width: 756px; margin: 24px auto 10px; border: 1px solid #d1d5db; border-radius: 12px; box-shadow: 0 12px 30px rgba(0, 0, 0, .12); }
     .caption { max-width: 580px; margin: 0 auto; color: #667085; font-size: 14px; text-align: center; }
     .hero-caption { margin: -28px 0 28px; color: #667085; font-size: 13px; text-align: center; }
     .note { margin: 28px 0; padding: 18px 20px; border-left: 4px solid #0f6fff; background: #f1f6ff; border-radius: 0 10px 10px 0; }
@@ -57,15 +58,18 @@
       <div class="section-block">
         <h2>From avalanche dynamics to reservoir response</h2>
         <p>The first task is to compute the avalanche: its release, acceleration, spreading, runout, depth, and velocity over complex terrain. These outputs define the conditions under which snow reaches the reservoir. The second task is to use that information to drive a hydrodynamic simulation of wave generation, propagation, run-up, and potential overtopping.</p>
-        <p>AVAC4QGIS is being developed to make this sequence explicit and reproducible. A user prepares and runs an avalanche scenario from a digital elevation model and release polygon in QGIS. Once an avalanche run is complete, the optional lake-wave extension uses its output as the input to a separate reservoir-wave scenario. The original avalanche simulation remains unchanged, allowing each stage to be examined independently and as part of the full chain.</p>
+        <p>AVAC4QGIS is being developed to make this sequence explicit and reproducible. A user prepares and runs an avalanche scenario from a digital elevation model and release polygon in QGIS. Once an avalanche run is complete, the optional lake-wave extension uses its output as the input to a separate reservoir-wave scenario. The original avalanche simulation remains unchanged, allowing each stage to be examined independently and as part of the full chain. The animation below shows an example of the resulting time-varying water-surface displacement as the impulse wave propagates through the reservoir.</p>
+        <img class="simulation-shot" src="../images/wave_surface_displacement_5fps.gif" alt="Animated surface displacement from an AVAC4QGIS reservoir-wave simulation">
+        <p class="caption">Animated surface displacement from an avalanche-driven reservoir-wave simulation.</p>
       </div>
-
-      <img class="interface-shot" src="../images/avac4qgis-interface.png" alt="AVAC4QGIS interface with AVAC, WAVE, and Results workflow tabs">
-      <p class="caption">AVAC4QGIS runs inside QGIS: avalanche setup, avalanche run, optional lake-wave setup, wave run, and results are organised in one workflow.</p>
 
       <div class="section-block">
         <h2>AVAC4QGIS</h2>
-        <p>AVAC4QGIS builds on <a href="https://github.com/cancey/avac">AVAC</a>, the open-source avalanche-dynamics code developed by Christophe Ancey. The plugin integrates AVAC with QGIS so that spatial inputs, model parameters, runs, and results can be prepared and analysed within the same geographic information system (<a href="https://www.epfl.ch/schools/enac/avac3-0/">Ancey, 2022</a>).</p>
+        <p><a href="https://github.com/cgotelli/AVAC-QGIS">AVAC4QGIS</a> builds on <a href="https://github.com/cancey/avac">AVAC</a>, the open-source avalanche-dynamics code developed by Christophe Ancey. The plugin integrates AVAC with QGIS so that spatial inputs, model parameters, runs, and results can be prepared and analysed within the same geographic information system (<a href="https://www.epfl.ch/schools/enac/avac3-0/">Ancey, 2022</a>).</p>
+        <p>The interface makes the coupled workflow visible: AVAC is used to prepare and run the avalanche, while the optional WAVE stage receives the completed avalanche output and sets up the reservoir simulation. Results then return to the same QGIS project for inspection.</p>
+        <img class="interface-shot" src="../images/avac4qgis-interface.png" alt="AVAC4QGIS interface with AVAC, WAVE, and Results workflow tabs">
+        <p class="caption">The AVAC, WAVE, and Results tabs organise the coupled workflow in QGIS.</p>
+        <p>To keep this workflow practical and reproducible for scenario studies, AVAC4QGIS is designed around the following capabilities:</p>
         <ul class="feature-list">
           <li><strong>Plug and play:</strong> the required runtime is packaged with the plugin, removing the need to configure AVAC, Clawpack, compilers, or a separate Python environment.</li>
           <li><strong>Parallel execution:</strong> AVAC and the wave solver use OpenMP; the number of CPU cores is selected directly in the interface.</li>
@@ -74,13 +78,15 @@
         </ul>
       </div>
 
-      <div class="note">
-        <strong>Intended use.</strong> AVAC4QGIS is a research and development tool. It is intended to make scenario assumptions and model outputs transparent, so that avalanche-generated impulse-wave hazards can be evaluated consistently and used alongside engineering judgement, monitoring, and site-specific studies to inform reservoir design and operational decisions.
-      </div>
+      
 
       <div class="section-block">
         <h2>Next steps</h2>
         <p>Current work focuses on strengthening the verification of AVAC against analytical benchmarks and refining the transfer from avalanche output to reservoir-wave simulations. The objective is a transparent workflow for coupled-hazard scenarios, suitable for systematic risk analysis rather than a black-box prediction tool.</p>
+      </div>
+
+      <div class="note">
+        <strong>WARNING:</strong> AVAC4QGIS is a research and development tool. It is intended to make scenario assumptions and model outputs transparent, so that avalanche-generated impulse-wave hazards can be evaluated consistently and used alongside engineering judgement, monitoring, and site-specific studies to inform reservoir design and operational decisions.
       </div>
     </div>
   </div>
