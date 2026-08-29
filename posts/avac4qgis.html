@@ -14,7 +14,7 @@
     .section-block { margin-top: 30px; }
     .feature-list { padding-left: 22px; }
     .feature-list li { margin: 10px 0; }
-    .interface-shot { display: block; width: 100%; max-width: 580px; margin: 24px auto 10px; border: 1px solid #d1d5db; border-radius: 12px; box-shadow: 0 12px 30px rgba(0, 0, 0, .12); }
+    .interface-shot { display: block; width: 100%; max-width: 1000px; margin: 24px auto 10px; border: 1px solid #d1d5db; border-radius: 12px; box-shadow: 0 12px 30px rgba(0, 0, 0, .12); }
     .simulation-shot { display: block; width: 100%; max-width: 756px; margin: 24px auto 10px; border: 1px solid #d1d5db; border-radius: 12px; box-shadow: 0 12px 30px rgba(0, 0, 0, .12); }
     .caption { max-width: 580px; margin: 0 auto; color: #667085; font-size: 14px; text-align: center; }
     .hero-caption { margin: -28px 0 28px; color: #667085; font-size: 13px; text-align: center; }
@@ -66,9 +66,9 @@
       <div class="section-block">
         <h2>AVAC4QGIS</h2>
         <p><a href="https://github.com/cgotelli/AVAC-QGIS">AVAC4QGIS</a> builds on <a href="https://github.com/cancey/avac">AVAC</a>, the open-source avalanche-dynamics code developed by Christophe Ancey. The plugin integrates AVAC with QGIS so that spatial inputs, model parameters, runs, and results can be prepared and analysed within the same geographic information system (<a href="https://www.epfl.ch/schools/enac/avac3-0/">Ancey, 2022</a>).</p>
-        <p>The interface makes the coupled workflow visible: AVAC is used to prepare and run the avalanche, while the optional WAVE stage receives the completed avalanche output and sets up the reservoir simulation. Results then return to the same QGIS project for inspection.</p>
-        <img class="interface-shot" src="../images/avac4qgis-interface.png" alt="AVAC4QGIS interface with AVAC, WAVE, and Results workflow tabs">
-        <p class="caption">The AVAC, WAVE, and Results tabs organise the coupled workflow in QGIS.</p>
+        <p>The interface ties the model workflow to a spatial project. In the QGIS example below, the terrain, avalanche-release polygons, reservoir, and dam are kept together in the map and layer panel, while the AVAC controls select the digital elevation model and release polygon used to prepare the avalanche scenario. Once an avalanche run is available, the lake-wave extension can be enabled; results return to the same project for inspection.</p>
+        <img class="interface-shot" src="../images/QGIS.png" alt="AVAC4QGIS interface in QGIS, showing terrain, avalanche-release polygons, a reservoir and dam, and the AVAC input controls">
+        <p class="caption">AVAC4QGIS in QGIS: spatial source layers are shown alongside the controls used to prepare an avalanche scenario.</p>
         <p>To keep this workflow practical and reproducible for scenario studies, AVAC4QGIS is designed around the following capabilities:</p>
         <ul class="feature-list">
           <li><strong>Plug and play:</strong> the required runtime is packaged with the plugin, removing the need to configure AVAC, Clawpack, compilers, or a separate Python environment.</li>
