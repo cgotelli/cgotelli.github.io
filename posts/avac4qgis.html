@@ -46,7 +46,11 @@
         <span class="tag-badge">Open science</span>
       </div>
 
-      <p class="lead">High-mountain reservoirs bring water storage, renewable-energy infrastructure, and communities into close proximity with steep, dynamic terrain. When an avalanche, rockfall, or landslide enters a reservoir, it suddenly displaces water and creates a short, energetic wave - an impulse wave. We are developing AVAC4QGIS to model this process from avalanche motion to reservoir response, with the ultimate aim of supporting scenario-based risk analysis for design and operational decisions.</p>
+      <p class="lead">High-mountain reservoirs bring water storage, renewable-energy infrastructure, and communities into close proximity with steep, dynamic terrain. When an avalanche, rockfall, or landslide enters a reservoir, it suddenly displaces water and creates a short, energetic wave - an impulse wave. <a href="https://github.com/cgotelli/AVAC-QGIS/releases/tag/v1.0.0">AVAC4QGIS v1.0.0</a> provides a workflow to model this process from avalanche motion to reservoir response, supporting scenario-based risk analysis for design and operational decisions.</p>
+
+      <div class="note">
+        <strong>Version 1.0.0 is available.</strong> AVAC4QGIS now has fully functional releases for macOS, Windows, and Linux. Download the current version from the <a href="https://github.com/cgotelli/AVAC-QGIS/releases/tag/v1.0.0">GitHub release page</a>.
+      </div>
 
       <div class="section-block">
         <h2>A coupled mountain-hazard problem</h2>
@@ -58,7 +62,7 @@
       <div class="section-block">
         <h2>From avalanche dynamics to reservoir response</h2>
         <p>The first task is to compute the avalanche: its release, acceleration, spreading, runout, depth, and velocity over complex terrain. These outputs define the conditions under which snow reaches the reservoir. The second task is to use that information to drive a hydrodynamic simulation of wave generation, propagation, run-up, and potential overtopping.</p>
-        <p>AVAC4QGIS is being developed to make this sequence explicit and reproducible. A user prepares and runs an avalanche scenario from a digital elevation model and release polygon in QGIS. Once an avalanche run is complete, the optional lake-wave extension uses its output as the input to a separate reservoir-wave scenario. The original avalanche simulation remains unchanged, allowing each stage to be examined independently and as part of the full chain. The animation below shows an example of the resulting time-varying water-surface displacement as the impulse wave propagates through the reservoir.</p>
+        <p>AVAC4QGIS makes this sequence explicit and reproducible. A user prepares and runs an avalanche scenario from a digital elevation model and release polygon in QGIS. Once an avalanche run is complete, the optional lake-wave extension uses its output as the input to a separate reservoir-wave scenario. The original avalanche simulation remains unchanged, allowing each stage to be examined independently and as part of the full chain. The animation below shows an example of the resulting time-varying water-surface displacement as the impulse wave propagates through the reservoir.</p>
         <img class="simulation-shot" src="../images/wave_surface_displacement_5fps.gif" alt="Animated surface displacement from an AVAC4QGIS reservoir-wave simulation">
         <p class="caption">Animated surface displacement from an avalanche-driven reservoir-wave simulation.</p>
       </div>
@@ -74,7 +78,7 @@
           <li><strong>Plug and play:</strong> the required runtime is packaged with the plugin, removing the need to configure AVAC, Clawpack, compilers, or a separate Python environment.</li>
           <li><strong>Parallel execution:</strong> AVAC and the wave solver use OpenMP; the number of CPU cores is selected directly in the interface.</li>
           <li><strong>Integrated spatial workflow:</strong> terrain, release areas, parameters, prepared cases, output maps, profiles, gauges, and animations remain associated with the QGIS project.</li>
-          <li><strong>Cross-platform delivery:</strong> native managed runtimes are being prepared for macOS, Linux, and Windows.</li>
+          <li><strong>Cross-platform delivery:</strong> fully functional releases are available for macOS, Windows, and Linux.</li>
         </ul>
       </div>
 
