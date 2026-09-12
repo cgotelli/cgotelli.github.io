@@ -653,3 +653,35 @@ body {
     margin-top: 20px;
   }
 }
+
+/* Keep the site identity and navigation readable on narrow phones. */
+@media (max-width: 480px) {
+  .corner-name {
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 42px;
+    justify-content: center;
+    background-color: #ffffff;
+  }
+
+  .top-right-nav {
+    top: 42px;
+    height: 42px;
+    justify-content: center;
+    gap: clamp(10px, 4vw, 18px);
+    padding: 0 8px;
+    box-sizing: border-box;
+    border-radius: 0;
+  }
+
+  .top-right-nav a {
+    margin-left: 0;
+    font-size: 14px;
+    white-space: nowrap;
+  }
+
+  .blog-layout {
+    margin-top: 104px;
+  }
+}
