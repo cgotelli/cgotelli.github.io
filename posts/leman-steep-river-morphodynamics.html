@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>LEMAN: a morphodynamic solver for steep rivers - Clemente Gotelli</title>
+  <title>BRAIDS: a morphodynamic solver for steep rivers - Clemente Gotelli</title>
   <link rel="icon" type="image/x-icon" href="../images/favicon.png">
   <link rel="stylesheet" href="../styles.css">
   <style>
@@ -70,14 +70,14 @@
 
   <div class="post-header">
     <img src="../images/leman-qgis.png"
-      alt="LEMAN QGIS plugin showing a river terrain model, calculation domain and modelling controls"
+      alt="BRAIDS QGIS plugin in development, showing a river terrain model, calculation domain and modelling controls"
       style="width: 100%; height: 400px; object-fit: cover; object-position: center; border-radius: 20px; margin-bottom: 40px;">
-    <p class="hero-caption">An early LEMAN project in QGIS, with the river terrain, model boundary and plugin controls in the same workspace.</p>
+    <p class="hero-caption">An early BRAIDS project in QGIS, shown with its previous LEMAN working name. The river terrain, model boundary and plugin controls share the same workspace.</p>
   </div>
 
   <div class="post-container">
     <div class="post-text">
-      <h1>LEMAN: a morphodynamic solver for steep rivers</h1>
+      <h1>BRAIDS: a morphodynamic solver for steep rivers</h1>
 
       <div class="tag-badges">
         <span class="tag-badge">Hydraulics</span>
@@ -85,7 +85,7 @@
         <span class="tag-badge">Open science</span>
       </div>
 
-      <p class="lead">A river does not stop at the water surface. Every flood also works on the bed: it moves grains, sorts them, opens new paths and fills others. In a steep river these changes can happen quickly, especially around weirs, check dams, sills, bridge piers and other hydraulic structures. LEMAN is the code I am developing to explore that moving boundary between water, sediment and infrastructure.</p>
+      <p class="lead">A river does not stop at the water surface. Every flood also works on the bed: it moves grains, sorts them, opens new paths and fills others. In a steep river these changes can happen quickly, especially around weirs, check dams, sills, bridge piers and other hydraulic structures. BRAIDS is the code I am developing to explore that moving boundary between water, sediment and infrastructure.</p>
 
       <p><strong>By Clemente Gotelli</strong></p>
 
@@ -96,7 +96,7 @@
       <div class="section-block">
         <h2>The questions behind the code</h2>
 
-        <p>My main objective is to use LEMAN to study the morphodynamic evolution of steep-slope rivers and the influence of hydraulic structures on that evolution. I want to work towards questions such as:</p>
+        <p>My main objective is to use BRAIDS to study the morphodynamic evolution of steep-slope rivers and the influence of hydraulic structures on that evolution. I want to work towards questions such as:</p>
 
         <ul class="question-list">
           <li>How do steep channels adjust during a flood, and how much of that adjustment remains after the water recedes?</li>
@@ -116,9 +116,9 @@
 
         <p>The short answer is that these programs were created for different jobs. <a href="https://www.hec.usace.army.mil/confluence/rasdocs">HEC-RAS</a> is an exceptionally useful river-engineering system, particularly when a project involves one- and two-dimensional hydraulics, structures, flood mapping and an established engineering workflow. <a href="https://flumen.upc.edu/en/documents/software/iber">Iber</a> offers an accessible unstructured-mesh environment for river hydraulics and sediment transport. <a href="https://www.deltares.nl/en/software-and-data/products/delft3d-fm-suite/modules/d-morphology">Delft3D</a> has decades of development behind its coastal, estuarine and morphodynamic tools. <a href="https://www.opentelemac.org/index.php/modules-list">TELEMAC</a> provides an open and highly configurable family of two- and three-dimensional solvers.</p>
 
-        <p>Their coexistence is useful evidence: there is no single best model for every river and every scientific question. A model is a set of choices about equations, numerical methods, meshes, scales, data and usability. Developing LEMAN only makes sense if those choices help answer a particular class of questions.</p>
+        <p>Their coexistence is useful evidence: there is no single best model for every river and every scientific question. A model is a set of choices about equations, numerical methods, meshes, scales, data and usability. Developing BRAIDS only makes sense if those choices help answer a particular class of questions.</p>
 
-        <p>I am therefore not trying to reproduce every feature of these established packages, or to claim that LEMAN should replace them. My aim is narrower: a transparent numerical laboratory for fast, strongly unsteady flow and morphodynamic change in steep terrain, with enough flexibility to examine how the model itself affects the answer.</p>
+        <p>I am therefore not trying to reproduce every feature of these established packages, or to claim that BRAIDS should replace them. My aim is narrower: a transparent numerical laboratory for fast, strongly unsteady flow and morphodynamic change in steep terrain, with enough flexibility to examine how the model itself affects the answer.</p>
       </div>
 
       <div class="section-block">
@@ -126,7 +126,7 @@
 
         <p><a href="https://www.clawpack.org/geoclaw.html">GeoClaw</a> was built for geophysical flows in which fronts move rapidly across complicated topography: tsunamis, storm surges, dam breaks and inundation. Its finite-volume, shock-capturing approach is a good starting point for steep rivers, where wet and dry areas, abrupt changes in flow and strong topographic forcing are normal rather than exceptional.</p>
 
-        <p>GeoClaw also brings adaptive mesh refinement. In the longer term, this could allow LEMAN to follow a moving flood front or a local zone of intense bed change with fine cells, while keeping a coarser description elsewhere. That is attractive when the reach is long but the decisive erosion occurs in a small and changing part of it.</p>
+        <p>GeoClaw also brings adaptive mesh refinement. In the longer term, this could allow BRAIDS to follow a moving flood front or a local zone of intense bed change with fine cells, while keeping a coarser description elsewhere. That is attractive when the reach is long but the decisive erosion occurs in a small and changing part of it.</p>
 
         <p>There is important work hidden inside that idea. Water and every sediment fraction must remain conservative when a grid is refined or coarsened, and the evolving bed must be transferred consistently between grid levels. The current QGIS workflow uses a fixed grid; morphodynamic adaptive refinement is a future research step that will need its own verification before it can be trusted.</p>
       </div>
@@ -136,13 +136,13 @@
 
         <p>Most river studies already begin in a geographic information system. The terrain is a raster, the model domain is a polygon, boundary conditions belong to particular parts of the river, and material properties vary in space. QGIS is therefore a natural place to build the model rather than only a place to view the final map.</p>
 
-        <p>LEMAN keeps the terrain, domain, boundary conditions, erodible-bed information, run settings and results together in one spatial project. The numerical solver runs behind the interface, while QGIS handles the geographical work of preparing a case and examining how it evolves. My hope is that this makes experiments easier to reproduce and, just as importantly, easier to inspect.</p>
+        <p>BRAIDS keeps the terrain, domain, boundary conditions, erodible-bed information, run settings and results together in one spatial project. The numerical solver runs behind the interface, while QGIS handles the geographical work of preparing a case and examining how it evolves. My hope is that this makes experiments easier to reproduce and, just as importantly, easier to inspect.</p>
       </div>
 
       <div class="section-block">
-        <h2>Where LEMAN is today</h2>
+        <h2>Where BRAIDS is today</h2>
 
-        <p>LEMAN is still an alpha research code. The present version couples two-dimensional shallow-water flow with suspended load, bedload and bed evolution. It can represent several sediment fractions, an active surface and substrate, sand and mud, spatially variable erodible material, and different transport formulations. Simulations are prepared and run from QGIS, and the time-dependent results return to the map.</p>
+        <p>BRAIDS is still an alpha research code. The present version couples two-dimensional shallow-water flow with suspended load, bedload and bed evolution. It can represent several sediment fractions, an active surface and substrate, sand and mud, spatially variable erodible material, and different transport formulations. Simulations are prepared and run from QGIS, and the time-dependent results return to the map.</p>
 
         <p>That list is a description of what has been implemented, not a claim that every application is ready. I am currently testing conservation, wetting and drying, boundary conditions, grain sorting, slope corrections and sensitivity to space and time resolution. Comparisons with analytical solutions and with Delft3D help reveal where two implementations agree and, more usefully, where they do not. Quantitative morphodynamic predictions still require careful validation against experiments and field observations.</p>
 
@@ -152,12 +152,12 @@
       <div class="section-block">
         <h2>A code for asking questions</h2>
 
-        <p>I see LEMAN less as a finished product and more as a scientific instrument under construction. I want to use it to formulate hypotheses about steep-river behaviour, turn those hypotheses into numerical models and confront them with simple benchmarks, laboratory experiments and eventually field cases.</p>
+        <p>I see BRAIDS less as a finished product and more as a scientific instrument under construction. I want to use it to formulate hypotheses about steep-river behaviour, turn those hypotheses into numerical models and confront them with simple benchmarks, laboratory experiments and eventually field cases.</p>
 
         <p>The development process is part of the research. If a model reproduces one experiment but fails when the slope, grain mixture or structure changes, that failure is information. It tells us which assumptions deserve attention and what the next experiment should isolate.</p>
 
         <div class="note">
-          <strong>The long-term objective:</strong> develop LEMAN into an open and testable modelling framework for the morphodynamic evolution of steep rivers, with particular attention to how hydraulic structures alter flow, sediment continuity, scour, deposition and channel adjustment.
+          <strong>The long-term objective:</strong> develop BRAIDS into an open and testable modelling framework for the morphodynamic evolution of steep rivers, with particular attention to how hydraulic structures alter flow, sediment continuity, scour, deposition and channel adjustment.
         </div>
 
         <p>There is a long way to go, and that is precisely why I am building the code. The goal is not simply to obtain another coloured map. It is to understand how the map was produced, which physical ideas it contains and how confidently we can use it to reason about a changing river.</p>
