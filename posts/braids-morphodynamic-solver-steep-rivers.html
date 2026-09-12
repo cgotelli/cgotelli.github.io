@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BRAIDS: a morphodynamic solver for steep rivers - Clemente Gotelli</title>
+  <link rel="icon" type="image/x-icon" href="../images/favicon.png">
+  <link rel="stylesheet" href="../styles.css">
+  <style>
+    .tag-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 8px 0 18px;
+    }
+
+    .tag-badge {
+      padding: 6px 10px;
+      border-radius: 12px;
+      background: #e5e7eb;
+      color: #2a2f45;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .lead {
+      color: #333;
+      font-size: 18px;
+      line-height: 1.65;
+    }
+
+    .section-block {
+      margin-top: 30px;
+    }
+
+    .question-list {
+      padding-left: 22px;
+    }
+
+    .question-list li {
+      margin: 11px 0;
+    }
+
+    .note {
+      margin: 28px 0;
+      padding: 18px 20px;
+      border-left: 4px solid #0f6fff;
+      background: #f1f6ff;
+      border-radius: 0 10px 10px 0;
+    }
+
+    .hero-caption {
+      margin: -28px 0 28px;
+      color: #667085;
+      font-size: 13px;
+      text-align: center;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="top-right-nav">
+    <a href="../news.html">News</a>
+    <a href="../blog.html">Blog</a>
+    <a href="../tools.html">Tools</a>
+    <a href="../aboutme.html">About Me</a>
+  </div>
+  <div class="corner-name"><a href="../index.html">Clemente Gotelli</a></div>
+
+  <div class="post-header">
+    <img src="../images/braids-qgis-header.png"
+      alt="BRAIDS logo beside the QGIS modelling interface, showing a steep river terrain and calculation domain"
+      style="display: block; width: 100%; height: auto; border-radius: 20px; margin-bottom: 40px;">
+    <p class="hero-caption">BRAIDS brings the river terrain, model boundary and numerical controls together in QGIS.</p>
+  </div>
+
+  <div class="post-container">
+    <div class="post-text">
+      <h1>BRAIDS: a morphodynamic solver for steep rivers</h1>
+
+      <div class="tag-badges">
+        <span class="tag-badge">Hydraulics</span>
+        <span class="tag-badge">Morphodynamics</span>
+        <span class="tag-badge">Open science</span>
+      </div>
+
+      <p class="lead">A river does not stop at the water surface. Every flood also works on the bed: it moves grains, sorts them, opens new paths and fills others. In a steep river these changes can happen quickly, especially around weirs, check dams, sills, bridge piers and other hydraulic structures. BRAIDS is the code I am developing to explore that moving boundary between water, sediment and infrastructure.</p>
+
+      <p><strong>By Clemente Gotelli</strong></p>
+
+      <p>I started this project because I kept returning to the same practical problem. We can calculate water levels and velocities with very capable hydraulic models, but the questions that interest me often begin just after that calculation: Where will the bed erode? Where will the sediment settle? Will the channel armour? And how will those changes alter the next stage of the flow?</p>
+
+      <p>This is what morphodynamics means in practice. The water moves the sediment, the sediment changes the river bed, and the new bed changes the water. Treating one part without the others can miss the feedback that actually controls the evolution of a steep channel.</p>
+
+      <div class="section-block">
+        <h2>The questions behind the code</h2>
+
+        <p>My main objective is to use BRAIDS to study the morphodynamic evolution of steep-slope rivers and the influence of hydraulic structures on that evolution. I want to work towards questions such as:</p>
+
+        <ul class="question-list">
+          <li>How do steep channels adjust during a flood, and how much of that adjustment remains after the water recedes?</li>
+          <li>When and where do mixed-grain beds sort, armour, erode or deposit?</li>
+          <li>How do structures interrupt sediment continuity and redistribute erosion and deposition upstream and downstream?</li>
+          <li>Can we predict local scour and deposition without losing the reach-scale evolution of the river?</li>
+          <li>Which sediment-transport and slope-correction models remain reliable when the bed is genuinely steep?</li>
+        </ul>
+
+        <p>These are not questions I expect one equation to answer. Part of the purpose of having my own code is to propose models, compare alternative descriptions of the processes and test them in a controlled way. A useful result may be a new formulation, but it may also be a clear map of where an existing formulation stops being trustworthy.</p>
+      </div>
+
+      <div class="section-block">
+        <h2>Why build another model?</h2>
+
+        <p>There is an obvious question: why develop another code when HEC-RAS, Iber, Delft3D and TELEMAC already exist?</p>
+
+        <p>The short answer is that these programs were created for different jobs. <a href="https://www.hec.usace.army.mil/confluence/rasdocs">HEC-RAS</a> is an exceptionally useful river-engineering system, particularly when a project involves one- and two-dimensional hydraulics, structures, flood mapping and an established engineering workflow. <a href="https://flumen.upc.edu/en/documents/software/iber">Iber</a> offers an accessible unstructured-mesh environment for river hydraulics and sediment transport. <a href="https://www.deltares.nl/en/software-and-data/products/delft3d-fm-suite/modules/d-morphology">Delft3D</a> has decades of development behind its coastal, estuarine and morphodynamic tools. <a href="https://www.opentelemac.org/index.php/modules-list">TELEMAC</a> provides an open and highly configurable family of two- and three-dimensional solvers.</p>
+
+        <p>Their coexistence is useful evidence: there is no single best model for every river and every scientific question. A model is a set of choices about equations, numerical methods, meshes, scales, data and usability. Developing BRAIDS only makes sense if those choices help answer a particular class of questions.</p>
+
+        <p>I am therefore not trying to reproduce every feature of these established packages, or to claim that BRAIDS should replace them. My aim is narrower: a transparent numerical laboratory for fast, strongly unsteady flow and morphodynamic change in steep terrain, with enough flexibility to examine how the model itself affects the answer.</p>
+      </div>
+
+      <div class="section-block">
+        <h2>Why start from GeoClaw?</h2>
+
+        <p><a href="https://www.clawpack.org/geoclaw.html">GeoClaw</a> was built for geophysical flows in which fronts move rapidly across complicated topography: tsunamis, storm surges, dam breaks and inundation. Its finite-volume, shock-capturing approach is a good starting point for steep rivers, where wet and dry areas, abrupt changes in flow and strong topographic forcing are normal rather than exceptional.</p>
+
+        <p>GeoClaw also brings adaptive mesh refinement. In the longer term, this could allow BRAIDS to follow a moving flood front or a local zone of intense bed change with fine cells, while keeping a coarser description elsewhere. That is attractive when the reach is long but the decisive erosion occurs in a small and changing part of it.</p>
+
+        <p>There is important work hidden inside that idea. Water and every sediment fraction must remain conservative when a grid is refined or coarsened, and the evolving bed must be transferred consistently between grid levels. The current QGIS workflow uses a fixed grid; morphodynamic adaptive refinement is a future research step that will need its own verification before it can be trusted.</p>
+      </div>
+
+      <div class="section-block">
+        <h2>Why make it a QGIS plugin?</h2>
+
+        <p>Most river studies already begin in a geographic information system. The terrain is a raster, the model domain is a polygon, boundary conditions belong to particular parts of the river, and material properties vary in space. QGIS is therefore a natural place to build the model rather than only a place to view the final map.</p>
+
+        <p>BRAIDS keeps the terrain, domain, boundary conditions, erodible-bed information, run settings and results together in one spatial project. The numerical solver runs behind the interface, while QGIS handles the geographical work of preparing a case and examining how it evolves. My hope is that this makes experiments easier to reproduce and, just as importantly, easier to inspect.</p>
+      </div>
+
+      <div class="section-block">
+        <h2>Where BRAIDS is today</h2>
+
+        <p>BRAIDS is still an alpha research code. The present version couples two-dimensional shallow-water flow with suspended load, bedload and bed evolution. It can represent several sediment fractions, an active surface and substrate, sand and mud, spatially variable erodible material, and different transport formulations. Simulations are prepared and run from QGIS, and the time-dependent results return to the map.</p>
+
+        <p>That list is a description of what has been implemented, not a claim that every application is ready. I am currently testing conservation, wetting and drying, boundary conditions, grain sorting, slope corrections and sensitivity to space and time resolution. Comparisons with analytical solutions and with Delft3D help reveal where two implementations agree and, more usefully, where they do not. Quantitative morphodynamic predictions still require careful validation against experiments and field observations.</p>
+
+        <p>Hydraulic structures are part of the objective rather than a finished capability. They will require suitable flow controls, sediment passage rules and dedicated scour and deposition tests. Building them step by step makes it possible to ask what physics is actually needed for each type of structure instead of treating every obstacle in the same way.</p>
+      </div>
+
+      <div class="section-block">
+        <h2>A code for asking questions</h2>
+
+        <p>I see BRAIDS less as a finished product and more as a scientific instrument under construction. I want to use it to formulate hypotheses about steep-river behaviour, turn those hypotheses into numerical models and confront them with simple benchmarks, laboratory experiments and eventually field cases.</p>
+
+        <p>The development process is part of the research. If a model reproduces one experiment but fails when the slope, grain mixture or structure changes, that failure is information. It tells us which assumptions deserve attention and what the next experiment should isolate.</p>
+
+        <div class="note">
+          <strong>The long-term objective:</strong> develop BRAIDS into an open and testable modelling framework for the morphodynamic evolution of steep rivers, with particular attention to how hydraulic structures alter flow, sediment continuity, scour, deposition and channel adjustment.
+        </div>
+
+        <p>There is a long way to go, and that is precisely why I am building the code. The goal is not simply to obtain another coloured map. It is to understand how the map was produced, which physical ideas it contains and how confidently we can use it to reason about a changing river.</p>
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>
