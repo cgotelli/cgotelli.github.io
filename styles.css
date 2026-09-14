@@ -502,7 +502,7 @@ html {
 @media (max-width: 768px) {
   .blog-layout {
     display: flex;
-    flex-direction: column-reverse;
+    flex-direction: column;
     margin: 80px 16px 40px;
     padding: 0;
     /* gap property removed */
